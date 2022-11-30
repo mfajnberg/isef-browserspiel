@@ -7,13 +7,17 @@ import RegistrationForm from './vue-widgets/RegistrationForm.vue'
 import LoginForm from './vue-widgets/LoginForm.vue'
 import Worldmap from './vue-widgets/Worldmap.vue'
 
-    const AuthUI = useAuthUIStore()    
+    const AuthUI = useAuthUIStore()
 </script>
 
 <template>
     <div class="header">
         <h1 class="game_title">Hello World</h1>
-        <button @click="(AuthUI.showLoginForm)" class="play_now">jetzt spielen</button>
+        <button @click="(AuthUI.showLoginForm)"
+                v-if="(!AuthUI.showingRegisForm && !AuthUI.showingLoginForm)" 
+                class="play_now">
+            jetzt spielen
+        </button>
     </div>
     <div class="content">
         <Worldmap/>

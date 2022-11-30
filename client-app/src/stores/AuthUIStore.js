@@ -5,24 +5,22 @@ export const useAuthUIStore = defineStore('AuthUIStore', {
     state: () => ({
         showingRegisForm: false,
         showingLoginForm: false,
+
+        stayLoggedIn: false
     }),
     actions: {
 
         showRegisForm() {
             this.showingRegisForm = true
-            console.log(this.showingRegisForm)
         },
         showLoginForm() {
             this.showingLoginForm = true
-            console.log(this.showingLoginForm)
         },
         hideRegisForm() {
             this.showingRegisForm = false
-            console.log(this.showingRegisForm)
         },
         hideLoginForm() {
             this.showingLoginForm = false
-            console.log(this.showingLoginForm)
         },
     },
 })

@@ -1,23 +1,41 @@
 <script setup>
+import { ref } from 'vue'
 import { useAuthUIStore } from '../stores/AuthUIStore.js'
+import { requestLogin } from '../services/Authentication';
 
     const AuthUI = useAuthUIStore()
 
-    function swithToRegisForm() {
+    function switchToRegis() {
         AuthUI.hideLoginForm()
         AuthUI.showRegisForm()
     }
+
+    function sendLoginRequest() {
+        requestLogin(AuthData)
+    }
+
+    var AuthData = ref({
+        email: "",
+        password: "",
+    })
+
 </script>
 
 <template>
     <form class="login_form">
         <label>E-Mail Adresse</label>
-        <input id="email_address"/> 
+        <input v-model="AuthData.email" id="email_address"/> 
         <label>Passwort</label>
-        <input id="password"/>
-        <button v-on:click="">Einloggen</button>
-        Noch kein Konto?
-        <a @click="swithToRegisForm">Jetzt registrieren!</a>
+        <input v-model="AuthData.password" id="password"/>
+        <button v-on:click="sendLoginRequest">Einloggen</button>
+        <div>
+            <label>Angemeldet bleiben</label>
+            <input v-model="AuthUI.stayLoggedIn" type="checkbox"/>
+        </div>
+        <div>
+            Noch kein Konto?
+            <a @click="switchToRegis">Jetzt registrieren!</a>
+        </div>
     </form>
 </template>
 
