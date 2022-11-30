@@ -6,7 +6,13 @@ export const useAuthUIStore = defineStore('AuthUIStore', {
         showingRegisForm: false,
         showingLoginForm: false,
 
-        stayLoggedIn: false
+        newsletter: false,
+        stayLoggedIn: false,
+        
+        credentials: {
+            email: "",
+            password: "",
+        }
     }),
     actions: {
 
@@ -21,6 +27,6 @@ export const useAuthUIStore = defineStore('AuthUIStore', {
         },
         hideLoginForm() {
             this.showingLoginForm = false
-        },
+        }
     },
 })

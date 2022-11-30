@@ -1,6 +1,8 @@
  using Microsoft.AspNetCore.Authentication.JwtBearer;
- using Microsoft.EntityFrameworkCore;
- using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
@@ -56,8 +58,8 @@ builder.Services.AddSwaggerGen(options =>
     // jwt-token must be entered in authorize dialog as "baerer **key**"
 
     // using System.Reflection;
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    //var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 
@@ -72,7 +74,24 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+
 app.UseHttpsRedirection();
+
+app.UseDefaultFiles();
+
+var typeProvider = new FileExtensionContentTypeProvider();
+typeProvider.Mappings[".fbx"] = "text/plain";
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+       Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
+    RequestPath = "",
+    ContentTypeProvider = typeProvider,
+
+    ServeUnknownFileTypes = true
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

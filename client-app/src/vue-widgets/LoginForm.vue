@@ -10,24 +10,15 @@ import { requestLogin } from '../services/Authentication';
         AuthUI.showRegisForm()
     }
 
-    function sendLoginRequest() {
-        requestLogin(AuthData)
-    }
-
-    var AuthData = ref({
-        email: "",
-        password: "",
-    })
-
 </script>
 
 <template>
     <form class="login_form">
         <label>E-Mail Adresse</label>
-        <input v-model="AuthData.email" id="email_address"/> 
+        <input v-model="AuthUI.credentials.email" id="email_address"/> 
         <label>Passwort</label>
-        <input v-model="AuthData.password" id="password"/>
-        <button v-on:click="sendLoginRequest">Einloggen</button>
+        <input v-model="AuthUI.credentials.password" id="password"/>
+        <button v-on:click="requestLogin(AuthUI)">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
             <input v-model="AuthUI.stayLoggedIn" type="checkbox"/>
