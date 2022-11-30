@@ -1,23 +1,28 @@
 <script setup>
-import { useStore } from '../../stores/ReactiveStore.js'
+import { useAuthUIStore } from '../stores/AuthUIStore.js'
 
-    const store = useStore()
+    const AuthUI = useAuthUIStore()
+
+    function swithToRegisForm() {
+        AuthUI.hideLoginForm()
+        AuthUI.showRegisForm()
+    }
 </script>
 
 <template>
-    <form class="registration_form" v-if="store.reg_bool">
+    <form class="login_form">
         <label>E-Mail Adresse</label>
         <input id="email_address"/> 
         <label>Passwort</label>
         <input id="password"/>
-        <label>Passwort wiederholen</label>
-        <input id="password_repeat"/>
-        <button v-on:click="store.toggleRegForm()">Registrieren</button>
+        <button v-on:click="">Einloggen</button>
+        Noch kein Konto?
+        <a @click="swithToRegisForm">Jetzt registrieren!</a>
     </form>
 </template>
 
 <style scoped>
-    .registration_form {
+    .login_form {
         display: flex;
         width: 50vw;
         height: 100%;
@@ -26,9 +31,9 @@ import { useStore } from '../../stores/ReactiveStore.js'
         flex-direction: column;
         position: absolute;
         background-color: rgb(62, 62, 62);
-        z-index: 1;
+        z-index: 2;
     }
-    .registration_form > *, .login > * {
+    .login_form > * {
         flex-direction: column;
     }
 </style>

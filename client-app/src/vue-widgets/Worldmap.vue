@@ -1,11 +1,11 @@
 <script setup>
-import { useStore } from '../../stores/ReactiveStore.js'
+import { useStore } from '../stores/ReactiveStore.js'
 
     const store = useStore()
 </script>
 
 <template>
-    <div class="gallery"></div>
+    <div class="worldmap"></div>
 </template>
 
 <style scoped>
@@ -17,7 +17,7 @@ import { useStore } from '../../stores/ReactiveStore.js'
         justify-content: center;
         flex-direction: column;
         position: absolute;
-        background-color: rgb(62, 62, 62);
+        background-color: rgb(111, 88, 88);
         z-index: 0;
     }
 </style>

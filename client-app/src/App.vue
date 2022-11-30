@@ -1,20 +1,25 @@
 <script setup>
-import { useStore } from './stores/ReactiveStore.js'
-import Gallery from './vue-widgets/landingpage/Gallery.vue'
-import RegistrationForm from './vue-widgets/landingpage/RegistrationForm.vue'
-import LoginForm from './vue-widgets/landingpage/LoginForm.vue'
+import { ref } from 'vue'
+import { useAuthUIStore } from './stores/AuthUIStore.js'
 
-    const store = useStore()
+import Gallery from './vue-widgets/Gallery.vue'
+import RegistrationForm from './vue-widgets/RegistrationForm.vue'
+import LoginForm from './vue-widgets/LoginForm.vue'
+import Worldmap from './vue-widgets/Worldmap.vue'
+
+    const AuthUI = useAuthUIStore()    
 </script>
 
 <template>
     <div class="header">
         <h1 class="game_title">Hello World</h1>
+        <button @click="(AuthUI.showLoginForm)" class="play_now">jetzt spielen</button>
     </div>
     <div class="content">
+        <Worldmap/>
         <Gallery/>
-        <RegistrationForm/>  
-        <LoginForm/>  
+        <RegistrationForm v-if="AuthUI.showingRegisForm"/>  
+        <LoginForm v-if="AuthUI.showingLoginForm"/>  
     </div>
     <div class="footer"></div>
 </template>
@@ -22,6 +27,10 @@ import LoginForm from './vue-widgets/landingpage/LoginForm.vue'
 <style scoped>
     .game_title {
         color: white;
+    }
+    .play_now {
+        color: red;
+        font-style: italic;
     }
     .header {
         width: 100vw;
