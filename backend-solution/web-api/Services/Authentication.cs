@@ -16,7 +16,6 @@ namespace web_api.Services
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
-
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
                  config.GetSection("AppSettings:Token").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -25,12 +24,8 @@ namespace web_api.Services
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);
 
-
-
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
 
         public static void CreatePasswordHash(string password,
              out byte[] passwordHash, out byte[] passwordSalt)
@@ -41,8 +36,6 @@ namespace web_api.Services
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
-
-
 
         public static bool VerifyPasswordHash(string password,
              byte[] passwordHash, byte[] passwordSalt)

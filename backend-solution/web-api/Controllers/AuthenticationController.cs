@@ -21,12 +21,12 @@ namespace web_api.Controllers
 
             User user = new User(request.Email, pwdHash, pwdSalt);
             user.RegistrationTime = DateTime.UtcNow;
+            user.ReceiveNewsletter = request.ReceiveNewsletter;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             return Ok();
-
         }
 
         [HttpPost("login")]

@@ -21,9 +21,9 @@ import { requestLogin } from '../services/Authentication';
 <template>
     <form class="login_form">
         <label>E-Mail Adresse</label>
-        <input v-model="AuthUI.credentials.email" id="email_address"/> 
+        <input v-model="AuthUI.authData.email" id="email_address"/> 
         <label>Passwort</label>
-        <input v-model="AuthUI.credentials.password" id="password"/>
+        <input v-model="AuthUI.authData.password" id="password"/>
         <button v-on:click="LogIn()">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>

@@ -15,9 +15,9 @@ import { requestRegis } from '../services/Authentication';
 <template>
     <form class="registration_form">
         <label>E-Mail Adresse</label>
-        <input v-model="AuthUI.credentials.email" type="text" id="email_address"/> 
+        <input v-model="AuthUI.authData.email" type="text" id="email_address"/> 
         <label>Passwort</label>
-        <input v-model="AuthUI.credentials.password" id="password"/>
+        <input v-model="AuthUI.authData.password" id="password"/>
         <label>Passwort wiederholen</label>
         <input id="password_repeat"/>
         <button v-on:click="requestRegis(AuthUI)">Registrieren</button>

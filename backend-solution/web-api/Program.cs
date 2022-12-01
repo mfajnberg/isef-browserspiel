@@ -12,6 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddCors(c =>
+{
+    c.AddPolicy("AllowOrigin", options =>
+        options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 
 // Add DbContext for EntityFramework
@@ -39,7 +45,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 // complete options => necassary for Swagger authorization
@@ -55,17 +60,14 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 
-    // jwt-token must be entered in authorize dialog as "baerer **key**"
+    // jwt-token must be entered in authorize dialog as "bearer **key**"
 
     // using System.Reflection;
-    //var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    /*var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));*/
 });
 
-
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

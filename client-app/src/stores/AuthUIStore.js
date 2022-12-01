@@ -7,13 +7,13 @@ export const useAuthUIStore = defineStore('AuthUIStore', {
         showingRegisForm: false,
         showingLoginForm: false,
         
-        newsletter: false,
         stayLoggedIn: false,
+        newsletter: false,
         
         loggedIn: false,
         token: "",
         
-        credentials: {
+        authData: {
             email: "",
             password: "",
         }

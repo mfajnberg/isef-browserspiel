@@ -4,12 +4,12 @@ export async function requestLogin(store) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(store.credentials)
+        body: JSON.stringify(store.authData)
     }
     
     console.log(options.body)
 
-    const response = await fetch("https://localhost:5001/login", options)
+    const response = await fetch("https://localhost:5002/login", options)
 
     console.log(response.json())
     
@@ -24,17 +24,17 @@ export async function requestRegis(store) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(store.credentials)
+        body: JSON.stringify(store.authData)
     }
     console.log(options.body)
-    const response = await fetch("https://localhost:5001/register", options)
+    const response = await fetch("https://localhost:5002/register", options)
     console.log(response.json())
 }
 
 export function LogOut(store) {
     store.token = ""
-    store.credentials.email = ""
-    store.credentials.password = ""
+    store.authData.email = ""
+    store.authData.password = ""
     localStorage.removeItem('token')
     store.loggedIn = false
 }
