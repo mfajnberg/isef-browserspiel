@@ -3,17 +3,21 @@ import { ref } from 'vue'
 import { useAuthUIStore } from '../stores/AuthUIStore.js'
 import { requestLogin } from '../services/Authentication';
 
-    const AuthUI = useAuthUIStore()
+    const store = useAuthUIStore()
 
     function switchToRegis() {
-        AuthUI.hideLoginForm()
-        AuthUI.showRegisForm()
+        store.hideLoginForm()
+        store.showRegisForm()
     }
 
     function LogIn() {
-        requestLogin(AuthUI)
-        if (AuthUI.stayLoggedIn) {
-            localStorage.setItem('token', AuthUI.token)
+        requestLogin(store)
+        if (store.stayLoggedIn) {
+            localStorage.setItem('token', store.token)
+        }
+        else {
+            
+            localStorage.setItem('token', "")
         }
     }
 </script>
@@ -21,17 +25,17 @@ import { requestLogin } from '../services/Authentication';
 <template>
     <form class="login_form">
         <label>E-Mail Adresse</label>
-        <input v-model="AuthUI.authData.email" id="email_address"/> 
+        <input v-model="store.authData.email" id="email_address"/> 
         <label>Passwort</label>
-        <input v-model="AuthUI.authData.password" id="password"/>
+        <input v-model="store.authData.password" id="password"/>
         <button v-on:click="LogIn()">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
-            <input v-model="AuthUI.stayLoggedIn" type="checkbox"/>
+            <input v-model="store.stayLoggedIn" type="checkbox"/>
         </div>
         <div>
             Noch kein Konto?
-            <a @click="switchToRegis">Jetzt registrieren!</a>
+            <a @click="switchToRegis" style="cursor: pointer;">Jetzt registrieren!</a>
         </div>
     </form>
 </template>

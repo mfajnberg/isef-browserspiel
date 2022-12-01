@@ -3,11 +3,11 @@ import { ref } from 'vue'
 import { useAuthUIStore } from '../stores/AuthUIStore.js'
 import { requestRegis } from '../services/Authentication';
 
-    const AuthUI = useAuthUIStore()
+    const store = useAuthUIStore()
 
     function switchToLogin() {
-        AuthUI.hideRegisForm()
-        AuthUI.showLoginForm()
+        store.hideRegisForm()
+        store.showLoginForm()
     }
 
 </script>
@@ -15,19 +15,15 @@ import { requestRegis } from '../services/Authentication';
 <template>
     <form class="registration_form">
         <label>E-Mail Adresse</label>
-        <input v-model="AuthUI.authData.email" type="text" id="email_address"/> 
+        <input v-model="store.authData.email" type="text" id="email_address"/> 
         <label>Passwort</label>
-        <input v-model="AuthUI.authData.password" id="password"/>
+        <input v-model="store.authData.password" id="password"/>
         <label>Passwort wiederholen</label>
         <input id="password_repeat"/>
-        <button v-on:click="requestRegis(AuthUI)">Registrieren</button>
-        <div>
-            <label>Zum Newsletter anmelden und einen kostenlosen Esel erhalten</label>
-            <input v-model="AuthUI.newsletter" type="checkbox"/>
-        </div>
+        <button v-on:click="requestRegis(store)">Registrieren</button>
         <div>
             Bereits registriert?
-            <a @click="switchToLogin">Jetzt einloggen!</a>
+            <a @click="switchToLogin" style="cursor: pointer;">Jetzt einloggen!</a>
         </div>
     </form>
 </template>

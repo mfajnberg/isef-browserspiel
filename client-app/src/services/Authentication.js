@@ -15,16 +15,19 @@ export async function requestLogin(store) {
     
     if (response.ok) {
         store.token = response.data
+        store.loggedIn = true
     }
 }
 
 export async function requestRegis(store) {
+    regisData = store.authData
+    regisData.newsletter = store.newsletter
     const options = {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(store.authData)
+        body: JSON.stringify(regisData)
     }
     console.log(options.body)
     const response = await fetch("https://localhost:5002/register", options)

@@ -1,7 +1,4 @@
 <script setup>
-import { useAuthUIStore } from '../stores/AuthUIStore.js'
-
-    const AuthUI = useAuthUIStore()
 </script>
 
 <template>
