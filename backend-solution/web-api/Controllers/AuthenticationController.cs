@@ -17,7 +17,7 @@ namespace web_api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Register(UserDto request)
+        public async Task<ActionResult> Register([FromBody] UserDto request)
         {
             Authentication.CreatePasswordHash(request.Password, out byte[] pwdHash, out byte[] pwdSalt);
 
@@ -31,7 +31,7 @@ namespace web_api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> LogIn(UserDto request)
+        public async Task<ActionResult<string>> LogIn([FromBody] UserDto request)
         {
             
             var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
@@ -47,7 +47,7 @@ namespace web_api.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<string>> RefreshToken(UserDto request)
+        public async Task<ActionResult<string>> RefreshToken([FromBody] UserDto request)
         {
             var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
             var refreshToken = Request.Cookies["refreshToken"];

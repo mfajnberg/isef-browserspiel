@@ -17,7 +17,7 @@ namespace web_api.Services
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                 config.GetSection("AppSettings:Token").Value));
+                 config.GetSection("Token").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims: claims,
