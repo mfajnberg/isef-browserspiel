@@ -9,7 +9,7 @@ namespace web_api.Services
 {
     public class Authentication
     {
-        public static string CreateToken(User user, IConfiguration config)
+        public static string CreateAccessToken(User user, IConfiguration config)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -25,6 +25,18 @@ namespace web_api.Services
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public static RefreshToken GenerateRefreshToken(User user)
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(7),
+                Created = DateTime.Now
+            };
+
+            return refreshToken;
         }
 
         public static void CreatePasswordHash(string password,

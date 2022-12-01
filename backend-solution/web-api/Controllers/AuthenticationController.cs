@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
 using web_api.GameModel;
 using web_api.Services;
 
@@ -21,7 +23,6 @@ namespace web_api.Controllers
 
             User user = new User(request.Email, pwdHash, pwdSalt);
             user.RegistrationTime = DateTime.UtcNow;
-            user.ReceiveNewsletter = request.ReceiveNewsletter;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -39,8 +40,45 @@ namespace web_api.Controllers
                 return BadRequest("Wrong username or password");
             }
 
-            return Ok(Authentication.CreateToken(user, _configuration));
+            var newRefreshToken = Authentication.GenerateRefreshToken(user);
+            SetRefreshToken(user, newRefreshToken);
 
+            return Ok(Authentication.CreateAccessToken(user, _configuration));
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<string>> RefreshToken(UserDto request)
+        {
+            var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (!user.RefreshToken.Equals(refreshToken))
+            {
+                return Unauthorized("Invalid Refresh Token.");
+            }
+            else if (user.TokenExpires < DateTime.Now)
+            {
+                return Unauthorized("Token expired.");
+            }
+
+            string token = Authentication.CreateAccessToken(user, _configuration);
+            var newRefreshToken = Authentication.GenerateRefreshToken(user);
+            SetRefreshToken(user, newRefreshToken);
+
+            return Ok(token);
+        }
+
+        private void SetRefreshToken(User user, RefreshToken newRefreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = newRefreshToken.Expires
+            };
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+
+            user.RefreshToken = newRefreshToken.Token;
+            user.TokenCreated = newRefreshToken.Created;
+            user.TokenExpires = newRefreshToken.Expires;
         }
     }
 }
