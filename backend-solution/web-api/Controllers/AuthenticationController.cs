@@ -4,7 +4,7 @@ using web_api.Services;
 
 namespace web_api.Controllers
 {
-    public class AuthenticationController : Controller
+    public class AuthenticationController : ControllerBase
     {
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;

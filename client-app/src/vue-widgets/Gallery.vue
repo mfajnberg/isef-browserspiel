@@ -17,7 +17,7 @@ import { useAuthUIStore } from '../stores/AuthUIStore.js'
         justify-content: center;
         flex-direction: column;
         position: absolute;
-        background-color: rgb(62, 62, 62);
+        background-color: rgba(0, 0, 0, 0.851);
         z-index: 1;
     }
 </style>

@@ -41,7 +41,6 @@ import { requestRegis } from '../services/Authentication';
         justify-content: center;
         flex-direction: column;
         position: absolute;
-        background-color: rgb(62, 62, 62);
         z-index: 2;
     }
     .registration_form > *, .login > * {

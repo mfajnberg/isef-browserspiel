@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthUIStore } from './stores/AuthUIStore.js'
+import { LogOut } from './services/Authentication.js'
 
 import Gallery from './vue-widgets/Gallery.vue'
 import RegistrationForm from './vue-widgets/RegistrationForm.vue'
@@ -13,10 +14,11 @@ import Worldmap from './vue-widgets/Worldmap.vue'
 <template>
     <div class="header">
         <h1 class="game_title">Hello World</h1>
-        <button @click="(AuthUI.showLoginForm)"
-                v-if="(!AuthUI.showingRegisForm && !AuthUI.showingLoginForm)" 
-                class="play_now">
+        <button @click="(AuthUI.showLoginForm)" v-if="(!AuthUI.showingRegisForm && !AuthUI.showingLoginForm)" class="play_now">
             jetzt spielen
+        </button>
+        <button @click="LogOut()" v-if="AuthUI.loggedIn">
+            Ausloggen
         </button>
     </div>
     <div class="content">
@@ -48,7 +50,11 @@ import Worldmap from './vue-widgets/Worldmap.vue'
         display: flex;
         width: 100vw;
         height: 75vh;
-        background-color: rgb(109, 109, 109);
+        background-image: url(twilight_aegis.jpg);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
         position: absolute;
         left: 0%;
         top: 20vh;

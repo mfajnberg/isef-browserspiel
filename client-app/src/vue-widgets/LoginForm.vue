@@ -10,6 +10,12 @@ import { requestLogin } from '../services/Authentication';
         AuthUI.showRegisForm()
     }
 
+    function LogIn() {
+        requestLogin(AuthUI)
+        if (AuthUI.stayLoggedIn) {
+            localStorage.setItem('token', AuthUI.token)
+        }
+    }
 </script>
 
 <template>
@@ -18,7 +24,7 @@ import { requestLogin } from '../services/Authentication';
         <input v-model="AuthUI.credentials.email" id="email_address"/> 
         <label>Passwort</label>
         <input v-model="AuthUI.credentials.password" id="password"/>
-        <button v-on:click="requestLogin(AuthUI)">Einloggen</button>
+        <button v-on:click="LogIn()">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
             <input v-model="AuthUI.stayLoggedIn" type="checkbox"/>
@@ -39,7 +45,6 @@ import { requestLogin } from '../services/Authentication';
         justify-content: center;
         flex-direction: column;
         position: absolute;
-        background-color: rgb(62, 62, 62);
         z-index: 2;
     }
     .login_form > * {
