@@ -28,7 +28,7 @@ namespace web_api.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(request.Email);
         }
 
         [HttpPost("login")]
@@ -50,6 +50,7 @@ namespace web_api.Controllers
                 Expires = newRefreshToken.Expires
             };
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+            Response.Headers.AccessControlAllowOrigin = "http://127.0.0.1:5173/";
 
             user.RefreshToken = newRefreshToken.Token;
             user.TokenCreated = newRefreshToken.Created;

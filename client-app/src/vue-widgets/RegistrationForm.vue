@@ -15,19 +15,19 @@ import { requestRegis } from '../services/Authentication';
     var validEmailPattern= /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     function updateValidation() {
-        if (store.authData.email.match(validEmailPattern)) {
+        if (store.Email.match(validEmailPattern)) {
             store.emailValid = true
         }
         else {
             store.emailValid = false
         }
-        if (store.authData.password.match(validPwdPattern)) {
+        if (store.Password.match(validPwdPattern)) {
             store.pwdValid = true
         }
         else { // not valid
             store.pwdValid = false
         }
-        if (store.authData.password == store.repeatedPassword) {
+        if (store.Password == store.repeatedPassword) {
             store.pwdRepeat = true
         }
         else { // no repeat
@@ -52,14 +52,14 @@ import { requestRegis } from '../services/Authentication';
         <label v-if="!store.emailValid" class="invalid_input">
             keine valide E-Mail Adresse
         </label>
-        <input @input="updateValidation()" v-model="store.authData.email" type="text" id="email_address"/> 
+        <input @input="updateValidation()" v-model="store.Email" type="text" id="email_address"/> 
         <label>
             Passwort
         </label>
         <label v-if="!store.pwdValid" class="invalid_input"> 
             6-20 Zeichen, mind. 1x Zahl, Groß- & Kleinbuchstabe
         </label>
-        <input @input="updateValidation()" v-model="store.authData.password" type="password" id="password"/>
+        <input @input="updateValidation()" v-model="store.Password" type="password" id="password"/>
         <label>
             Passwort wiederholen
         </label>

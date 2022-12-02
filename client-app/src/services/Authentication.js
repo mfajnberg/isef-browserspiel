@@ -2,9 +2,13 @@ export async function requestTokenRefresh(store) {
     const options = {
         method: 'POST',
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(store.authData)
+        credentials: 'include',
+        body: JSON.stringify({
+            Email: store.Email,
+            Password: store.Password
+        })
     }
     fetch('https://localhost:5002/refresh-token', options).then((response) =>
         response.text().then(function(data) {
@@ -19,9 +23,13 @@ export async function requestLogin(store) {
     const options = {
         method: 'POST',
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(store.authData)
+        credentials: 'include',
+        body: JSON.stringify({
+            Email: store.Email,
+            Password: store.Password
+        })
     }
     fetch('https://localhost:5002/login', options).then((response) =>
         response.text().then(function(data) {
@@ -30,10 +38,10 @@ export async function requestLogin(store) {
             store.loggedIn = true
             if (store.stayLoggedIn) {
                 localStorage.setItem('token', store.token)
-                localStorage.setItem('email', store.authData.email)
+                localStorage.setItem('Email', store.Email)
             }
             else {
-                localStorage.setItem('token', "")
+                localStorage.removeItem('Email')
             }
         })
     )
@@ -45,16 +53,22 @@ export async function requestRegis(store) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(store.authData)
+        credentials: 'include',
+        body: JSON.stringify({
+            Email: store.Email,
+            Password: store.Password
+        })
     }
-    const response = await fetch("https://localhost:5002/register", options)
+    fetch("https://localhost:5002/register", options).then((response) =>
+        console.log(response.text())
+    )
 }
 
 export function LogOut(store) {
     store.token = ""
-    store.authData.email = ""
-    store.authData.password = ""
+    store.Email = ""
+    store.Password = ""
     localStorage.removeItem('token')
-    localStorage.removeItem('email')
+    localStorage.removeItem('Email')
     store.loggedIn = false
 }

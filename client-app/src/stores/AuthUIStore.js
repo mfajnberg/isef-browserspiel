@@ -13,10 +13,9 @@ export const useAuthUIStore = defineStore('AuthUIStore', {
         loggedIn: false,
         token: "",
         
-        authData: {
-            email: "",
-            password: "",
-        },
+        Email: "",
+        Password: "",
+
         repeatedPassword: "",
 
         emailValid: false,

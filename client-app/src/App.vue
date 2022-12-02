@@ -11,7 +11,7 @@ import Worldmap from './vue-widgets/Worldmap.vue'
     const AuthUIStore = useAuthUIStore()
     onMounted(() => {
         if (localStorage.token != null) {
-            AuthUIStore.authData.email = localStorage.email
+            AuthUIStore.Email = localStorage.Email
             requestTokenRefresh(AuthUIStore)
         }
     })
