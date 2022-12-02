@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useAuthUIStore } from './stores/AuthUIStore.js'
-import { LogOut } from './services/Authentication.js'
+import { requestTokenRefresh, LogOut } from './services/Authentication.js'
 
 import Gallery from './vue-widgets/Gallery.vue'
 import RegistrationForm from './vue-widgets/RegistrationForm.vue'
@@ -9,6 +9,12 @@ import LoginForm from './vue-widgets/LoginForm.vue'
 import Worldmap from './vue-widgets/Worldmap.vue'
 
     const AuthUIStore = useAuthUIStore()
+    onMounted(() => {
+        if (localStorage.token != null) {
+            AuthUIStore.authData.email = localStorage.email
+            requestTokenRefresh(AuthUIStore)
+        }
+    })
 </script>
 
 <template>
@@ -18,7 +24,7 @@ import Worldmap from './vue-widgets/Worldmap.vue'
         <button @click="(AuthUIStore.showLoginForm)" v-if="(!AuthUIStore.showingRegisForm && !AuthUIStore.showingLoginForm)" class="play_now">
             jetzt spielen
         </button>
-        <button class="log_out" @click="LogOut(AuthUIStore)" v-if="!AuthUIStore.loggedIn">
+        <button class="log_out" @click="LogOut(AuthUIStore)">
             ausloggen
         </button>             
         <button class="change_lang" @click="">
@@ -33,10 +39,10 @@ import Worldmap from './vue-widgets/Worldmap.vue'
     </div>
     <div class="footer">
         <a>v0.1a</a> |
-        <a>Jobs</a> |
+        <a>About</a> |
         <a>FAQs</a> |
-        <a>Terms</a> |
-        <a>Imprint</a>
+        <a>AGBs</a> |
+        <a>Impressum</a>
     </div>
 </template>
 

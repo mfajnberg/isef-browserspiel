@@ -6,6 +6,7 @@ using web_api.Services;
 
 namespace web_api.Controllers
 {
+    [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private readonly DataContext _context;
@@ -40,10 +41,22 @@ namespace web_api.Controllers
                 return BadRequest("Wrong username or password");
             }
 
+            string accessToken = Authentication.CreateAccessToken(user, _configuration);
             var newRefreshToken = Authentication.GenerateRefreshToken(user);
-            SetRefreshToken(user, newRefreshToken);
 
-            return Ok(Authentication.CreateAccessToken(user, _configuration));
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = newRefreshToken.Expires
+            };
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+
+            user.RefreshToken = newRefreshToken.Token;
+            user.TokenCreated = newRefreshToken.Created;
+            user.TokenExpires = newRefreshToken.Expires;
+            _context.SaveChanges();
+
+            return Ok(accessToken);
         }
 
         [HttpPost("refresh-token")]
@@ -60,15 +73,9 @@ namespace web_api.Controllers
                 return Unauthorized("Token expired.");
             }
 
-            string token = Authentication.CreateAccessToken(user, _configuration);
+            string accessToken = Authentication.CreateAccessToken(user, _configuration);
             var newRefreshToken = Authentication.GenerateRefreshToken(user);
-            SetRefreshToken(user, newRefreshToken);
 
-            return Ok(token);
-        }
-
-        private void SetRefreshToken(User user, RefreshToken newRefreshToken)
-        {
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -79,6 +86,9 @@ namespace web_api.Controllers
             user.RefreshToken = newRefreshToken.Token;
             user.TokenCreated = newRefreshToken.Created;
             user.TokenExpires = newRefreshToken.Expires;
+            _context.SaveChanges();
+
+            return Ok(accessToken);
         }
     }
 }

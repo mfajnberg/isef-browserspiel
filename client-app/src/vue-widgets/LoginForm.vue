@@ -10,24 +10,17 @@ import { requestLogin } from '../services/Authentication';
         store.showRegisForm()
     }
 
-    function LogIn() {
-        requestLogin(store)
-        if (store.stayLoggedIn) {
-            localStorage.setItem('token', store.token)
-        }
-        else {
-            
-            localStorage.setItem('token', "")
-        }
+    async function LogIn() {
+        await requestLogin(store)
     }
 </script>
 
 <template>
-    <form class="login_form">
+    <div class="login_form">
         <label>E-Mail Adresse</label>
         <input v-model="store.authData.email" id="email_address"/> 
         <label>Passwort</label>
-        <input v-model="store.authData.password" id="password"/>
+        <input v-model="store.authData.password" type="password" id="password"/>
         <button v-on:click="LogIn()">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
@@ -37,7 +30,7 @@ import { requestLogin } from '../services/Authentication';
             Noch kein Konto?
             <a @click="switchToRegis" style="cursor: pointer;">Jetzt registrieren!</a>
         </div>
-    </form>
+    </div>
 </template>
 
 <style scoped>
