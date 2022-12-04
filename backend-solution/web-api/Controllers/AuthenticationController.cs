@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
+using System.Text.Json;
 using web_api.GameModel;
 using web_api.Services;
 
@@ -17,7 +18,7 @@ namespace web_api.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("register")]
+        [HttpPost("api/user/register")]
         public async Task<ActionResult> Register([FromBody] UserDto request)
         {
             Authentication.CreatePasswordHash(request.Password, out byte[] pwdHash, out byte[] pwdSalt);
@@ -28,10 +29,10 @@ namespace web_api.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(request.Email);
+            return Ok("Erfolgreich registriert als " + request.Email);
         }
 
-        [HttpPost("login")]
+        [HttpPost("api/user/login")]
         public async Task<ActionResult<string>> LogIn([FromBody] UserDto request)
         {
             
@@ -47,31 +48,29 @@ namespace web_api.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = newRefreshToken.Expires
+                Expires = newRefreshToken.Expires,
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
+
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
-            Response.Headers.AccessControlAllowOrigin = "http://127.0.0.1:5173/";
 
             user.RefreshToken = newRefreshToken.Token;
             user.TokenCreated = newRefreshToken.Created;
             user.TokenExpires = newRefreshToken.Expires;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(accessToken);
         }
 
-        [HttpPost("refresh-token")]
-        public async Task<ActionResult<string>> RefreshToken([FromBody] UserDto request)
+        [HttpPost("api/user/token-refresh")]
+        public async Task<ActionResult<string>> RefreshToken()
         {
-            var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
             var refreshToken = Request.Cookies["refreshToken"];
-            if (!user.RefreshToken.Equals(refreshToken))
+            var user = _context.Users.Where(u => u.RefreshToken == refreshToken).FirstOrDefault();
+            if (user == null || user.TokenExpires < DateTime.Now)
             {
                 return Unauthorized("Invalid Refresh Token.");
-            }
-            else if (user.TokenExpires < DateTime.Now)
-            {
-                return Unauthorized("Token expired.");
             }
 
             string accessToken = Authentication.CreateAccessToken(user, _configuration);

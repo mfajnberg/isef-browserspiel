@@ -10,12 +10,13 @@ export async function requestTokenRefresh(store) {
             Password: store.Password
         })
     }
-    fetch('https://localhost:5002/refresh-token', options).then((response) =>
+    fetch('/api/user/token-refresh', options).then((response) =>
         response.text().then(function(data) {
-            store.token = data
-            console.log(store.token)
-            store.loggedIn = true
-            localStorage.setItem('token', store.token)
+            if (response.ok) {
+                store.token = data
+                store.loggedIn = true
+                localStorage.setItem('token', store.token)
+            }
         })
     )
 }
@@ -31,7 +32,7 @@ export async function requestLogin(store) {
             Password: store.Password
         })
     }
-    fetch('https://localhost:5002/login', options).then((response) =>
+    fetch('/api/user/login', options).then((response) =>
         response.text().then(function(data) {
             store.token = data
             console.log(store.token)
@@ -59,9 +60,8 @@ export async function requestRegis(store) {
             Password: store.Password
         })
     }
-    fetch("https://localhost:5002/register", options).then((response) =>
-        console.log(response.text())
-    )
+    const response = await fetch("/api/user/register", options)
+    console.log(response.text())
 }
 
 export function LogOut(store) {

@@ -20,8 +20,8 @@ import Worldmap from './vue-widgets/Worldmap.vue'
 <template>
     <div class="header">
         <h1 class="logged_out" v-if="!AuthUIStore.loggedIn">Logged Out {{"..."}}</h1>
-        <h1 class="logged_in" v-if="AuthUIStore.loggedIn">Logged In as {{"user x"}}</h1>
-        <button @click="(AuthUIStore.showLoginForm)" v-if="(!AuthUIStore.showingRegisForm && !AuthUIStore.showingLoginForm)" class="play_now">
+        <h1 class="logged_in" v-if="AuthUIStore.loggedIn">Logged In as {{AuthUIStore.Email}}</h1>
+        <button @click="(AuthUIStore.showLoginForm)" v-if="(!AuthUIStore.showingRegisForm && !AuthUIStore.showingLoginForm)">
             jetzt spielen
         </button>
         <button class="log_out" @click="LogOut(AuthUIStore)">
@@ -49,10 +49,7 @@ import Worldmap from './vue-widgets/Worldmap.vue'
 <style scoped>
     .logged_in {
         color: white;
-    }
-    .play_now {
-        color: rgb(0, 255, 0);
-    }    
+    } 
     .log_out {
         color: red;
         position: fixed;
