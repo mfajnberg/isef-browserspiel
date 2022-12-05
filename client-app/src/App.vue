@@ -1,75 +1,36 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useAuthUIStore } from './stores/AuthUIStore.js'
-import { requestTokenRefresh, LogOut } from './services/Authentication.js'
+import { useAuthStore } from './stores/AuthStore.js'
+import { useUIStore } from './stores/UIStore.js'
+import { requestTokenRefresh, LogOut } from './services/AuthService.js'
 
-import Gallery from './vue-widgets/Gallery.vue'
-import RegistrationForm from './vue-widgets/RegistrationForm.vue'
-import LoginForm from './vue-widgets/LoginForm.vue'
-import Worldmap from './vue-widgets/Worldmap.vue'
+import Header from './vue-widgets/Header.vue'
+import Footer from './vue-widgets/Footer.vue'
+import AuthForm from './vue-widgets/Authentication/AuthForm.vue'
+import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
 
-    const AuthUIStore = useAuthUIStore()
+    const AuthStore = useAuthStore()
+    const UIStore = useUIStore()
     onMounted(() => {
         if (localStorage.token != null) {
-            AuthUIStore.Email = localStorage.Email
-            requestTokenRefresh(AuthUIStore)
+            AuthStore.Email = localStorage.Email
+            requestTokenRefresh(AuthStore)
         }
     })
 </script>
 
 <template>
-    <div class="header">
-        <h1 class="logged_out" v-if="!AuthUIStore.loggedIn">Logged Out {{"..."}}</h1>
-        <h1 class="logged_in" v-if="AuthUIStore.loggedIn">Logged In as {{AuthUIStore.Email}}</h1>
-        <button @click="(AuthUIStore.showLoginForm)" v-if="(!AuthUIStore.showingRegisForm && !AuthUIStore.showingLoginForm)">
-            jetzt spielen
-        </button>
-        <button class="log_out" @click="LogOut(AuthUIStore)">
-            ausloggen
-        </button>             
-        <button class="change_lang" @click="">
-            Sprache ändern
-        </button>        
-    </div>
-    <div class="content">
-        <Worldmap/>
-        <Gallery/>
-        <RegistrationForm v-if="AuthUIStore.showingRegisForm"/>  
-        <LoginForm v-if="AuthUIStore.showingLoginForm"/>  
-    </div>
-    <div class="footer">
-        <a>v0.1a</a> |
-        <a>About</a> |
-        <a>FAQs</a> |
-        <a>AGBs</a> |
-        <a>Impressum</a>
+    <div>
+        <Header class="header"/>
+        <div class="content">
+            <AuthForm class="auth_form" v-if="UIStore.showingAuthentication"/>
+            <AvatarCreator class="avatar_creator" v-if="UIStore.showingAvatarCreator"/>
+        </div>
+        <Footer/>
     </div>
 </template>
 
 <style scoped>
-    .logged_in {
-        color: white;
-    } 
-    .log_out {
-        color: red;
-        position: fixed;
-        top: 15.5vh;
-        right: 25vw;
-    }    
-    .change_lang {
-        color: yellow;
-        position: fixed;
-        top: 0%;
-        right: 25vw;
-    }
-    .header {
-        width: 100vw;
-        height: 20vh;
-        background-color: rgb(0, 0, 0);
-        position: fixed;
-        left: 0%;
-        top: 0%;
-    }    
     .content {
         display: flex;
         width: 100vw;
@@ -85,21 +46,5 @@ import Worldmap from './vue-widgets/Worldmap.vue'
 
         align-items: center;
         justify-content: center;
-    }
-    .footer {
-        display: flex;
-        width: 100vw;
-        height: 5vh;
-        background-color: black;
-        position: fixed;
-        left: 0%;
-        bottom: 0%;
-        justify-content: center;
-        align-items: center;
-        white-space: pre-wrap;
-    }
-    .footer > * {
-        color: grey;
-        cursor: pointer;
     }
 </style>

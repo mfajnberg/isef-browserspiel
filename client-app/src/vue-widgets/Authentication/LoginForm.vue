@@ -1,9 +1,8 @@
 <script setup>
-import { ref } from 'vue'
-import { useAuthUIStore } from '../stores/AuthUIStore.js'
-import { requestLogin } from '../services/Authentication';
+import { useAuthStore } from '../../stores/AuthStore.js'
+import { requestLogin } from '../../services/AuthService';
 
-    const store = useAuthUIStore()
+    const store = useAuthStore()
 
     function switchToRegis() {
         store.hideLoginForm()
@@ -16,7 +15,7 @@ import { requestLogin } from '../services/Authentication';
 </script>
 
 <template>
-    <div class="login_form">
+    <div id="login_form">
         <label>E-Mail Adresse</label>
         <input v-model="store.Email" id="email_address"/> 
         <label>Passwort</label>
@@ -34,17 +33,13 @@ import { requestLogin } from '../services/Authentication';
 </template>
 
 <style scoped>
-    .login_form {
+    #login_form {
         display: flex;
         width: 50vw;
         height: 100%;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        position: absolute;
-        z-index: 2;
-    }
-    .login_form > * {
-        flex-direction: column;
+        z-index: 20;
     }
 </style>

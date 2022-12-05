@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { useAuthUIStore } from '../stores/AuthUIStore.js'
-import { requestRegis } from '../services/Authentication';
+import { useAuthStore } from '../../stores/AuthStore.js'
+import { requestRegis } from '../../services/AuthService';
 
-    const store = useAuthUIStore()
+    const store = useAuthStore()
 
     function switchToLogin() {
         store.hideRegisForm()
@@ -47,7 +47,7 @@ import { requestRegis } from '../services/Authentication';
 </script>
 
 <template>
-    <div class="registration_form">
+    <div id="registration_form">
         <label>E-Mail Adresse</label>
         <label v-if="!store.emailValid" class="invalid_input">
             keine valide E-Mail Adresse
@@ -78,18 +78,14 @@ import { requestRegis } from '../services/Authentication';
 </template>
 
 <style scoped>
-    .registration_form {
+    #registration_form {
         display: flex;
         width: 50vw;
         height: 100%;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        position: absolute;
-        z-index: 2;
-    }
-    .registration_form > *, .login > * {
-        flex-direction: column;
+        z-index: 20;
     }
     .invalid_input {
         color: red;

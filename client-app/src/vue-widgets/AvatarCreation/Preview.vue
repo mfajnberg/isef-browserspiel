@@ -1,23 +1,28 @@
 <script setup>
-import { useStore } from '../stores/ReactiveStore.js'
+import Preview from './Preview.vue';
 
-    const store = useStore()
 </script>
 
 <template>
-    <div class="worldmap"></div>
+    <div id="name">
+        Name
+    </div>
+    <div id="appearance">
+        Aussehen
+    </div>
 </template>
 
 <style scoped>
-    .gallery {
+    .creator {
         display: flex;
-        width: 50vw;
+        width: 100%;
         height: 100%;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         position: absolute;
-        background-color: rgb(111, 88, 88);
-        z-index: 0;
+        background-color: rgba(0, 0, 0, 0.851);
+        z-index: 1;
     }
+    
 </style>

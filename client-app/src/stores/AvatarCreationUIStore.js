@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia' 
 
-export const useAuthUIStore = defineStore('AuthUIStore', {
-    id: 'AuthUI',
+export const useAvatarCreatorStore = defineStore('AvatarCreatorStore', {
+    id: 'AvatarCreatorStore',
     state: () => ({
         
         showingRegisForm: false,
