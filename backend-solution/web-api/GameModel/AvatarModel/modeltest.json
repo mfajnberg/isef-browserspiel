@@ -1,0 +1,54 @@
+﻿{
+  "id": 0,
+  "name": "Marsilio",
+  "traits": [
+    {
+      "id": 0,
+      "type": "body",
+      "label": null,
+      "description": null,
+      "values": [
+        {
+          "type": "power",
+          "value": 16
+        },
+        {
+          "type": "agility",
+          "value": 13
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "type": "mind",
+      "label": null,
+      "description": null,
+      "values": [
+        {
+          "type": "itellect",
+          "value": 17
+        },
+        {
+          "type": "discipline",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "sense",
+      "label": null,
+      "description": null,
+      "values": [
+        {
+          "type": "focus",
+          "value": 12
+        },
+        {
+          "type": "charisma",
+          "value": 10
+        }
+      ]
+    }
+  ]
+}

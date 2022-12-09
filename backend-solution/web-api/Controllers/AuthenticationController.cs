@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
-using System.Text.Json;
 using web_api.GameModel;
 using web_api.Services;
 
@@ -19,14 +17,20 @@ namespace web_api.Controllers
         }
 
         [HttpPost("api/user/register")]
-        public async Task<ActionResult> Register([FromBody] UserDto request)
+        public async Task<ActionResult<string>> Register([FromBody] UserDto request)
         {
+            var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+            if (user != null)
+            {
+                return Conflict("Ein Konto mit dieser E-Mail-Adresse existiert bereits");
+            }
+
             Authentication.CreatePasswordHash(request.Password, out byte[] pwdHash, out byte[] pwdSalt);
 
-            User user = new User(request.Email, pwdHash, pwdSalt);
-            user.RegistrationTime = DateTime.UtcNow;
+            User newUser = new User(request.Email, pwdHash, pwdSalt);
+            newUser.RegistrationTime = DateTime.UtcNow;
 
-            _context.Users.Add(user);
+            _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
             return Ok("Erfolgreich registriert als " + request.Email);
@@ -35,7 +39,6 @@ namespace web_api.Controllers
         [HttpPost("api/user/login")]
         public async Task<ActionResult<string>> LogIn([FromBody] UserDto request)
         {
-            
             var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
             if (user == null || !Authentication.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
             {
@@ -45,6 +48,11 @@ namespace web_api.Controllers
             string accessToken = Authentication.CreateAccessToken(user, _configuration);
             var newRefreshToken = Authentication.GenerateRefreshToken(user);
 
+            user.RefreshToken = newRefreshToken.Token;
+            user.TokenCreated = newRefreshToken.Created;
+            user.TokenExpires = newRefreshToken.Expires;
+            _context.SaveChanges();
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -52,13 +60,7 @@ namespace web_api.Controllers
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
-
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
-
-            user.RefreshToken = newRefreshToken.Token;
-            user.TokenCreated = newRefreshToken.Created;
-            user.TokenExpires = newRefreshToken.Expires;
-            await _context.SaveChangesAsync();
 
             return Ok(accessToken);
         }
@@ -76,17 +78,17 @@ namespace web_api.Controllers
             string accessToken = Authentication.CreateAccessToken(user, _configuration);
             var newRefreshToken = Authentication.GenerateRefreshToken(user);
 
+            user.RefreshToken = newRefreshToken.Token;
+            user.TokenCreated = newRefreshToken.Created;
+            user.TokenExpires = newRefreshToken.Expires;
+            _context.SaveChanges();
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Expires = newRefreshToken.Expires
             };
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
-
-            user.RefreshToken = newRefreshToken.Token;
-            user.TokenCreated = newRefreshToken.Created;
-            user.TokenExpires = newRefreshToken.Expires;
-            _context.SaveChanges();
 
             return Ok(accessToken);
         }
