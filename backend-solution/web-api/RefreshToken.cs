@@ -1,4 +1,4 @@
-﻿namespace web_api.GameModel
+﻿namespace web_api
 {
     public class RefreshToken
     {

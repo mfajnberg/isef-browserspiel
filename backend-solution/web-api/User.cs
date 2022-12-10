@@ -1,8 +1,8 @@
-﻿namespace web_api.GameModel
+﻿namespace web_api
 {
     public class User
     {
-        public User( string email, byte[] passwordHash, byte[] passwordSalt, int id = 0, 
+        public User(string email, byte[] passwordHash, byte[] passwordSalt, int id = 0,
             bool isActive = false, DateTime? registrationTime = null, DateTime? lastLoginTime = null)
         {
             Id = id;
@@ -19,8 +19,8 @@
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public bool IsActive { get; set; }
-        public DateTime? RegistrationTime{ get; set; }
-        public DateTime? LastLoginTime{ get; set; }
+        public DateTime? RegistrationTime { get; set; }
+        public DateTime? LastLoginTime { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? TokenCreated { get; set; }
         public DateTime? TokenExpires { get; set; }

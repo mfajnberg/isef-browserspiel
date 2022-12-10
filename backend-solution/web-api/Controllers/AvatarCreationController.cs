@@ -17,17 +17,17 @@ namespace web_api.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("api/create-avatar/get-avatar-choices")]
-        public async Task<ActionResult> GetAvatarChoices()
+        [HttpGet("api/create-avatar/get-premade-choices")]
+        public async Task<ActionResult> GetPremadeChoices()
         {
             return Ok(AvatarCreation.GetAvatarList());
         }
 
         // [Authorize]
-        [HttpGet("api/create-avatar/choose-avatar")]
-        public async Task<ActionResult> ChooseAvatar(string name)
+        [HttpGet("api/create-avatar/choose-premade")]
+        public async Task<ActionResult> ChoosePremade(string? name)
         {
-            Avatar avatarChoice;
+            CreatureBase avatarChoice;
             try
             {
                 avatarChoice = AvatarCreation.SelectFromAvatarList(name);

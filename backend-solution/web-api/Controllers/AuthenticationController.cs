@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using web_api.GameModel;
 using web_api.Services;
 
 namespace web_api.Controllers

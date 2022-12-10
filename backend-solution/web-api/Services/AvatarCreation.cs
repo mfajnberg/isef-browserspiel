@@ -1,39 +1,64 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using web_api.GameModel;
 using web_api.GameModel.AvatarModel;
 
 namespace web_api.Services
 {
     public static class AvatarCreation
     {
-        static List<Avatar> AvatarOptions = new List<Avatar>() {
-            new Avatar() {
+        static List<CreatureBase> PremadeOptions = new List<CreatureBase>() {
+            new CreatureBase() {
                 Name = "Marsilio",
-                Body = new AvatarBody(16, 13),
-                Senses = new AvatarSenses(12, 10),
-                Mind = new AvatarMind(17, 15)
+                Intellect = 17,
+                Discipline = 15,
+                Power = 16,
+                Agility = 13,
+                Lucidity = 12,
+                Charisma = 10,
+
+                Alignment = -10,
+                Temperament = -10,
+                Morale = 5,
+                Fellowship = new Party(),
             },
-            new Avatar() {
+            new CreatureBase() {
                 Name = "Leito",
-                Body = new AvatarBody(11, 16),
-                Senses = new AvatarSenses(12, 17),
-                Mind = new AvatarMind(13, 10)
+                Intellect = 13,
+                Discipline = 10,
+                Power = 11,
+                Agility = 16,
+                Lucidity = 12,
+                Charisma = 17,
+
+                Alignment = 0,
+                Temperament = 5,
+                Morale = 10,
+                Fellowship = new Party(),
             },
-            new Avatar() {
-                Name = "Struppi",
-                Body = new AvatarBody(10, 10),
-                Senses = new AvatarSenses(10, 10),
-                Mind = new AvatarMind(10, 10)
+            new CreatureBase() {
+                Name = "Standard-Struppi",
+                Intellect = 10,
+                Discipline = 10,
+                Power = 10,
+                Agility = 10,
+                Lucidity = 10,
+                Charisma = 10,
+
+                Alignment = 0,
+                Temperament = 0,
+                Morale = 0,
+                Fellowship = new Party(),
             }
         };
 
-        public static List<Avatar> GetAvatarList()
+        public static List<CreatureBase> GetAvatarList()
         {
-            return AvatarOptions;
+            return PremadeOptions;
         }
 
-        public static Avatar SelectFromAvatarList(string name)
+        public static CreatureBase SelectFromAvatarList(string name)
         {
-            Avatar? result = AvatarOptions.Find(x => x.Name == name);
+            CreatureBase? result = PremadeOptions.Find(x => x.Name == name);
             if (result == null)
             {
                 if (String.IsNullOrEmpty(name))
