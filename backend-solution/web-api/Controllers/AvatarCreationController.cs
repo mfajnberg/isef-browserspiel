@@ -20,7 +20,7 @@ namespace web_api.Controllers
         [HttpGet("api/create-avatar/get-premade-choices")]
         public async Task<ActionResult> GetPremadeChoices()
         {
-            return Ok(AvatarCreation.GetAvatarList());
+            return Ok(PremadeAvatars.GetAvatarList());
         }
 
         // [Authorize]
@@ -30,7 +30,7 @@ namespace web_api.Controllers
             CreatureBase avatarChoice;
             try
             {
-                avatarChoice = AvatarCreation.SelectFromAvatarList(name);
+                avatarChoice = PremadeAvatars.SelectFromAvatarList(name);
             }
             catch (Exception ex)
             {

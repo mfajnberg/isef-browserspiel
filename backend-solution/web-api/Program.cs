@@ -86,7 +86,7 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();
 
 var typeProvider = new FileExtensionContentTypeProvider();
-typeProvider.Mappings[".fbx"] = "text/plain";
+typeProvider.Mappings[".fbx"] = "application/octet-stream";
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
@@ -94,7 +94,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "",
     ContentTypeProvider = typeProvider,
 
-    ServeUnknownFileTypes = true
+    // ServeUnknownFileTypes = true // use the typeProvider instead
 });
 
 app.UseAuthentication();

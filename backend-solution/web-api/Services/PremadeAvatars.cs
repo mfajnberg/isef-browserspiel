@@ -4,31 +4,18 @@ using web_api.GameModel.AvatarModel;
 
 namespace web_api.Services
 {
-    public static class AvatarCreation
+    public static class PremadeAvatars
     {
         static List<CreatureBase> PremadeOptions = new List<CreatureBase>() {
             new CreatureBase() {
-                Name = "Marsilio",
-                Intellect = 17,
-                Discipline = 15,
-                Power = 16,
-                Agility = 13,
-                Lucidity = 12,
-                Charisma = 10,
+                Name = "Leito Froste",
 
-                Alignment = -10,
-                Temperament = -10,
-                Morale = 5,
-                Fellowship = new Party(),
-            },
-            new CreatureBase() {
-                Name = "Leito",
-                Intellect = 13,
-                Discipline = 10,
-                Power = 11,
-                Agility = 16,
-                Lucidity = 12,
-                Charisma = 17,
+                Intellect = 10,
+                Discipline = 8,
+                Power = 10,
+                Agility = 15,
+                Lucidity = 14,
+                Charisma = 20,
 
                 Alignment = 0,
                 Temperament = 5,
@@ -36,17 +23,33 @@ namespace web_api.Services
                 Fellowship = new Party(),
             },
             new CreatureBase() {
-                Name = "Standard-Struppi",
-                Intellect = 10,
-                Discipline = 10,
-                Power = 10,
-                Agility = 10,
-                Lucidity = 10,
+                Name = "Eliana Dawnbreak",
+
+                Intellect = 13,
+                Discipline = 17,
+                Power = 11,
+                Agility = 19,
+                Lucidity = 9,
+                Charisma = 8,
+
+                Alignment = 5,
+                Temperament = 5,
+                Morale = 0,
+                Fellowship = new Party(),
+            },
+            new CreatureBase() {
+                Name = "Marsilio Mirandola",
+
+                Intellect = 17,
+                Discipline = 12,
+                Power = 17,
+                Agility = 9,
+                Lucidity = 12,
                 Charisma = 10,
 
-                Alignment = 0,
-                Temperament = 0,
-                Morale = 0,
+                Alignment = -5,
+                Temperament = -10,
+                Morale = 5,
                 Fellowship = new Party(),
             }
         };
