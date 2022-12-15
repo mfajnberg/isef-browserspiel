@@ -19,10 +19,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="wwwroot\assets\index.4d6e4ee8.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\assets\index.5365a9cc.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\assets\index.70194875.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\assets\index.7108fc2e.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\assets\twilight_aegis.jpg">

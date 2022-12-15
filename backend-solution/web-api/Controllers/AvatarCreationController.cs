@@ -17,12 +17,22 @@ namespace web_api.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets a list of premade characters
+        /// </summary>
+        /// <response code="200"></response>
+        /// <returns></returns>
         [HttpGet("api/create-avatar/get-premade-choices")]
         public async Task<ActionResult> GetPremadeChoices()
         {
             return Ok(PremadeAvatars.GetAvatarList());
         }
 
+        /// <summary>
+        /// sets the given premade character to the current user
+        /// </summary>
+        /// <param name="name">name of the premade character</param>
+        /// <returns></returns>
         // [Authorize]
         [HttpGet("api/create-avatar/choose-premade")]
         public async Task<ActionResult> ChoosePremade(string? name)
@@ -37,7 +47,7 @@ namespace web_api.Controllers
                 return BadRequest(ex.Message);
             }
 
-            // get user from db based on [token, email, cookie]
+            // todo: get user from db based on [token, email, cookie]
             // set avatar for user
             // save changes
             // return Ok

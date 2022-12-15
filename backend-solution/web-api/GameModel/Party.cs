@@ -2,5 +2,6 @@
 {
     public class Party
     {
+        public int Id { get; set; }
     }
 }

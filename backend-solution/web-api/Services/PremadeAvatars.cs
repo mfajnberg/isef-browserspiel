@@ -61,10 +61,10 @@ namespace web_api.Services
 
         public static CreatureBase SelectFromAvatarList(string name)
         {
-            CreatureBase? result = PremadeOptions.Find(x => x.Name == name);
+            CreatureBase? result = PremadeOptions.Find(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
             if (result == null)
             {
-                if (String.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                 {
                     throw new Exception("Bad Request");
                 }

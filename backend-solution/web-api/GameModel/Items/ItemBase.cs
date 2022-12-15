@@ -2,5 +2,6 @@
 {
     public class ItemBase
     {
+        public int Id { get; set; }
     }
 }

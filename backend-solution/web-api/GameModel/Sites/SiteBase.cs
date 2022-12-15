@@ -2,5 +2,6 @@
 {
     public class SiteBase
     {
+        public int Id { get; set; }
     }
 }
