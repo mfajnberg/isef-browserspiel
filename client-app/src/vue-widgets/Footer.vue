@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div id="footer">
+    <div class="footer">
         <a class="item">v0.1a</a> |
         <a class="item">About</a> |
         <a class="item">FAQs</a> |
@@ -13,7 +13,7 @@
 </template>
 
 <style scoped>
-    #footer {
+    .footer {
         display: flex;
         width: 100vw;
         height: 5vh;

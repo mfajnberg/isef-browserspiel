@@ -8,21 +8,13 @@ import Preview from './Preview.vue';
         Name
     </div>
     <div id="appearance">
-        Aussehen
+        <canvas>
+        </canvas>
     </div>
 </template>
 
 <style scoped>
-    .creator {
-        display: flex;
-        width: 100%;
-        height: 100%;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.851);
-        z-index: 1;
+    #name {
     }
     
 </style>

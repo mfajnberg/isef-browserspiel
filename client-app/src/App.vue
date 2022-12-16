@@ -1,13 +1,14 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import { useAuthStore } from './stores/AuthStore.js'
 import { useUIStore } from './stores/UIStore.js'
-import { requestTokenRefresh, LogOut } from './services/AuthService.js'
+import { requestTokenRefresh } from './services/AuthService.js'
 
 import Header from './vue-widgets/Header.vue'
 import Footer from './vue-widgets/Footer.vue'
-import AuthForm from './vue-widgets/Authentication/AuthForm.vue'
+import Authenticator from './vue-widgets/Authentication/Authenticator.vue'
 import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
+import Worldmap from './vue-widgets/Worldmap/WorldMap.vue'
 
     const AuthStore = useAuthStore()
     const UIStore = useUIStore()
@@ -21,10 +22,11 @@ import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
 
 <template>
     <div>
-        <Header class="header"/>
+        <Header/>
         <div class="content">
-            <AuthForm class="auth_form" v-if="UIStore.showingAuthentication"/>
-            <AvatarCreator class="avatar_creator" v-if="UIStore.showingAvatarCreator"/>
+            <Authenticator v-if="UIStore.showingAuthentication"/>
+            <AvatarCreator v-if="UIStore.showingAvatarCreator"/>
+            <canvas canvas id="adventure-map" class="worldmap"></canvas>
         </div>
         <Footer/>
     </div>
@@ -35,7 +37,7 @@ import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
         display: flex;
         width: 100vw;
         height: 75vh;
-        background-image: url(twilight_aegis.jpg);
+        background-image: url("twilight_aegis.jpg");
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-position: center;
@@ -47,4 +49,14 @@ import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
         align-items: center;
         justify-content: center;
     }
+    
+.worldmap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.851);
+  z-index: 1;
+}
 </style>

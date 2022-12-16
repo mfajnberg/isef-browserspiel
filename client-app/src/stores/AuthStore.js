@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('AuthStore', {
     id: 'AuthStore',
     state: () => ({
+        dummyLogin: false,
         
         showingRegisForm: false,
         showingLoginForm: false,
