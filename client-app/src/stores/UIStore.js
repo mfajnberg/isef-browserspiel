@@ -6,25 +6,24 @@ export const useUIStore = defineStore('UIStore', {
         
         showingAuthentication: false,
         showingAvatarCreator: false,
-        showingWorldmap: true,
+        showingWorldmap: false,
     }),
     actions: {
 
         showAuthentication() {
-            this.showingAvatarCreator = false
             this.showingAuthentication = true
+            this.showingAvatarCreator = false
+            this.showingWorldmap = false
         },
         showAvatarCreator() {
-            this.showingAvatarCreator = true
-        },
-        hideAuthentication() {
             this.showingAuthentication = false
+            this.showingAvatarCreator = true
+            this.showingWorldmap = false
         },
-        hideAvatarCreator() {
+        showWorldmap() {
+            this.showingAuthentication = false
             this.showingAvatarCreator = false
+            this.showingWorldmap = true
         },
-        showAuth() {
-
-        }
     },
 })

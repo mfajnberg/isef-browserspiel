@@ -19,9 +19,8 @@ export const useStore = defineStore('ReactiveStore', {
         },
         async loadVisibleHexTiles() {
                 // dummy data:
-                const response = await fetch("VisibleHexes_example.json")
+                const response = await (await fetch("VisibleHexes_example.json")).json()
                 this.visibleHexData = response
-
                 // // real data:
                 // const response = await fetch("https://localhost:5001/getVisibleHexes")
                 // const json = await response.json()
