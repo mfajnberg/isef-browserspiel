@@ -16,6 +16,13 @@ import LoginForm from './LoginForm.vue'
 
 <style scoped>
     #content {
-        position:absolute;
+        display: flex;
+        width: 50vw;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background-color: rgba(0, 0, 0, 0.832);
+        z-index: 19;
     }
 </style>

@@ -10,6 +10,11 @@ import { requestLogin } from '../../services/AuthService';
     }
 
     async function LogIn() {
+        if (store.Email == "dummy") {
+            store.loggedIn = true
+            store.dummyLogin = true
+            return
+        }
         await requestLogin(store)
     }
 </script>

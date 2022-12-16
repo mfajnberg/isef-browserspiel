@@ -71,4 +71,5 @@ export function LogOut(store) {
     localStorage.removeItem('token')
     localStorage.removeItem('Email')
     store.loggedIn = false
+    store.dummyLogin = false
 }
