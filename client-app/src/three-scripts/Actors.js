@@ -7,6 +7,7 @@ export async function initActors(scene, store) {
     const _gltfLoader = new GLTFLoader()
     await store.loadVisibleHexTiles()
     const visible = store.getHexes
+    console.log(visible)
     for (let i = 0; i < visible.length; i++) {
         initHex(_gltfLoader, scene, store, visible[i])
     }

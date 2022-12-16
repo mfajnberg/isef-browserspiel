@@ -8,7 +8,6 @@ import Header from './vue-widgets/Header.vue'
 import Footer from './vue-widgets/Footer.vue'
 import Authenticator from './vue-widgets/Authentication/Authenticator.vue'
 import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
-import Worldmap from './vue-widgets/Worldmap/WorldMap.vue'
 
     const AuthStore = useAuthStore()
     const UIStore = useUIStore()
@@ -26,7 +25,7 @@ import Worldmap from './vue-widgets/Worldmap/WorldMap.vue'
         <div class="content">
             <Authenticator v-if="UIStore.showingAuthentication"/>
             <AvatarCreator v-if="UIStore.showingAvatarCreator"/>
-            <canvas canvas id="adventure-map" class="worldmap"></canvas>
+            <canvas canvas id="adventure-map" class="worldmap" v-show="UIStore.showingWorldmap"></canvas>
         </div>
         <Footer/>
     </div>

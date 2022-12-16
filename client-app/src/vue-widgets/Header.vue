@@ -11,6 +11,11 @@ import { useUIStore } from '../stores/UIStore';
         AuthStore.showLoginForm()
     }
 
+    async function clickLogout(store) {
+        LogOut(store)
+        UIStore.showWorldmap()
+    }
+
 </script>
 
 <template>
@@ -20,7 +25,7 @@ import { useUIStore } from '../stores/UIStore';
         <button @click="openAuthForm" v-if="(!UIStore.showingAuthentication)">
             jetzt spielen
         </button>
-        <button id="log_out" @click="LogOut(AuthStore)">
+        <button id="log_out" @click="clickLogout(AuthStore)">
             ausloggen
         </button>             
         <button id="change_lang" @click="">
@@ -33,7 +38,7 @@ import { useUIStore } from '../stores/UIStore';
     .header {
         width: 100vw;
         height: 20vh;
-        background-color: rgb(0, 0, 0);
+        background-color: rgb(22, 22, 22);
         position: fixed;
         left: 0%;
         top: 0%;

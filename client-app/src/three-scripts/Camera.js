@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 export function initCameraPawn(renderer, scene, store) {
     const _camera = new THREE.PerspectiveCamera
-    ( 60, window.innerWidth / window.innerHeight * .75 , 0.1, 20000 );
+    ( 60, window.innerWidth / (window.innerHeight * .75) , 0.1, 20000 );
     _camera.position.x = -352.21
     _camera.position.y = 927.06
     _camera.position.z = 198.36
@@ -33,7 +33,7 @@ export function initCameraPawn(renderer, scene, store) {
     })
 
     window.addEventListener('resize', () => {
-        _camera.aspect = window.innerWidth / window.innerHeight *.75
+        _camera.aspect = window.innerWidth / (window.innerHeight *.75)
         _camera.updateProjectionMatrix()
         renderer.setSize(window.innerWidth, window.innerHeight *.75)
         renderer.render( scene, _camera );

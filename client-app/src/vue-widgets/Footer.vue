@@ -17,8 +17,8 @@
         display: flex;
         width: 100vw;
         height: 5vh;
-        background-color: black;
-        position: fixed;
+        background-color: rgb(22, 22, 22);
+        position: absolute;
         left: 0%;
         bottom: 0%;
         justify-content: center;
