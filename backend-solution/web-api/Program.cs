@@ -86,15 +86,20 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();
 
 var typeProvider = new FileExtensionContentTypeProvider();
-typeProvider.Mappings[".fbx"] = "application/octet-stream";
+typeProvider.Mappings[".glb"] = "application/octet-stream";
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
        Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
-    RequestPath = "",
-    ContentTypeProvider = typeProvider,
-
-    // ServeUnknownFileTypes = true // use the typeProvider instead
+        RequestPath = "",
+        ContentTypeProvider = typeProvider,
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Assets")),
+        RequestPath = "/assets",
+        ContentTypeProvider = typeProvider,
 });
 
 app.UseAuthentication();
