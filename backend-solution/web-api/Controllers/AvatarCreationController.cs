@@ -45,13 +45,8 @@ namespace web_api.Controllers
                 return BadRequest(ex.Message);
             }
 
-<<<<<<< Updated upstream
             // todo: get user from db based on [token, email, cookie]
             // set avatar for user
-=======
-            // track user from based on token/email/cookie
-            // put selected avatar for user
->>>>>>> Stashed changes
             // save changes
             // return Ok
 
