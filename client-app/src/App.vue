@@ -8,6 +8,7 @@ import Header from './vue-widgets/Header.vue'
 import Footer from './vue-widgets/Footer.vue'
 import Authenticator from './vue-widgets/Authentication/Authenticator.vue'
 import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
+import Imprint from './vue-widgets/Imprint.vue'
 
     const AuthStore = useAuthStore()
     const UIStore = useUIStore()
@@ -23,9 +24,11 @@ import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
     <div>
         <Header/>
         <div class="content">
+            <img src="border1.png" class="border" id="b4">
             <Authenticator v-if="UIStore.showingAuthentication"/>
             <AvatarCreator v-if="UIStore.showingAvatarCreator"/>
             <canvas canvas id="adventure-map" class="worldmap" v-show="UIStore.showingWorldmap"></canvas>
+            <Imprint v-if="UIStore.showingImprint"/>
         </div>
         <Footer/>
     </div>
@@ -56,6 +59,15 @@ import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
   flex-direction: row;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.851);
-  z-index: 1;
+  z-index: 100;
 }
+
+
+.border {
+        position:fixed;
+        top: 18vh;
+        z-index: 21;
+    }
+
+
 </style>
