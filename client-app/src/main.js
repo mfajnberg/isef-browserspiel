@@ -4,7 +4,7 @@ import { createPinia } from 'pinia'
 import './style.css'
 
 import App from './App.vue'
-import { init } from './three-scripts/Worldmap'
+import { init } from './threejs/Worldmap'
 
 
 const pinia = createPinia()

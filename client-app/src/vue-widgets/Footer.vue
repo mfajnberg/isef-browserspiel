@@ -1,4 +1,7 @@
 <script setup>
+import { useUIStore } from '../stores/UIStore.js'
+
+const UIStore = useUIStore()
 
 </script>
 
@@ -8,7 +11,7 @@
         <a class="item">About</a> |
         <a class="item">FAQs</a> |
         <a class="item">AGBs</a> |
-        <a class="item">Impressum</a>
+        <a class="item" @click="UIStore.showImprint"><strong>Impressum</strong></a>
     </div>
 </template>
 

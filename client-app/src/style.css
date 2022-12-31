@@ -47,9 +47,10 @@ h1 {
 }
 
 button {
+  display: flex;
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 2vh 2vh;
+  padding: clamp(1vh, 2vh, 3vh) clamp(1vh, 2vh, 3vh);
   font-size: 1em;
   line-height: 0;
   font-weight: 500;

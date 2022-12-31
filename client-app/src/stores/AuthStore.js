@@ -28,8 +28,10 @@ export const useAuthStore = defineStore('AuthStore', {
 
         showRegisForm() {
             this.showingRegisForm = true
+            this.showingLoginForm = false
         },
         showLoginForm() {
+            this.showingRegisForm = false
             this.showingLoginForm = true
         },
         hideRegisForm() {

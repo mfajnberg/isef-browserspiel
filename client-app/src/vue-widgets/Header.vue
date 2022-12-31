@@ -20,42 +20,61 @@ import { useUIStore } from '../stores/UIStore';
 
 <template>
     <div class="header">
-        <h1 id="logged_out" v-if="!AuthStore.loggedIn">Logged Out {{"..."}}</h1>
-        <h1 id="logged_in" v-if="AuthStore.loggedIn">Logged In as {{AuthStore.Email}}</h1>
-        <button @click="openAuthForm" v-if="(!UIStore.showingAuthentication)">
+        <h2 id="logged_out" v-if="!AuthStore.loggedIn">Logged Out {{"..."}}</h2>
+        <h2 id="logged_in" v-if="AuthStore.loggedIn">Logged In as {{AuthStore.Email}}</h2>
+        <button id="play_now" @click="openAuthForm" v-if="(!UIStore.showingAuthentication)">
             jetzt spielen
         </button>
         <button id="log_out" @click="clickLogout(AuthStore)">
             ausloggen
-        </button>             
-        <button id="change_lang" @click="">
-            Sprache ändern
-        </button>        
+        </button>
+
     </div>
 </template>
 
 <style scoped>
     .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 100vw;
         height: 20vh;
         background-color: rgb(22, 22, 22);
+
         position: fixed;
         left: 0%;
         top: 0%;
-    }    
-    #logged_in {
+        
+        z-index: 20;
+    }
+
+
+    #play_now {
+        position: absolute;
+        top: 10vh;
+    }
+    
+    #logged_in, #logged_out {
+        position: absolute;
         color: white;
+        text-shadow: 
+            0px 0px 10px black,
+            0px 0px 10px black,
+            0px 0px 10px black;
+        right: 25vw;
+        top: 0%;
     } 
+    
     #log_out {
+        position: absolute;
         color: red;
         position: fixed;
-        top: 15.5vh;
+        top: 10vh;
         right: 25vw;
     }    
-    #change_lang {
-        color: yellow;
-        position: fixed;
-        top: 0%;
-        right: 25vw;
+@media (max-width: 700px) {
+    #log_out, #logged_out, #logged_in {
+        right: 0%;
     }
+}   
 </style>

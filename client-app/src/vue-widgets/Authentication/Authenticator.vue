@@ -25,4 +25,9 @@ import LoginForm from './LoginForm.vue'
         background-color: rgba(0, 0, 0, 0.832);
         z-index: 19;
     }
+    @media (max-width: 700px) {
+        #content {
+            width: 100%;
+        }
+    }
 </style>
