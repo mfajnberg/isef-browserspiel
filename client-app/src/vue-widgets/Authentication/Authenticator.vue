@@ -30,4 +30,9 @@ import LoginForm from './LoginForm.vue'
             width: 100%;
         }
     }
+    @media (max-width: 700px) {
+        #content {
+            width: 100%;
+        }
+    }
 </style>
