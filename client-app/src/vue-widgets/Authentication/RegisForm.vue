@@ -80,7 +80,6 @@ import { requestRegis } from '../../services/AuthService';
 <style scoped>
     #registration_form {
         display: flex;
-        width: 50vw;
         height: 100%;
         align-items: center;
         justify-content: center;

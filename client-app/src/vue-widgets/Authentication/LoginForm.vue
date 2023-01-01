@@ -1,7 +1,9 @@
 <script setup>
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { requestLogin } from '../../services/AuthService';
+import { useUIStore } from '../../stores/UIStore';
 
+    const UIStore = useUIStore()
     const store = useAuthStore()
 
     function switchToRegis() {
@@ -13,9 +15,12 @@ import { requestLogin } from '../../services/AuthService';
         if (store.Email == "dummy") {
             store.loggedIn = true
             store.dummyLogin = true
+            UIStore.showWorldmap()
             return
         }
         await requestLogin(store)
+
+        UIStore.showWorldmap()
     }
 </script>
 
@@ -40,7 +45,6 @@ import { requestLogin } from '../../services/AuthService';
 <style scoped>
     #login_form {
         display: flex;
-        width: 50vw;
         height: 100%;
         align-items: center;
         justify-content: center;

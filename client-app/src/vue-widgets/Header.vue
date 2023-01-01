@@ -13,7 +13,7 @@ import { useUIStore } from '../stores/UIStore';
 
     async function clickLogout(store) {
         LogOut(store)
-        UIStore.showWorldmap()
+        UIStore.showAuthentication()
     }
 
 </script>
@@ -22,10 +22,12 @@ import { useUIStore } from '../stores/UIStore';
     <div class="header">
         <h2 id="logged_out" v-if="!AuthStore.loggedIn">Logged Out {{"..."}}</h2>
         <h2 id="logged_in" v-if="AuthStore.loggedIn">Logged In as {{AuthStore.Email}}</h2>
-        <button id="play_now" @click="openAuthForm" v-if="(!UIStore.showingAuthentication)">
+        <button id="play_now" 
+            @click="openAuthForm" 
+            v-if="(!UIStore.showingAuthentication && !AuthStore.loggedIn)">
             jetzt spielen
         </button>
-        <button id="log_out" @click="clickLogout(AuthStore)">
+        <button id="log_out" v-if="AuthStore.loggedIn" @click="clickLogout(AuthStore)">
             ausloggen
         </button>
 
@@ -39,7 +41,8 @@ import { useUIStore } from '../stores/UIStore';
         justify-content: center;
         width: 100vw;
         height: 20vh;
-        background-color: rgb(22, 22, 22);
+        
+        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
 
         position: fixed;
         left: 0%;
@@ -56,13 +59,14 @@ import { useUIStore } from '../stores/UIStore';
     
     #logged_in, #logged_out {
         position: absolute;
+        right: 25vw;
+        top: 0%;
+
         color: white;
         text-shadow: 
             0px 0px 10px black,
             0px 0px 10px black,
             0px 0px 10px black;
-        right: 25vw;
-        top: 0%;
     } 
     
     #log_out {
