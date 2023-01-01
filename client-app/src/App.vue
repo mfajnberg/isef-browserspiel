@@ -21,10 +21,10 @@ import Imprint from './vue-widgets/Imprint.vue'
 </script>
 
 <template>
-    <div>
+    <div id="bg">
         <Header/>
         <div class="content">
-            <img src="border1.png" class="border" id="b4">
+            <img src="/border1.png" class="border" id="b4">
             <Authenticator v-if="UIStore.showingAuthentication"/>
             <AvatarCreator v-if="UIStore.showingAvatarCreator"/>
             <canvas canvas id="adventure-map" class="worldmap" v-show="UIStore.showingWorldmap"></canvas>
@@ -39,11 +39,7 @@ import Imprint from './vue-widgets/Imprint.vue'
         display: flex;
         width: 100vw;
         height: 75vh;
-        background-image: url("twilight_aegis.jpg");
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-position: center;
-        background-size: cover;
+
         position: absolute;
         left: 0%;
         top: 20vh;
@@ -69,5 +65,18 @@ import Imprint from './vue-widgets/Imprint.vue'
         z-index: 21;
     }
 
+#bg {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    left: 0;
+    top: 0;
+
+    background-image: url("twilight_aegis.jpg");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+}
 
 </style>

@@ -18,15 +18,19 @@ const UIStore = useUIStore()
 <style scoped>
     .footer {
         display: flex;
-        width: 100vw;
-        height: 5vh;
-        background-color: rgb(22, 22, 22);
-        position: absolute;
-        left: 0%;
-        bottom: 0%;
         justify-content: center;
         align-items: center;
         white-space: pre-wrap;
+        height: 5vh;
+        width: 100vw;
+
+        position: absolute;
+        left: 0%;
+        bottom: 0%;
+        
+        font-size: 14px;
+
+        background-color: rgb(22, 22, 22);
     }
     .item {
         color: grey;

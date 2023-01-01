@@ -17,13 +17,13 @@ import LoginForm from './LoginForm.vue'
 <style scoped>
     #content {
         display: flex;
-        width: 50vw;
-        height: 100%;
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        padding: 3em;
         background-color: rgba(0, 0, 0, 0.832);
         z-index: 19;
+        border-radius: 6px;
     }
     @media (max-width: 700px) {
         #content {
