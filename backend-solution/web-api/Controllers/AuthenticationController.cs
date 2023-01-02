@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
+using System.Text;
 using web_api.Services;
 
 namespace web_api.Controllers
@@ -9,10 +11,12 @@ namespace web_api.Controllers
     {
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
-        public AuthenticationController(DataContext context, IConfiguration configuration)
-        {
+        private readonly INotification _notification;
+        public AuthenticationController(DataContext context, IConfiguration configuration, INotification notification)
+            {
             _context = context;
             _configuration = configuration;
+            _notification = notification;
         }
 
         /// <summary>
@@ -38,6 +42,19 @@ namespace web_api.Controllers
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
+            // after saving the dataContext, the User-Id is automaticly set in the newUser-object
+            UserConfirmation userConfirmation = new UserConfirmation();
+            userConfirmation.UserId = newUser.Id;
+            _context.Confirmation.Add(userConfirmation);
+
+            await _context.SaveChangesAsync();
+
+            ConfirmationService confirmation = new ConfirmationService();
+            confirmation.Url = $"{Request.Scheme}://{Request.Host.Value}";
+            string messageText = confirmation.CreateNotificationMessage(userConfirmation);
+
+            _notification.SendTo(messageText, "Account bestätigen", newUser.Email);
+
             return Ok("Erfolgreich registriert als " + request.Email);
         }
 
@@ -54,6 +71,9 @@ namespace web_api.Controllers
             var user = _context.Users.Where(u => u.Email.ToLower() == request.Email.ToLower()).FirstOrDefault();
             if (user == null || !Authentication.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest("Wrong username or password");
+
+            if (!user.IsActive)
+                return BadRequest("User isn't confirmed yet");
 
             string accessToken = Authentication.CreateAccessToken(user, _configuration);
             var newRefreshToken = Authentication.GenerateRefreshToken(user);

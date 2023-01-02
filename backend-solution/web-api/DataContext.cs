@@ -12,5 +12,7 @@ namespace web_api
 
         public DbSet <User> Users { get; set; }
         public DbSet <CreatureBase> Avatars { get; set; }
+
+        public DbSet<UserConfirmation> Confirmation { get; set; }
     }
 }
