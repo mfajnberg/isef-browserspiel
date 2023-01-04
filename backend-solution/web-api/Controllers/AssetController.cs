@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using web_api.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace web_api.Controllers
 {
@@ -15,6 +13,7 @@ namespace web_api.Controllers
             _configuration = configuration;
         }
 
+        // authorize?
         [HttpGet("api/assets/hex-tile-glb")]
         public async Task<FileContentResult> GetHexTileGlb()
         {
