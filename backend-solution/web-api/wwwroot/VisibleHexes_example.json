@@ -1,0 +1,51 @@
+[
+        {
+            "Id": 3,
+            "Q": 0,
+            "R": 0,
+            "site-id": null,
+            "direction": "Origin"
+        },
+        {
+            "Id": 0,
+            "Q": 1,
+            "R": -1,
+            "site-id": null,
+            "direction": "NNWest"
+        },
+        {
+            "Id": 1,
+            "Q": 1,
+            "R": 0,
+            "site-id": null,
+            "direction": "NNEast"
+        },
+        {
+            "Id": 3,
+            "Q": 0,
+            "R": 1,
+            "site-id": null,
+            "direction": "East"
+        },
+        {
+            "Id": 5,
+            "Q": -1,
+            "R": 1,
+            "site-id": null,
+            "direction": "SSEast"
+        },
+        {
+            "Id": 4,
+            "Q": -1,
+            "R": 0,
+            "site-id": null,
+            "direction": "SSWest"
+        },
+        {
+            "Id": 2,
+            "Q": 0,
+            "R": -1,
+            "site-id": null,
+            "direction": "West"
+        }
+]
