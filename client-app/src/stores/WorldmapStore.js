@@ -31,9 +31,9 @@ export const useWorldmapStore = defineStore('WorldmapStore', {
             
         },
         
-        async loadHexTileModel() {
-            const response = await fetch("https://localhost:5001/static-assets/Hex_meter.glb")
-        },
+        // async loadHexTileModel() {
+        //     const response = await fetch("https://localhost:5001/static-assets/Hex_meter.glb")
+        // },
 
         updateHovered(item) {
             this.hoveredItem = item

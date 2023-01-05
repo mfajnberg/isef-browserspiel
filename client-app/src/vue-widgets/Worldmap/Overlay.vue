@@ -1,17 +1,20 @@
 <script setup>
 import { useUIStore } from '../../stores/UIStore.js'
-import { useWorldmapStore } from '../../stores/WorldmapStore.js'
+import { useGameAssetStore } from '../../stores/GameAssetStore.js'
 
     const UIStore = useUIStore()
-    const WorldmapStore = useWorldmapStore
+    const assetStore = useGameAssetStore()
 </script>
 
 
 <template>
-    <div id="">
+    <div>
         <div id="clock">
             {{UIStore.currentTime}}
         </div>
+        <button class="button_debug" @click="assetStore.loadModel()">
+            fetch asset
+        </button>
     </div>
 </template>
 
@@ -22,6 +25,13 @@ import { useWorldmapStore } from '../../stores/WorldmapStore.js'
     position: relative;
     top: 5%;
     font-family: monospace;
+    pointer-events: all;
+    user-select: none;
+}
+
+.button_debug{
+    position: relative;
+    top: 20vh;
     pointer-events: all;
 }
 
