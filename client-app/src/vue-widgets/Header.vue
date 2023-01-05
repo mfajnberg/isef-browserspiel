@@ -6,27 +6,48 @@ import { useUIStore } from '../stores/UIStore';
     const AuthStore = useAuthStore()
     const UIStore = useUIStore()
 
-    function openAuthForm() {
-        UIStore.showAuthentication()
-        AuthStore.showLoginForm()
+    function playNow() {
+        if (!AuthStore.loggedIn) {
+            UIStore.showAuthentication()
+            AuthStore.showLoginForm()
+        }
+        else {
+            UIStore.showWorldmap()
+        }
     }
 
-    async function clickLogout(store) {
+    function clickLogout(store) {
         LogOut(store)
-        UIStore.showAuthentication()
+        UIStore.showHome()
+        UIStore.styleHeaderLobby()
+    }
+    
+    function clickHome() {
+        UIStore.showHome()
+        AuthStore.hideRegisForm()
+        AuthStore.hideLoginForm()
+        UIStore.styleHeaderLobby()
     }
 
 </script>
 
 <template>
-    <div class="header">
-        <h2 id="logged_out" v-if="!AuthStore.loggedIn">Logged Out {{"..."}}</h2>
-        <h2 id="logged_in" v-if="AuthStore.loggedIn">Logged In as {{AuthStore.Email}}</h2>
+    <div id="header">
+        <h3 id="logged_in" v-if="AuthStore.loggedIn">
+            Logged In as {{AuthStore.Email}}
+        </h3>
+        
         <button id="play_now" 
-            @click="openAuthForm" 
-            v-if="(!UIStore.showingAuthentication && !AuthStore.loggedIn)">
+            @click="playNow" 
+            v-if="(!AuthStore.loggedIn && !UIStore.showingAuthentication || 
+                    AuthStore.loggedIn && !UIStore.showingWorldmap)">
             jetzt spielen
         </button>
+
+        <button id="home" @click="clickHome()">
+            home
+        </button>
+
         <button id="log_out" v-if="AuthStore.loggedIn" @click="clickLogout(AuthStore)">
             ausloggen
         </button>
@@ -35,14 +56,14 @@ import { useUIStore } from '../stores/UIStore';
 </template>
 
 <style scoped>
-    .header {
+    #header {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100vw;
         height: 20vh;
         
-        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        background: rgba(0,0,0,0);
 
         position: fixed;
         left: 0%;
@@ -52,12 +73,19 @@ import { useUIStore } from '../stores/UIStore';
     }
 
 
+    #home {
+        position: absolute;
+        left: 25vw;
+        top: 10vh;
+        color: white;
+    }
+
     #play_now {
         position: absolute;
         top: 10vh;
     }
-    
-    #logged_in, #logged_out {
+
+    #logged_in {
         position: absolute;
         right: 25vw;
         top: 0%;
@@ -77,8 +105,11 @@ import { useUIStore } from '../stores/UIStore';
         right: 25vw;
     }    
 @media (max-width: 700px) {
-    #log_out, #logged_out, #logged_in {
+    #log_out, #logged_in {
         right: 0%;
+    }
+    #home {
+        left: 0%;
     }
 }   
 </style>

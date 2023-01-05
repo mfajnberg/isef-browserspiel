@@ -48,8 +48,10 @@ h1 {
 
 button {
   display: flex;
-  border-radius: 8px;
+  border-radius: 1px;
   border: 1px solid transparent;
+  margin-top: 16px;
+  margin-bottom: 10px;
   padding: clamp(1vh, 2vh, 3vh) clamp(1vh, 2vh, 3vh);
   font-size: 1em;
   line-height: 0;
@@ -57,7 +59,7 @@ button {
   font-family: inherit;
   font-style: italic;
   color: rgb(0, 255, 0);
-  background-color: #32000048;
+  background-color: #36221264;
   cursor: pointer;
   transition: border-color 0.25s;
 }
