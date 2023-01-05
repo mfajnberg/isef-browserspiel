@@ -13,7 +13,7 @@ namespace web_api.Controllers
         private readonly IConfiguration _configuration;
         private readonly INotification _notification;
         public AuthenticationController(DataContext context, IConfiguration configuration, INotification notification)
-            {
+        {
             _context = context;
             _configuration = configuration;
             _notification = notification;
@@ -29,10 +29,13 @@ namespace web_api.Controllers
         [HttpPost("api/user/register")]
         public async Task<ActionResult<string>> Register([FromBody] UserDto request)
         {
+
             // email-addresses are not case sensitive, so the test must ignore case sensitivity
             var user = _context.Users.Where(u => u.Email.ToLower() == request.Email.ToLower()).FirstOrDefault();
             if (user != null)
+            {
                 return Conflict("Ein Konto mit dieser E-Mail-Adresse existiert bereits");
+            }
 
             Authentication.CreatePasswordHash(request.Password, out byte[] pwdHash, out byte[] pwdSalt);
 
@@ -53,7 +56,7 @@ namespace web_api.Controllers
             confirmation.Url = $"{Request.Scheme}://{Request.Host.Value}";
             string messageText = confirmation.CreateNotificationMessage(userConfirmation);
 
-            _notification.SendTo(messageText, "Account bestätigen", newUser.Email);
+            await _notification.SendToAsync(messageText, "Account bestätigen", newUser.Email);
 
             return Ok("Erfolgreich registriert als " + request.Email);
         }

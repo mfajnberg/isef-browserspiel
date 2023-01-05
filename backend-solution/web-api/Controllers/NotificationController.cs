@@ -18,7 +18,7 @@ namespace web_api.Controllers
         [HttpPost("api/notification/sendto")]
         public async Task<ActionResult<string>> SendTo([FromBody] UserDto request)
         {
-            _notification.SendTo("Hallo Welt", "Test - Nachricht", "stephan@ranger8.de");
+            await _notification.SendToAsync("Hallo Welt", "Test - Nachricht", request.Email);
             return Ok("test");
         }
 

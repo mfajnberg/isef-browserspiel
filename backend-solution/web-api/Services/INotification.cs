@@ -2,6 +2,6 @@
 {
     public interface INotification
     {
-        void SendTo(string message, string subject, string to);
+        Task<bool> SendToAsync(string message, string subject, string to);
     }
 }
