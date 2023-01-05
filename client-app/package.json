@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "luxon": "^3.2.1",
     "pinia": "^2.0.27",
     "three": "^0.147.0",
     "vue": "^3.2.41"

@@ -9,6 +9,7 @@ import Footer from './vue-widgets/Footer.vue'
 import Authenticator from './vue-widgets/Authentication/Authenticator.vue'
 import AvatarCreator from './vue-widgets/AvatarCreation/AvatarCreator.vue'
 import Imprint from './vue-widgets/Imprint.vue'
+import Overlay from './vue-widgets/Worldmap/Overlay.vue'
 
     const AuthStore = useAuthStore()
     const UIStore = useUIStore()
@@ -24,11 +25,12 @@ import Imprint from './vue-widgets/Imprint.vue'
     <div id="bg">
         <Header/>
         <div class="content">
-            <img src="/border1.png" class="border" id="b4">
+            <!-- <img src="/border1.png" class="border" id="b4"> -->
             <Authenticator v-if="UIStore.showingAuthentication"/>
             <AvatarCreator v-if="UIStore.showingAvatarCreator"/>
             <canvas canvas id="adventure-map" class="worldmap" v-show="UIStore.showingWorldmap"></canvas>
             <Imprint v-if="UIStore.showingImprint"/>
+            <Overlay v-if="UIStore.showingWorldmap" id="overlay"/>
         </div>
         <Footer/>
     </div>
@@ -55,14 +57,22 @@ import Imprint from './vue-widgets/Imprint.vue'
   flex-direction: row;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.851);
-  z-index: 100;
+  z-index: 10;
 }
 
+#overlay {
+    height: 100%;
+    width: 100%;
+    z-index: 11;
+    pointer-events:none;
+}
 
 .border {
         position:fixed;
         top: 18vh;
         z-index: 21;
+        user-select: none;
+        -webkit-touch-callout: none
     }
 
 #bg {

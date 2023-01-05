@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { useWorldmapStore } from '../stores/WorldmapStore'
+import { useUIStore } from '../stores/UIStore'
 import { initRenderer } from './Renderer'
 import { initLights } from './Lights'
 import { initCameraPawn as initCameraPawn } from './Camera'
@@ -18,6 +19,7 @@ export async function init(canvasDomId) {
   lights = initLights(scene)
   cameraPawn = initCameraPawn(renderer, scene, piniaStore)
   initActors(scene, piniaStore) 
+  var clockStore = useUIStore()
 
   /* dev help */
   /* const AH = new THREE.AxesHelper(100000)
@@ -33,7 +35,7 @@ export async function init(canvasDomId) {
 
   function run() {
     requestAnimationFrame( run )
- 
+    clockStore.getCurrentTime()
     try { 
       piniaStore.THREE_sites[0].rotation.y += (0.001 * piniaStore.count * piniaStore.count) 
     } catch(e){}
