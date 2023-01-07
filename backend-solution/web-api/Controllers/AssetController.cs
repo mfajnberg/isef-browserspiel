@@ -14,7 +14,7 @@ namespace web_api.Controllers
         }
 
         // authorize?
-        [HttpGet("api/assets/hex-tile-glb")]
+        [HttpGet("model")]
         public async Task<FileContentResult> GetHexTileGlb()
         {
             var myfile = System.IO.File.ReadAllBytes(
