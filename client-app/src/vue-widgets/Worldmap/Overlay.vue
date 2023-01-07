@@ -1,9 +1,9 @@
 <script setup>
 import { useUIStore } from '../../stores/UIStore.js'
-import { useWorldmapStore } from '../../stores/WorldmapStore.js'
+import { useGameAssetStore } from '../../stores/GameAssetStore.js'
 
     const UIStore = useUIStore()
-    const worldmapStore = useWorldmapStore()
+    const assetStore = useGameAssetStore()
 </script>
 
 
@@ -12,20 +12,8 @@ import { useWorldmapStore } from '../../stores/WorldmapStore.js'
         <div id="clock">
             {{UIStore.currentTime}}
         </div>
-        <div id="hex_info">
-            {{worldmapStore.hoveredItemName}}
-        </div>
-        <button class="button_debug" @click="">
+        <button class="button_debug" @click="assetStore.loadModel()">
             debug fn1
-        </button>
-        <button class="button_debug" @click="">
-            debug fn2
-        </button>
-        <button class="button_debug" @click="">
-            debug fn3
-        </button>
-        <button class="button_debug" @click="">
-            debug fn4
         </button>
     </div>
 </template>
@@ -38,15 +26,6 @@ import { useWorldmapStore } from '../../stores/WorldmapStore.js'
     top: 5%;
     font-family: monospace;
     pointer-events: all;
-    user-select: none;
-}
-
-#hex_info {
-    padding-bottom: 5px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
     user-select: none;
 }
 

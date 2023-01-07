@@ -40,12 +40,10 @@ export async function init(canvasDomId) {
     requestAnimationFrame( run )
     clockStore.getCurrentTime()
     try { 
-      worldStore.sites[0].rotation.y += (0.01) 
-      worldStore.sites[0].rotation.x += (0.0025) 
-      worldStore.sites[0].rotation.z += (0.0025) 
+      worldStore.THREE_sites[0].rotation.y += (0.001 * worldStore.count * worldStore.count) 
     } catch(e){}
 
-    // cameraPawn.orbit.update()
+    cameraPawn.orbit.update()
     renderer.render( scene, cameraPawn.camera )
   }
   run()
