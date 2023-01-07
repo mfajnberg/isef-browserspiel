@@ -3,19 +3,26 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 import { HexVector } from './classes/HexVector'
 
-export async function initActors(scene, store) {
+export async function initActors(scene, worldStore, assetStore) {
     const _gltfLoader = new GLTFLoader()
-    await store.loadVisibleHexTiles()
-    const visible = store.getHexes
-    console.log(visible)
+
+    // dummy data
+    await worldStore.loadVisibleHexTiles()
+    const visible = worldStore.getHexes
+    await assetStore.loadModel()
+
+    console.log(assetStore.getHexModel)
+
     for (let i = 0; i < visible.length; i++) {
-        initHex(_gltfLoader, scene, store, visible[i])
+        initHex(_gltfLoader, scene, worldStore, assetStore, visible[i])
     }
-    initHelmetExample(_gltfLoader, scene, store)
+
+    initHelmetExample(_gltfLoader, scene, worldStore)
 }
 
-function initHex(loader, scene, store, hexData) {
-    loader.load('Hex_meter.glb', (loadedHex => {
+function initHex(loader, scene, worldStore, assetStore, hexData) {
+    loader.parse(assetStore.getHexModel, '', (loadedHex) => {
+        console.log(loadedHex)
         loadedHex.scene.traverse((child) => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
@@ -29,9 +36,9 @@ function initHex(loader, scene, store, hexData) {
         var hexVector = new HexVector(hexData.Q, hexData.R)
         loadedHex.scene.translateX(hexVector.WorldX)
         loadedHex.scene.translateZ(hexVector.WorldY)
-        store.THREE_hexGrid.push(loadedHex.scene)
+        worldStore.THREE_hexGrid.push(loadedHex.scene)
         scene.add(loadedHex.scene)
-    }))
+    })
 }
 
 function initHelmetExample(loader, scene, store) {

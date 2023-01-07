@@ -13,7 +13,7 @@ import { useGameAssetStore } from '../../stores/GameAssetStore.js'
             {{UIStore.currentTime}}
         </div>
         <button class="button_debug" @click="assetStore.loadModel()">
-            fetch asset
+            debug fn1
         </button>
     </div>
 </template>

@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { useWorldmapStore } from '../stores/WorldmapStore'
+import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
 import { initRenderer } from './Renderer'
 import { initLights } from './Lights'
@@ -10,16 +11,18 @@ import { initActors } from './InitActors'
 export async function init(canvasDomId) {
 
   /* setup */
-  var piniaStore, canvas, renderer, scene, lights, cameraPawn, cameraPawn
-  piniaStore = useWorldmapStore()
+  var worldStore = useWorldmapStore()
+  var assetStore = useGameAssetStore()
+  var clockStore = useUIStore()
+  var canvas, renderer, scene, lights, cameraPawn, cameraPawn
   canvas = document.getElementById(canvasDomId)
   renderer = initRenderer(canvas)
   renderer.setSize( window.innerWidth, window.innerHeight * .75 );
   scene = new THREE.Scene()
   lights = initLights(scene)
-  cameraPawn = initCameraPawn(renderer, scene, piniaStore)
-  initActors(scene, piniaStore) 
-  var clockStore = useUIStore()
+  cameraPawn = initCameraPawn(renderer, scene, worldStore)
+  
+  initActors(scene, worldStore, assetStore) 
 
   /* dev help */
   /* const AH = new THREE.AxesHelper(100000)
@@ -37,7 +40,7 @@ export async function init(canvasDomId) {
     requestAnimationFrame( run )
     clockStore.getCurrentTime()
     try { 
-      piniaStore.THREE_sites[0].rotation.y += (0.001 * piniaStore.count * piniaStore.count) 
+      worldStore.THREE_sites[0].rotation.y += (0.001 * worldStore.count * worldStore.count) 
     } catch(e){}
 
     cameraPawn.orbit.update()

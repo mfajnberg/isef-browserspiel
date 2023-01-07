@@ -3,14 +3,18 @@ import { defineStore } from 'pinia'
 export const useGameAssetStore = defineStore('GameAssetStore', {
     id: 'GameAssetStore',
     state: () => ({
-        HexTileModel: null
+        HexModel: null
     }),
     getters: {
+        getHexModel: (state) => state.HexModel,
     },
     actions: {
-        loadModel() {
-            fetch("/api/static-assets/hex-tile-glb")
-            .then((response) => console.log(response))
+        async loadModel() {
+            await fetch("/model")
+            .then((response) => response.arrayBuffer())
+            .then(arrayBuffer => {
+                this.HexModel = arrayBuffer
+            })
         },
     },
 })

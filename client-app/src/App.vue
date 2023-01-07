@@ -26,7 +26,7 @@ import Overlay from './vue-widgets/Worldmap/Overlay.vue'
         <Header/>
         <div class="content">
             <!-- <img src="/border1.png" class="border" id="b4"> -->
-            <Authenticator v-if="UIStore.showingAuthentication"/>
+            <Authenticator v-show="UIStore.showingAuthentication"/>
             <AvatarCreator v-if="UIStore.showingAvatarCreator"/>
             <canvas canvas id="adventure-map" class="worldmap" v-show="UIStore.showingWorldmap"></canvas>
             <Imprint v-if="UIStore.showingImprint"/>
