@@ -86,6 +86,9 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));*/
 });
 
+builder.Services.AddHostedService<InteractionClock>();
+
+
 var app = builder.Build();
 
 // run db migrations automaticly on startup
