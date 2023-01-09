@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '../../stores/AuthStore.js'
 
 import RegistrationForm from './RegisForm.vue'
@@ -57,7 +58,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div id="content">
+    <div id="content" ref="draggableElement">
         <RegistrationForm v-if="AuthStore.showingRegisForm"/>  
         <LoginForm v-if="AuthStore.showingLoginForm"/>  
     </div>
@@ -96,4 +97,5 @@ onMounted(() => {
             width: 100%;
         }
     }
+}
 </style>

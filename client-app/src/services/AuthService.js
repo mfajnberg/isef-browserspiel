@@ -60,14 +60,20 @@ export async function requestRegis(store) {
             Password: store.Password
         })
     }
-    const response = await fetch("/api/user/register", options)
-    console.log(response.text())
+    await fetch("/api/user/register", options)
+    .then((response) => {
+        store.authResponse = response
+    })
+    
 }
 
 export function LogOut(store) {
     store.token = ""
     store.Email = ""
     store.Password = ""
+    store.emailValid = false
+    store.pwdValid = false
+    store.repeatValid = false
     localStorage.removeItem('token')
     localStorage.removeItem('Email')
     store.loggedIn = false

@@ -1,9 +1,7 @@
 <script setup>
 import { useUIStore } from '../../stores/UIStore.js'
-import { useGameAssetStore } from '../../stores/GameAssetStore.js'
 
     const UIStore = useUIStore()
-    const assetStore = useGameAssetStore()
 </script>
 
 
@@ -12,8 +10,17 @@ import { useGameAssetStore } from '../../stores/GameAssetStore.js'
         <div id="clock">
             {{UIStore.currentTime}}
         </div>
-        <button class="button_debug" @click="assetStore.loadModel()">
-            fetch asset
+        <button class="button_debug" @click="">
+            debug fn1
+        </button>
+        <button class="button_debug" @click="">
+            debug fn2
+        </button>
+        <button class="button_debug" @click="">
+            debug fn3
+        </button>
+        <button class="button_debug" @click="">
+            debug fn4
         </button>
     </div>
 </template>

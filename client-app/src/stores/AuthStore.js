@@ -21,8 +21,13 @@ export const useAuthStore = defineStore('AuthStore', {
 
         emailValid: false,
         pwdValid: false,
-        pwdRepeat: false,
+        repeatValid: false,
 
+        // between 6 to 20 chars, at least one numeric, uppercase & lowercase
+        validPwdPattern:  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/,
+        validEmailPattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+
+        authResponse: ""
     }),
     actions: {
 
@@ -40,6 +45,28 @@ export const useAuthStore = defineStore('AuthStore', {
         },
         hideLoginForm() {
             this.showingLoginForm = false
+        },
+        
+        updateValidation() {
+            if (this.Email.match(this.validEmailPattern)) {
+                this.emailValid = true
+            }
+            else {
+                this.emailValid = false
+            }
+            if (this.Password.match(this.validPwdPattern)) {
+                this.pwdValid = true
+            }
+            else { // not valid
+                this.pwdValid = false
+            }
+            if (this.Password == this.repeatedPassword && this.Password != "") {
+                this.repeatValid = true
+            }
+            else { // no repeat
+                this.repeatValid = false
+            }
         }
+
     },
 })
