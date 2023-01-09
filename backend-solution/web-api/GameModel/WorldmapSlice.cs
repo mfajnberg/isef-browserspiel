@@ -3,7 +3,7 @@
     public class WorldmapSlice
     {
         public int RootSize { get; set; }
-        public List<HexTile> TileGrid { get; set; }
+        public List<HexTile> HexGrid { get; set; }
 
         internal void LoadTiles() 
         {
