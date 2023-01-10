@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { useUIStore } from '../../stores/UIStore.js'
 import { requestRegis } from '../../services/AuthService';
 
     const authStore = useAuthStore()
     const UIStore = useUIStore()
+    var pwdFocused = ref(false)
 
     function switchToLogin() {
         authStore.hideRegisForm()
@@ -41,21 +42,21 @@ import { requestRegis } from '../../services/AuthService';
             <label>E-Mail Adresse</label>
             <input @input="authStore.updateValidation()" v-model="authStore.Email" type="text" id="email_address"/> 
             <span v-if="authStore.emailValid" class="valid_input"> ✔ </span>
-            <span v-if="!authStore.emailValid" class="invalid_input"> keine valide E-Mail Adresse </span>
+            <span v-if="!authStore.emailValid" class="invalid_input">⠀</span>
         </div>
         
         <div class="item password">     
             <label> Passwort </label>
-            <input @input="authStore.updateValidation()" v-model="authStore.Password" type="password" id="password"/>
+            <input @focusin="pwdFocused = true" @focusout="pwdFocused = false" @input="authStore.updateValidation()" v-model="authStore.Password" type="password" id="password"/>
             <span v-if="authStore.pwdValid" class="valid_input"> ✔ </span>
-            <span v-if="!authStore.pwdValid" class="invalid_input"> 6-20 Zeichen, mind. 1x Zahl, Groß- & Kleinbuchstabe </span>
+            <span v-if="!authStore.pwdValid && !pwdFocused" class="valid_input"> ⠀ </span>
+            <span v-if="!authStore.pwdValid && pwdFocused" class="invalid_input"> 6-20 Zeichen, mind. 1x Zahl, Groß- & Kleinbuchstabe </span>
         </div>
         
         <div class="item repeat">
             <label> Passwort wiederholen </label>
             <input @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password"/>
-            <span v-if="authStore.repeatValid" class="valid_input"> ✔ </span>
-            <span v-if="!authStore.repeatValid" class="invalid_input"> !!! </span>
+            <span class="valid_input">⠀</span>
         </div>
     </div>
     <button v-on:click="tryRequestRegis()">
@@ -88,10 +89,12 @@ import { requestRegis } from '../../services/AuthService';
         text-align: left;
         color: red;
         font-size: x-small;
+        user-select: none;
     }
     .valid_input {
         text-align: left;
         color:rgb(0, 255, 0);
         font-size: x-small;
+        user-select: none;
     }
 </style>
