@@ -5,6 +5,7 @@ using web_api.GameModel;
 
 namespace web_api.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
     public class AdminWorldController : ControllerBase
     {
@@ -17,22 +18,22 @@ namespace web_api.Controllers
             _worldManager = new DemoWorldManager();
         }
 
+        [Authorize]
         [HttpPost]
-        [Route("api/admin/world/init")]
-        public async Task<ActionResult> InitWorld(List<HexTileDto> worldGenData)
+        public async Task<ActionResult> InitWorld()
         {
-            bool success = await _worldManager.InitWorld(_context, worldGenData);
-            if (!success)
-            {
-                return BadRequest("no");
-            }
-            return Ok("yes");
+            _worldManager.InitObstacles(_context);
+            _worldManager.InitSettlements(_context);
+            _worldManager.InitPerils(_context);
+
+            return Ok();
         }
 
+        [Authorize]
         [HttpDelete]
-        [Route("api/admin/user/delete")]
         public async Task<ActionResult> DeleteUser()
         {
+
             return Ok();
         }
     }
