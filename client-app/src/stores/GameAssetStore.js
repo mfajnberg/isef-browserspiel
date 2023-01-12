@@ -10,7 +10,8 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
     },
     actions: {
         async loadModel() {
-            await fetch("/model")
+            // await fetch("/model")
+            await fetch("Hex_meter.glb")
             .then((response) => response.arrayBuffer())
             .then(arrayBuffer => {
                 this.HexModel = arrayBuffer

@@ -43,7 +43,7 @@ export async function init(canvasDomId) {
       worldStore.THREE_sites[0].rotation.y += (0.001 * worldStore.count * worldStore.count) 
     } catch(e){}
 
-    cameraPawn.orbit.update()
+    // cameraPawn.orbit.update()
     renderer.render( scene, cameraPawn.camera )
   }
   run()
