@@ -13,7 +13,7 @@ import { useWorldmapStore } from '../../stores/WorldmapStore.js'
             {{UIStore.currentTime}}
         </div>
         <div id="hex_info">
-            {{worldmapStore.hoveredItem}}
+            {{worldmapStore.hoveredItemName}}
         </div>
         <button class="button_debug" @click="">
             debug fn1
@@ -42,6 +42,7 @@ import { useWorldmapStore } from '../../stores/WorldmapStore.js'
 }
 
 #hex_info {
+    padding-bottom: 5px;
     position: absolute;
     left: 0;
     right: 0;

@@ -36,7 +36,7 @@ function initHex(loader, scene, worldStore, assetStore, hexData) {
         var hexVector = new HexVector(hexData.Q, hexData.R)
         loadedHex.scene.translateX(hexVector.WorldX)
         loadedHex.scene.translateZ(hexVector.WorldY)
-        worldStore.THREE_hexGrid.push(loadedHex.scene)
+        worldStore.hexTiles.push(loadedHex)
         scene.add(loadedHex.scene)
     })
 }
@@ -55,11 +55,11 @@ function initHelmetExample(loader, scene, store) {
             child.castShadow = true
             }
         })
-        loadedHelmet.scene.translateY(25)
+        loadedHelmet.scene.translateY(40)
         loadedHelmet.scene.scale.set(80,80,80)
         loadedHelmet.scene.name = "Helm"
         
-        store.THREE_sites.push(loadedHelmet.scene)
+        store.sites.push(loadedHelmet)
         scene.add(loadedHelmet.scene)
     }))
 }
