@@ -82,8 +82,8 @@ builder.Services.AddSwaggerGen(options =>
     // jwt-token must be entered in authorize dialog as "bearer **key**"
 
     // using System.Reflection;
-    /*var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));*/
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddHostedService<InteractionClock>();

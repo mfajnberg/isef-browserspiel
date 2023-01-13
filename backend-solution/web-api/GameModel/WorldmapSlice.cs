@@ -16,7 +16,7 @@
             List<HexTile> processed = new List<HexTile>();
 
             toSearch.Add(start);
-
+            
             while (toSearch.Count != 0)
             {
                 HexTile candidate = toSearch[0];
