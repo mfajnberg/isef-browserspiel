@@ -16,27 +16,29 @@ export function initCameraPawn(renderer, scene, store) {
     var intersects
 
     window.addEventListener('click', () => {
-        
+        var object = store.hoveredItem
+        if (object) {
+            var worldPos = new THREE.Vector3();
+            worldPos.setFromMatrixPosition( object.matrixWorld );
+            store.sites[0].scene.position.set(worldPos.x,worldPos.y+40,worldPos.z)
+        }         
     })
 
     window.addEventListener('mousemove', (event) => {
         _pointer.x = (event.clientX/window.innerWidth) * 2 - 1
         _pointer.y = - (event.offsetY/renderer.domElement.height) * 2 + 1
-        console.log("clientX: " + event.clientX)
-        console.log("offsetX: " + event.offsetX)
-        console.log("clientY: " + event.clientY)
-        console.log("offsetY: " + event.offsetY)
+
         _raycaster.setFromCamera(_pointer, _camera)
-        intersects = _raycaster.intersectObjects(scene.children)
+        intersects = _raycaster.intersectObjects(
+            store.hexTiles.map(tile => {return tile.scene}))
         
         if(intersects.length > 0) {
             const thing = intersects[0].object
-            // if (thing.parent.name == "") { console.log(thing.name) } // axes helper
-            // else { 
-            store.updateHovered(thing.parent.name) } // regular stuff
+            store.updateHovered(thing) 
+        }
         // }
         else {
-            store.updateHovered("")
+            store.updateHovered(null)
         }
     })
 
