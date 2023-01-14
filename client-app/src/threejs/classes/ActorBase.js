@@ -1,5 +1,7 @@
 export class ActorBase {
-    constructor(WorldHexVector, modelURI) {
+    constructor(object3d) {
+        this.object3d = object3d;
+        this.axial = worldHexVector
     }
 
     leftClick() {
@@ -8,6 +10,17 @@ export class ActorBase {
     rightClick() {
     }
 
-    updateWorldLocation(newX, newY) {
+    moveAbsGrid(hexVector) {
+        // ...
+        this.axial = hexVector
+    }
+
+    moveAbsWorld(x, y, z) {
+    }
+
+    moveRelGrid(hexVector) {
+    }
+
+    moveRelWorld(x, y, z) {
     }
 }

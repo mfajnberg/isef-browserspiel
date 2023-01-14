@@ -35,7 +35,7 @@ export const useWorldmapStore = defineStore('WorldmapStore', {
                 return
             }
             this.hoveredItem = null
-            this.hoveredItemName = ""
+            this.hoveredItemName = "⠀"
         }
 
     },

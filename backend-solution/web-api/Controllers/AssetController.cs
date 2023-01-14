@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace web_api.Controllers
 {
@@ -29,13 +30,18 @@ namespace web_api.Controllers
         }
 
         // authorize?
-        [HttpGet("model")]
-        public async Task<FileContentResult> GetTestGlb(string name)
+        [HttpGet("glb")]
+        public async Task<IActionResult> GetGlbByName(string name)
         {
-            var myfile = System.IO.File.ReadAllBytes(
-                Path.Combine(_assetPath, "Hex_meter.glb"));
-
-            return new FileContentResult(myfile, "application/octet-stream");
+            try
+            {
+                var glb = System.IO.File.ReadAllBytes(Path.Combine(_assetPath, name));
+                return new FileContentResult(glb, "application/octet-stream");
+            }
+            catch (Exception ex) 
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
