@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useWorldmapStore } from '../stores/WorldmapStore'
+import { useWorldStore } from '../stores/WorldStore'
 import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
 import { initRenderer } from './Renderer'
@@ -11,7 +11,7 @@ import { initActors } from './InitActors'
 export async function init(canvasDomId) {
 
   /* setup */
-  var worldStore = useWorldmapStore()
+  var worldStore = useWorldStore()
   var assetStore = useGameAssetStore()
   var clockStore = useUIStore()
   var canvas, renderer, scene, lights, cameraPawn, cameraPawn

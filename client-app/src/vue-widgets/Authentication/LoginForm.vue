@@ -19,8 +19,9 @@ import { useUIStore } from '../../stores/UIStore';
             return
         }
         await requestLogin(store)
-
         UIStore.showWorldmap()
+        
+
     }
 </script>
 
