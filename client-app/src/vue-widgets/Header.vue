@@ -19,14 +19,12 @@ import { useUIStore } from '../stores/UIStore';
     function clickLogout(store) {
         LogOut(store)
         UIStore.showHome()
-        UIStore.styleHeaderLobby()
     }
     
     function clickHome() {
         UIStore.showHome()
         AuthStore.hideRegisForm()
         AuthStore.hideLoginForm()
-        UIStore.styleHeaderLobby()
     }
 
 </script>
@@ -39,8 +37,7 @@ import { useUIStore } from '../stores/UIStore';
         
         <button id="play_now" 
             @click="playNow" 
-            v-if="(!AuthStore.loggedIn && !UIStore.showingAuthentication || 
-                    AuthStore.loggedIn && !UIStore.showingWorldmap)">
+            v-if="!UIStore.showingAuthentication && !UIStore.showingWorldmap">
             jetzt spielen
         </button>
 

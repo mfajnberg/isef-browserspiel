@@ -1,7 +1,4 @@
 <script setup>
-import { useCreateAvatarStore } from '../../stores/CreateAvatarStore';
-
-    const store = useCreateAvatarStore()
 
 </script>
 

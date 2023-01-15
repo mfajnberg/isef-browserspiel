@@ -55,12 +55,13 @@ import Overlay from './vue-widgets/Worldmap/Overlay.vue'
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  position: absolute;
+  position: relative;
   background-color: rgba(0, 0, 0, 0.851);
   z-index: 10;
 }
 
 #overlay {
+    position: absolute;
     height: 100%;
     width: 100%;
     z-index: 11;

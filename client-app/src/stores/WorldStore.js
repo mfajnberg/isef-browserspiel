@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia' 
 
-export const useWorldmapStore = defineStore('WorldmapStore', {
-    id: 'WorldmapStore',
+export const useWorldStore = defineStore('WorldStore', {
+    id: 'WorldStore',
     state: () => ({
         visibleHexData: {},
         hexTiles: [],

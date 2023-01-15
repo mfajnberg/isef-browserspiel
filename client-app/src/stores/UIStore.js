@@ -35,21 +35,21 @@ export const useUIStore = defineStore('UIStore', {
             var header = document.getElementById("header")
             header.style.background = "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)"       
         },
-        styleHeaderLobby() {
-            var header = document.getElementById("header")
-            header.style.background = "rgba(0,0,0,0)"
-        },
         showImprint() {
             this.showingAuthentication = false
             this.showingAvatarCreator = false
             this.showingWorldmap = false
             this.showingImprint = true
+            var header = document.getElementById("header")
+            header.style.background = "rgba(0,0,0,0)"
         },
         showHome() {
             this.showingAuthentication = false
             this.showingAvatarCreator = false
             this.showingWorldmap = false
             this.showingImprint = false
+            var header = document.getElementById("header")
+            header.style.background = "rgba(0,0,0,0)"
         },
     },
 })
