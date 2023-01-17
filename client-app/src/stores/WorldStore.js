@@ -1,37 +1,34 @@
 import { defineStore } from 'pinia' 
+import { HexVector } from '../threejs/classes/HexVector'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
     state: () => ({
-        visibleHexData: {},
-        hexTiles: [],
-        sites: [],
+        worldmap: null,
 
-        hoveredItem: {},
+        intersectables: [],
+        hoveredItem: null,
         hoveredItemName: "",
     }),
     getters: {
-        someGetter: (state) => state.count,
-        getHexes: (state) => JSON.parse(JSON.stringify(state.visibleHexData))
+        getHexes: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
+        getIntersectables: (state) => state.intersectables
     },
     actions: {
         async loadVisibleHexTiles() {
                 // dummy data:
                 const response = await (await fetch("VisibleHexes_example.json")).json()
-                this.visibleHexData = response
-                
-                // // real data:
-                // const response = await fetch("https://localhost:5001/getVisibleHexes")
-                // const json = await response.json()
-                // console.log(json)
-                // this.visibleHexData = json
-            
+                this.visibleHexData = response          
         },
         updateHovered(item) {
             if (item)
             {
-                this.hoveredItem = item
-                this.hoveredItemName = item.parent.name
+                let axial = item.parent.name.split("|")
+                let q = parseInt(axial[0])
+                let r = parseInt(axial[1])
+                let vec = new HexVector(q, r)
+                this.hoveredItem = this.worldmap.findHex(vec)
+                this.hoveredItemName = this.hoveredItem.object3d.scene.name
                 return
             }
             this.hoveredItem = null

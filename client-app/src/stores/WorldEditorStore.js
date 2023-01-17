@@ -4,8 +4,7 @@ export const useWorldEditorStore = defineStore('WorldEditorStore', {
     id: 'WorldEditorStore',
     state: () => ({
         // current layout
-        hexGrid: null, // Map(hexVector, hexTile)
-        sites: null,
+        worldmap: null,
 
         // input & HUD
         hoveredHex: null, // hexTile
@@ -22,7 +21,7 @@ export const useWorldEditorStore = defineStore('WorldEditorStore', {
         },
 
         initializeGridEmpty(radius) {
-            // fill hexGrid Map
+            this.worldmap.generateMap()
         },
 
         save(layout, name) {

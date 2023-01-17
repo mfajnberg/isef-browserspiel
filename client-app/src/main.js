@@ -4,11 +4,12 @@ import { createPinia } from 'pinia'
 import './style.css'
 
 import App from './App.vue'
-import { init } from './threejs/Worldmap'
+import { init } from './threejs/3dWorldScript'
 
 
-const pinia = createPinia()
 const app = createApp(App)
+const pinia = createPinia()
+
 app.use(pinia)
 app.mount('#app')
-init("adventure-map")
+init("adventure_map")
