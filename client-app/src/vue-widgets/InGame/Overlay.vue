@@ -43,9 +43,10 @@ import { useWorldStore } from '../../stores/WorldStore.js'
 }
 
 #clock {
-    position: absolute;
+    grid-row: 1;
+    grid-column: 4 / 6;
     align-self:flex-start;
-    justify-self:center;
+    justify-self: center;
 
     font-family: monospace;
     user-select: none;
@@ -57,8 +58,8 @@ import { useWorldStore } from '../../stores/WorldStore.js'
 } #portrait {
     width: 6vw;
     height: 6vw;
-    min-width: 100px;
-    min-height: 100px;
+    /* min-width: 100px;
+    min-height: 100px; */
 
     user-select: none;
     pointer-events: all;
@@ -69,8 +70,7 @@ import { useWorldStore } from '../../stores/WorldStore.js'
     grid-row: 4 / 6;
     grid-column: 2/4;
     display: flex;
-}
-.b_slot {
+} .b_slot {
     align-self: center;
     margin: 1vw;
 
@@ -78,12 +78,17 @@ import { useWorldStore } from '../../stores/WorldStore.js'
     pointer-events: all;
     user-select: none;
 }
+
 #info_site {
     grid-row: 4 / 6;
     grid-column: 6 / 9;
     align-self: center;
 
     font-style: italic;
+} @media (max-width: 700px) {
+    #info_site {
+        display: none;
+    }
 }
 
 #actions {
@@ -91,20 +96,23 @@ import { useWorldStore } from '../../stores/WorldStore.js'
     grid-column: 8;
     display: flex;
     flex-direction: column;
-}
-
-.b_action {
+} .b_action {
     align-self: center;
     margin: 15px;
 
     pointer-events:all;
     cursor: pointer;
     user-select: none;
+} @media (max-width: 700px) {
+    #actions {
+        display: none;
+ }
 }
+
 
 #info_hex {
     grid-row: 5;
-    grid-column: 4 / 6;
+    grid-column: 1 / 9;
 
     user-select: none;
 }

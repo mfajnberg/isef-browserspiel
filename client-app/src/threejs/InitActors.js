@@ -2,27 +2,33 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 import { HexVector } from './classes/HexVector'
+import { Worldmap } from './classes/Worldmap'
+import { HexTile } from './classes/HexTile'
+import { ActorBase } from './classes/ActorBase'
 
 export async function initActors(scene, worldStore, assetStore) {
     const _gltfLoader = new GLTFLoader()
 
     // dummy data
     await worldStore.loadVisibleHexTiles()
-    const visible = worldStore.getHexes
+    
+    worldStore.worldmap = new Worldmap()
+    const visible = Worldmap.makeHexGridVectors(5)
+    console.log(visible)
+    
     await assetStore.loadModel()
-
-    console.log(assetStore.getHexModel)
-
     for (let i = 0; i < visible.length; i++) {
         initHex(_gltfLoader, scene, worldStore, assetStore, visible[i])
     }
 
-    initHelmetExample(_gltfLoader, scene, worldStore)
+    initSiteExample(_gltfLoader, scene, worldStore)
 }
 
 function initHex(loader, scene, worldStore, assetStore, hexData) {
+    const newHex = new HexTile(hexData)
+
+    // 3d model
     loader.parse(assetStore.getHexModel, '', (loadedHex) => {
-        console.log(loadedHex)
         loadedHex.scene.traverse((child) => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
@@ -32,16 +38,21 @@ function initHex(loader, scene, worldStore, assetStore, hexData) {
             child.receiveShadow = true
             }
         })
-        loadedHex.scene.name = hexData.direction
-        var hexVector = new HexVector(hexData.Q, hexData.R)
-        loadedHex.scene.translateX(hexVector.WorldX)
-        loadedHex.scene.translateZ(hexVector.WorldY)
-        worldStore.hexTiles.push(loadedHex)
+        loadedHex.scene.translateX(hexData.getWorldXFromAxialQ())
+        loadedHex.scene.translateZ(hexData.getWorldZFromAxialR())
         scene.add(loadedHex.scene)
+        worldStore.intersectables.push(loadedHex.scene)
+        newHex.object3d = loadedHex
+        loadedHex.scene.name = `${hexData.Q}|${hexData.R}`
+        worldStore.worldmap.hexGrid.push(newHex)
     })
+
 }
 
-function initHelmetExample(loader, scene, store) {
+function initSiteExample(loader, scene, worldStore) {
+    let hexVector = new HexVector(0, 0)
+    const newSite = new ActorBase(hexVector)
+
     loader.load('helm_2.glb', (loadedHelmet => {
         loadedHelmet.scene.traverse((child) => {
             if (child.isMesh) {
@@ -57,9 +68,9 @@ function initHelmetExample(loader, scene, store) {
         })
         loadedHelmet.scene.translateY(40)
         loadedHelmet.scene.scale.set(80,80,80)
-        loadedHelmet.scene.name = "Helm"
+        newSite.displayName = "Helm"
         
-        store.sites.push(loadedHelmet)
+        worldStore.worldmap.sites.push(loadedHelmet)
         scene.add(loadedHelmet.scene)
     }))
 }

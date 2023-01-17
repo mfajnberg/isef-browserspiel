@@ -2,9 +2,8 @@ import * as THREE from 'three'
 import { useWorldStore } from '../stores/WorldStore'
 import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
-import { initRenderer } from './Renderer'
 import { initLights } from './Lights'
-import { initCameraPawn as initCameraPawn } from './Camera'
+import { initCameraPawn as initCameraPawn } from './Crew'
 import { initActors } from './InitActors'
 // import { GUI } from 'dat.gui'
 
@@ -14,13 +13,13 @@ export async function init(canvasDomId) {
   var worldStore = useWorldStore()
   var assetStore = useGameAssetStore()
   var clockStore = useUIStore()
-  var canvas, renderer, scene, lights, cameraPawn, cameraPawn
+  var crew, canvas, renderer, scene, lights, cameraPawn
   canvas = document.getElementById(canvasDomId)
-  renderer = initRenderer(canvas)
-  renderer.setSize( window.innerWidth, window.innerHeight * .75 );
   scene = new THREE.Scene()
+  crew = initCameraPawn(canvas, scene, worldStore)
+  renderer = crew.renderer
+  renderer.setSize( window.innerWidth, window.innerHeight * .75 );
   lights = initLights(scene)
-  cameraPawn = initCameraPawn(renderer, scene, worldStore)
   
   initActors(scene, worldStore, assetStore) 
 
@@ -40,13 +39,12 @@ export async function init(canvasDomId) {
     requestAnimationFrame( run )
     clockStore.getCurrentTime()
     try { 
-      worldStore.sites[0].scene.rotation.y += (0.01) 
-      worldStore.sites[0].scene.rotation.x += (0.0025) 
-      worldStore.sites[0].scene.rotation.z += (0.0025) 
+      worldStore.worldmap.sites[0].scene.rotation.y += (0.01) 
+      worldStore.worldmap.sites[0].scene.rotation.x += (0.0025) 
+      worldStore.worldmap.sites[0].scene.rotation.z += (0.0025) 
     } catch(e){}
 
-    // cameraPawn.orbit.update()
-    renderer.render( scene, cameraPawn.camera )
+    renderer.render( scene, crew.camera )
   }
   run()
 }
