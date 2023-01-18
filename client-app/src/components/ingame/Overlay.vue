@@ -4,6 +4,7 @@ import { useWorldStore } from '../../stores/WorldStore.js'
 
     const UIStore = useUIStore()
     const worldStore = useWorldStore()
+
 </script>
 
 
@@ -29,7 +30,7 @@ import { useWorldStore } from '../../stores/WorldStore.js'
             <div class="b_action">action 3</div>
             <div class="b_action">action 4</div>
         </div>
-        <div id="info_hex">{{worldStore.hoveredItemName}}</div>
+        <div id="info_hex">{{worldStore.hoveredItem.axial}}</div>
     </div>
 </template>
 

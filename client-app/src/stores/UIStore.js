@@ -9,7 +9,7 @@ export const useUIStore = defineStore('UIStore', {
         showingAvatarCreator: false,
         showingWorldmap: false,
         showingImprint: false,
-        currentTime: ""
+        currentTime: "",
     }),
     actions: {
         getCurrentTime() {

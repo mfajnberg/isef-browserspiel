@@ -31,8 +31,9 @@ import { useUIStore } from '../stores/UIStore';
 
 <template>
     <div id="header">
+        <div id="3js_gui"></div>
         <h3 id="logged_in" v-if="AuthStore.loggedIn">
-            Logged In as {{AuthStore.Email}}
+            Eingeloggt: {{AuthStore.Email}}
         </h3>
         
         <button id="play_now" 

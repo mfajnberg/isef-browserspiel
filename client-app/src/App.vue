@@ -4,12 +4,12 @@ import { useAuthStore } from './stores/AuthStore.js'
 import { useUIStore } from './stores/UIStore.js'
 import { requestTokenRefresh } from './services/AuthService.js'
 
-import Header from './vue-widgets/Header.vue'
-import Footer from './vue-widgets/Footer.vue'
-import Authenticator from './vue-widgets/Authentication/Authenticator.vue'
-import Imprint from './vue-widgets/Imprint.vue'
-import AvatarCreator from './vue-widgets/InGame/AvatarCreator.vue'
-import Overlay from './vue-widgets/InGame/Overlay.vue'
+import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
+import Imprint from './components/Imprint.vue'
+import Overlay from './components/ingame/Overlay.vue'
+import AvatarCreator from './components/ingame/AvatarCreator.vue'
+import Authenticator from './components/authentication/Authenticator.vue'
 
     const AuthStore = useAuthStore()
     const UIStore = useUIStore()
