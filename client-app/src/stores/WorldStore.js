@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia' 
-import { HexVector } from '../threejs/classes/HexVector'
+import { HexVector } from '../threejs/HexVector'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
@@ -7,12 +7,13 @@ export const useWorldStore = defineStore('WorldStore', {
         worldmap: null,
 
         intersectables: [],
+
+        worldCursor: null,
         hoveredItem: null,
-        hoveredItemName: "",
     }),
     getters: {
         getHexes: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
-        getIntersectables: (state) => state.intersectables
+        getIntersectables: (state) => state.intersectables,
     },
     actions: {
         async loadVisibleHexTiles() {
@@ -20,20 +21,18 @@ export const useWorldStore = defineStore('WorldStore', {
                 const response = await (await fetch("VisibleHexes_example.json")).json()
                 this.visibleHexData = response          
         },
-        updateHovered(item) {
-            if (item)
-            {
-                let axial = item.parent.name.split("|")
-                let q = parseInt(axial[0])
-                let r = parseInt(axial[1])
-                let vec = new HexVector(q, r)
-                this.hoveredItem = this.worldmap.findHex(vec)
-                this.hoveredItemName = this.hoveredItem.object3d.scene.name
-                return
-            }
-            this.hoveredItem = null
-            this.hoveredItemName = "⠀"
-        }
 
+        // EDITOR MODE...
+
+        saveLayout(layoutData, name) {
+            // save to localStorage
+            // post request
+        },
+
+        loadLayout(name) {
+            // get request
+            // update current layout state
+            // save to session storage
+        }
     },
 })

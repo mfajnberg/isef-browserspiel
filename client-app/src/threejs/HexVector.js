@@ -12,14 +12,15 @@ export class HexVector {
   }
 
   getWorldXFromAxialQ() {
-    let x = 50 * (Math.sqrt(3) * this.Q + Math.sqrt(3) / 2 * this.R)
+    let x = Math.sqrt(3) * this.Q + Math.sqrt(3) / 2 * this.R
     return x
   }
   getWorldZFromAxialR() {
-    let z = 50 * (3. / 2 * this.R)
+    let z = 3. / 2 * this.R
     return z
   }
 
+  // possibly wrong syntax
   neighbors() {
     return [
       new HexVector(this.Q + 1, this.R),

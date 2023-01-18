@@ -1,4 +1,4 @@
-import { HexVector } from "./HexVector"
+import { HexVector } from "../HexVector"
 
 export class Worldmap {
     constructor() {

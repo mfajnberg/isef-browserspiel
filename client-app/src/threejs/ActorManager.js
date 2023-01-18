@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-import { HexVector } from './classes/HexVector'
-import { Worldmap } from './classes/Worldmap'
-import { HexTile } from './classes/HexTile'
-import { ActorBase } from './classes/ActorBase'
+import { HexVector } from './HexVector'
+import { Worldmap } from './actors/Worldmap'
+import { HexTile } from './actors/HexTile'
+import { ActorBase } from './actors/ActorBase'
 
 export async function initActors(scene, worldStore, assetStore) {
     const _gltfLoader = new GLTFLoader()
@@ -14,14 +14,13 @@ export async function initActors(scene, worldStore, assetStore) {
     
     worldStore.worldmap = new Worldmap()
     const visible = Worldmap.makeHexGridVectors(5)
-    console.log(visible)
     
-    await assetStore.loadModel()
+    await assetStore.loadHex()
     for (let i = 0; i < visible.length; i++) {
         initHex(_gltfLoader, scene, worldStore, assetStore, visible[i])
     }
 
-    initSiteExample(_gltfLoader, scene, worldStore)
+    initCursor(_gltfLoader, scene, worldStore)
 }
 
 function initHex(loader, scene, worldStore, assetStore, hexData) {
@@ -32,7 +31,7 @@ function initHex(loader, scene, worldStore, assetStore, hexData) {
         loadedHex.scene.traverse((child) => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
-                    color: 'rgb(5,40,15)',
+                    color: 'rgb(10,65,20)',
                     side: THREE.DoubleSide
                 });
             child.receiveShadow = true
@@ -43,18 +42,19 @@ function initHex(loader, scene, worldStore, assetStore, hexData) {
         scene.add(loadedHex.scene)
         worldStore.intersectables.push(loadedHex.scene)
         newHex.object3d = loadedHex
+        loadedHex.scene.userData.wrapper = newHex
         loadedHex.scene.name = `${hexData.Q}|${hexData.R}`
         worldStore.worldmap.hexGrid.push(newHex)
     })
 
 }
 
-function initSiteExample(loader, scene, worldStore) {
+function initCursor(loader, scene, worldStore) {
     let hexVector = new HexVector(0, 0)
     const newSite = new ActorBase(hexVector)
 
-    loader.load('helm_2.glb', (loadedHelmet => {
-        loadedHelmet.scene.traverse((child) => {
+    loader.load('HexCursor.glb', (loadedCursor => {
+        loadedCursor.scene.traverse((child) => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
                     color: 'rgb(255,245,235)',
@@ -66,11 +66,9 @@ function initSiteExample(loader, scene, worldStore) {
             child.castShadow = true
             }
         })
-        loadedHelmet.scene.translateY(40)
-        loadedHelmet.scene.scale.set(80,80,80)
-        newSite.displayName = "Helm"
+        loadedCursor.scene.translateY(.01)
         
-        worldStore.worldmap.sites.push(loadedHelmet)
-        scene.add(loadedHelmet.scene)
+        worldStore.worldmap.sites.push(loadedCursor)
+        scene.add(loadedCursor.scene)
     }))
 }
