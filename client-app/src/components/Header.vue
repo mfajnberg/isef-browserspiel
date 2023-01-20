@@ -1,31 +1,50 @@
 <script setup>
+import { Howl } from 'howler';
+import { Ambience } from '../services/howlee.js'
 import { useAuthStore } from '../stores/AuthStore.js'
 import { LogOut } from '../services/AuthService.js'
-import { useUIStore } from '../stores/UIStore';
+import { useUIStore } from '../stores/UIStore.js';
+import { onMounted } from 'vue';
 
     const AuthStore = useAuthStore()
     const UIStore = useUIStore()
+    const ambience = new Ambience()
 
-    function playNow() {
+
+    function playGame() {
         if (!AuthStore.loggedIn) {
             UIStore.showAuthentication()
             AuthStore.showLoginForm()
         }
         else {
             UIStore.showWorldmap()
+            ambience.music.play()
         }
+        UIStore.clickSound.play()
+        console.log(ambience)
     }
 
     function clickLogout(store) {
         LogOut(store)
         UIStore.showHome()
+        UIStore.clickSound.play()
+        ambience.music.pause()
+        console.log(ambience)
     }
     
     function clickHome() {
         UIStore.showHome()
         AuthStore.hideRegisForm()
         AuthStore.hideLoginForm()
+        UIStore.clickSound.play()
+        ambience.music.pause()
+        console.log(ambience)
     }
+
+    onMounted(() => {
+        
+    })        
+
 
 </script>
 
@@ -37,7 +56,7 @@ import { useUIStore } from '../stores/UIStore';
         </h3>
         
         <button id="play_now" 
-            @click="playNow" 
+            @click="playGame" 
             v-if="!UIStore.showingAuthentication && !UIStore.showingWorldmap">
             jetzt spielen
         </button>

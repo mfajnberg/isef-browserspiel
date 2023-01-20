@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia' 
 import { DateTime } from 'luxon'
+import { Howl } from 'howler'
 
 export const useUIStore = defineStore('UIStore', {
     id: 'UIStore',
@@ -9,7 +10,13 @@ export const useUIStore = defineStore('UIStore', {
         showingAvatarCreator: false,
         showingWorldmap: false,
         showingImprint: false,
+        
         currentTime: "",
+        clickSound: new Howl({
+            src: 'isef_click.mp3',
+            volume: .6
+        }),
+
     }),
     actions: {
         getCurrentTime() {
@@ -51,5 +58,8 @@ export const useUIStore = defineStore('UIStore', {
             var header = document.getElementById("header")
             header.style.background = "rgba(0,0,0,0)"
         },
+        playMusicProxy(component){
+
+        }
     },
 })
