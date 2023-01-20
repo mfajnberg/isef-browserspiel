@@ -12,13 +12,38 @@ namespace web_api.GameModel
                 // validate type-id
                 // validate validate coordinates
                 // validate placement
-                if (false)
+                HexTile hexTile = new HexTile()
                 {
-                    return false;
-                }
+                    AxialCoordinates = item.AxialCoordinates,
+                    Site = CreateSite(item.SiteType)
+                };
+
+                context.HexTiles.Add(hexTile);
             }
+
+            await context.SaveChangesAsync();
+
             // write placement to context
             return true;
+        }
+
+        private SiteBase? CreateSite(SiteType siteType)
+        {
+            switch (siteType)
+            {
+                case SiteType.Empty:
+                    return null;
+
+                case SiteType.Obstacle:
+                    return new SiteObstacle();
+
+                case SiteType.Interactive:
+                    return new SiteInteractive();
+
+            }
+
+
+            throw new NotImplementedException();
         }
     }
 }

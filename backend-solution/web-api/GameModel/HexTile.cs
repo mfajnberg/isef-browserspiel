@@ -5,6 +5,7 @@ namespace web_api.GameModel
 {
     public class HexTile
     {
+        public int Id { get; set; }
         public HexVector AxialCoordinates { get; set; }
         public SiteBase? Site { get; set; }
         public bool isBlocked { get; set; } = false;

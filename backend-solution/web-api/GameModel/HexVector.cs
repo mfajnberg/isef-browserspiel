@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace web_api.GameModel
 {
+    [NotMapped]
     public class HexVector
     {
         [JsonPropertyName("Q")]

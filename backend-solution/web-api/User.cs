@@ -19,6 +19,7 @@
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public bool IsActive { get; set; }
+        public bool IsAdmin { get; set; }
         public DateTime? RegistrationTime { get; set; }
         public DateTime? LastLoginTime { get; set; }
         public string? RefreshToken { get; set; }
