@@ -1,6 +1,7 @@
 export class ActorBase {
-    constructor(hexVector) {
-
+    constructor() {
+        this.object3d = null
+        this.hexTile = null
     }
 
     leftClick() {

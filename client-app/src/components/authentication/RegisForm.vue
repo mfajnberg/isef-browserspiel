@@ -19,7 +19,7 @@ import { requestRegis } from '../../services/AuthService';
         authStore.updateValidation()
     }
 
-    async function tryRequestRegis() {
+    async function clickRegis() {
         if (authStore.emailValid && authStore.pwdValid && authStore.repeatValid) {
             await requestRegis(authStore)
             if (authStore.authResponse.status == 200) {
@@ -32,6 +32,7 @@ import { requestRegis } from '../../services/AuthService';
         else {
             console.log("invalid form input")
         }
+        UIStore.clickSound.play()
     }
 
 </script>
@@ -59,7 +60,7 @@ import { requestRegis } from '../../services/AuthService';
             <span class="valid_input">⠀</span>
         </div>
     </div>
-    <button v-on:click="tryRequestRegis()">
+    <button @click="clickRegis()">
         jetzt registrieren
     </button>
     <div>

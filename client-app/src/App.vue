@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
+import { Howler } from 'howler'
 import { useAuthStore } from './stores/AuthStore.js'
 import { useUIStore } from './stores/UIStore.js'
 import { requestTokenRefresh } from './services/AuthService.js'
@@ -18,6 +19,7 @@ import Authenticator from './components/authentication/Authenticator.vue'
             AuthStore.Email = localStorage.Email
             requestTokenRefresh(AuthStore)
         }
+        Howler.debug = true 
     })
 </script>
 

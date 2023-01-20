@@ -12,4 +12,4 @@ const pinia = createPinia()
 
 app.use(pinia)
 app.mount('#app')
-init("adventure_map")
+init("adventure_map", app)

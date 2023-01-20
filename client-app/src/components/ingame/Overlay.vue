@@ -1,10 +1,16 @@
 <script setup>
+import { onMounted } from 'vue';
 import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 
     const UIStore = useUIStore()
     const worldStore = useWorldStore()
 
+    function update3dCursor(url) {
+        worldStore.changedCursorURL = true
+        worldStore.cursorURL = url
+        UIStore.clickSound.play()
+    }
 </script>
 
 
@@ -15,8 +21,8 @@ import { useWorldStore } from '../../stores/WorldStore.js'
         <!--top_right_info-->
         <div id="avatar"><img id="portrait" src="Portrait_Eliana.jpg"/></div>
         <div id="slots">
-            <div class="b_slot">slot 1</div>
-            <div class="b_slot">slot 2</div>
+            <div class="b_slot" @click="update3dCursor('tree_cluster_fir_1.glb')">slot 1</div>
+            <div class="b_slot" @click="update3dCursor('tower_medieval.glb')">slot 2</div>
             <div class="b_slot">slot 3</div>
             <div class="b_slot">slot 4</div>
             <div class="b_slot">slot 5</div>
@@ -30,7 +36,7 @@ import { useWorldStore } from '../../stores/WorldStore.js'
             <div class="b_action">action 3</div>
             <div class="b_action">action 4</div>
         </div>
-        <div id="info_hex">{{worldStore.hoveredItem.axial}}</div>
+        <div id="info_hex">{{worldStore.getHovered}}</div>
     </div>
 </template>
 

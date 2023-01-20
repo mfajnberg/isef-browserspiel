@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { PCFSoftShadowMap } from 'three'
 import _ from 'lodash';
 
 export function initCameraPawn(canvas, scene, worldStore) {
@@ -9,7 +8,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
     const _renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
     _renderer.setSize(window.innerWidth, window.innerHeight*.75);
     _renderer.shadowMap.enabled = true
-    _renderer.shadowMap.type = PCFSoftShadowMap
+    _renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 
     const _camera = new THREE.PerspectiveCamera
@@ -25,10 +24,15 @@ export function initCameraPawn(canvas, scene, worldStore) {
 
     var intersects
 
+
+    let placeActor = _.debounce((event) => {
+        
+    })
+
     window.addEventListener('pointerdown', () => {
     })
 
-    let debouncedFun = _.debounce((event) => {
+    let updateWorldCursor = _.debounce((event) => {
         _pointer.x = (event.clientX / window.innerWidth) * 2 - 1
         _pointer.y = - (event.offsetY / _renderer.domElement.height) * 2 + 1
 
@@ -41,13 +45,25 @@ export function initCameraPawn(canvas, scene, worldStore) {
             if (hex) {
                 let vec = new THREE.Vector3();
                 vec.setFromMatrixPosition(hex.matrixWorld);
-                if (worldStore.worldmap.sites[0])
-                worldStore.worldmap.sites[0].scene.position.set(vec.x, vec.y+.1, vec.z)
+                if (worldStore.cursor) {
+                    worldStore.cursor.position.set(vec.x, vec.y, vec.z)
+                    worldStore.cursor.visible = true
+                }
+
             }
         }
-    }, .00001)
+        else {
+            worldStore.hoveredItem = null
+            try {
+                worldStore.cursor.visible = false
+            }
+            catch (e) {
+                console.log(e)
+            }
+        }
+    }, .0005)
 
-    window.addEventListener('mousemove', debouncedFun)
+    window.addEventListener('mousemove', updateWorldCursor)
 
     window.addEventListener('resize', () => {
         _camera.aspect = window.innerWidth / (window.innerHeight * .75)

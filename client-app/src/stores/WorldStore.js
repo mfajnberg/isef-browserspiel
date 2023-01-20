@@ -5,15 +5,26 @@ export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
     state: () => ({
         worldmap: null,
+        editorMode: true,
 
+        cursorURL: "test",
+        changedCursorURL: false,
+        cursor: null,
+        
+        placables: [],
         intersectables: [],
-
-        worldCursor: null,
+        
         hoveredItem: null,
     }),
     getters: {
         getHexes: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
         getIntersectables: (state) => state.intersectables,
+        getHovered: (state) => {
+            if (state.hoveredItem != null) {
+                return state.hoveredItem.axial
+            }
+            return ""
+            }
     },
     actions: {
         async loadVisibleHexTiles() {
