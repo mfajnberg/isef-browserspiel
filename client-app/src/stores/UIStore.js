@@ -5,17 +5,23 @@ import { Howl } from 'howler'
 export const useUIStore = defineStore('UIStore', {
     id: 'UIStore',
     state: () => ({
+        editorMode: true,
         
+        currentTime: "",
+        pointerDownSound: new Howl({
+            src: 'isef_pointer_down.mp3',
+            volume: 1
+        }),
+
+        pointerUpSound: new Howl({
+            src: 'isef_pointer_up.mp3',
+            volume: 1
+        }),
+
         showingAuthentication: false,
         showingAvatarCreator: false,
         showingWorldmap: false,
         showingImprint: false,
-        
-        currentTime: "",
-        clickSound: new Howl({
-            src: 'isef_click.mp3',
-            volume: .6
-        }),
 
     }),
     actions: {

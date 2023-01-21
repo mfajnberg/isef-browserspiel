@@ -27,7 +27,7 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
         },
         async loadHexCursor() {
             // await fetch("/model")
-            await fetch("tower_medieval.glb")
+            await fetch("tree_cluster_fir_1.glb")
             .then((response) => response.arrayBuffer())
             .then(arrayBuffer => {
                 this.HexCursor = arrayBuffer

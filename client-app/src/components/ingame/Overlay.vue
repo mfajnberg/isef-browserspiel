@@ -1,16 +1,63 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 
     const UIStore = useUIStore()
     const worldStore = useWorldStore()
 
-    function update3dCursor(url) {
-        worldStore.changedCursorURL = true
-        worldStore.cursorURL = url
-        UIStore.clickSound.play()
+    const cursorURLs = ['tree_cluster_fir_1.glb', 'tower_medieval.glb']
+
+    function clickSlot(num) {
+        if (UIStore.editorMode) {
+            worldStore.changedCursorURL = true
+            worldStore.cursorURL = cursorURLs[num]
+        }
     }
+    
+    function playClickSoundPointerDown() {
+        UIStore.pointerDownSound.play()
+    }
+    function playClickSoundPointerUp() {
+        UIStore.pointerUpSound.play()
+    }
+    
+    const button_slot_1 = ref(null);
+    const button_slot_2 = ref(null);
+    const button_slot_3 = ref(null);
+    const button_slot_4 = ref(null);
+    const button_slot_5 = ref(null);
+    const button_slot_6 = ref(null);
+    const button_slot_7 = ref(null);    
+    const button_action_1 = ref(null);
+    const button_action_2 = ref(null);
+    const button_action_3 = ref(null);
+    const button_action_4 = ref(null);
+    onMounted(() => {
+        button_slot_1.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_slot_1.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_slot_2.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_slot_2.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_slot_3.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_slot_3.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_slot_4.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_slot_4.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_slot_5.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_slot_5.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_slot_6.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_slot_6.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_slot_7.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_slot_7.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_action_1.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_action_1.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_action_2.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_action_2.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_action_3.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_action_3.value.addEventListener('pointerup', playClickSoundPointerUp);
+        button_action_4.value.addEventListener('pointerdown', playClickSoundPointerDown);
+        button_action_4.value.addEventListener('pointerup', playClickSoundPointerUp);
+    })
+
 </script>
 
 
@@ -21,20 +68,20 @@ import { useWorldStore } from '../../stores/WorldStore.js'
         <!--top_right_info-->
         <div id="avatar"><img id="portrait" src="Portrait_Eliana.jpg"/></div>
         <div id="slots">
-            <div class="b_slot" @click="update3dCursor('tree_cluster_fir_1.glb')">slot 1</div>
-            <div class="b_slot" @click="update3dCursor('tower_medieval.glb')">slot 2</div>
-            <div class="b_slot">slot 3</div>
-            <div class="b_slot">slot 4</div>
-            <div class="b_slot">slot 5</div>
-            <div class="b_slot">slot 6</div>
-            <div class="b_slot">slot 7</div>
+            <div class="button_slot" ref="button_slot_1" @click="clickSlot(0)">slot 1</div>
+            <div class="button_slot" ref="button_slot_2" @click="clickSlot(1)">slot 2</div>
+            <div class="button_slot" ref="button_slot_3">slot 3</div>
+            <div class="button_slot" ref="button_slot_4">slot 4</div>
+            <div class="button_slot" ref="button_slot_5">slot 5</div>
+            <div class="button_slot" ref="button_slot_6">slot 6</div>
+            <div class="button_slot" ref="button_slot_7">slot 7</div>
         </div>
         <div id="info_site">(site info)</div>
         <div id="actions">
-            <div class="b_action">action 1</div>
-            <div class="b_action">action 2</div>
-            <div class="b_action">action 3</div>
-            <div class="b_action">action 4</div>
+            <div class="button_action" ref="button_action_1">action 1</div>
+            <div class="button_action" ref="button_action_2">action 2</div>
+            <div class="button_action" ref="button_action_3">action 3</div>
+            <div class="button_action" ref="button_action_4">action 4</div>
         </div>
         <div id="info_hex">{{worldStore.getHovered}}</div>
     </div>
@@ -77,13 +124,19 @@ import { useWorldStore } from '../../stores/WorldStore.js'
     grid-row: 4 / 6;
     grid-column: 2/4;
     display: flex;
-} .b_slot {
+} .button_slot {
     align-self: center;
-    margin: 1vw;
+    margin: .5vw;
+    padding: 1vw;
 
     cursor: pointer;
     pointer-events: all;
     user-select: none;
+    background-image: url('leather_texture.jpg');
+
+    border-style:solid;
+    border-width: 2px;
+    border-color: rgb(133, 113, 86);
 }
 
 #info_site {
@@ -103,7 +156,7 @@ import { useWorldStore } from '../../stores/WorldStore.js'
     grid-column: 8;
     display: flex;
     flex-direction: column;
-} .b_action {
+} .button_action {
     align-self: center;
     margin: 15px;
 
