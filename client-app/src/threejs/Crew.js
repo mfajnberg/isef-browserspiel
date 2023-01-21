@@ -41,16 +41,18 @@ export function initCameraPawn(canvas, scene, worldStore) {
 
         if (intersects.length > 0) {
             let hex = intersects[0].object.parent
-            worldStore.hoveredItem = hex.userData.wrapper
-            if (hex) {
-                let vec = new THREE.Vector3();
-                vec.setFromMatrixPosition(hex.matrixWorld);
-                if (worldStore.cursor) {
+            let vec = new THREE.Vector3();
+            const point = intersects[ 0 ].point;
+            if (worldStore.cursor) {
+                worldStore.cursor.position.set(point.x, point.y, point.z)
+                worldStore.cursor.visible = true
+            }
+            vec.setFromMatrixPosition(hex.matrixWorld);
+            if (worldStore.cursor && vec.distanceTo(point) < .80) {
+                    worldStore.hoveredItem = hex.userData.wrapper
                     worldStore.cursor.position.set(vec.x, vec.y, vec.z)
                     worldStore.cursor.visible = true
                 }
-
-            }
         }
         else {
             worldStore.hoveredItem = null
@@ -61,7 +63,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
                 console.log(e)
             }
         }
-    }, .0005)
+    }, 1)
 
     window.addEventListener('mousemove', updateWorldCursor)
 

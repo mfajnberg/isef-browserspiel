@@ -5,7 +5,6 @@ export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
     state: () => ({
         worldmap: null,
-        editorMode: true,
 
         cursorURL: "test",
         changedCursorURL: false,

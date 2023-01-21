@@ -19,7 +19,7 @@ export async function initActors(scene, loader, worldStore, assetStore) {
         initHex(loader, scene, worldStore, assetStore, visible[i], i%3)
     }
 
-    loadWorldCursor('tower_medieval.glb', loader, scene, worldStore, null)
+    loadWorldCursor('tree_cluster_fir_1.glb', loader, scene, worldStore, null)
 }
 
 function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation) {

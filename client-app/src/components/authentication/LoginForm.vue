@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { requestLogin } from '../../services/AuthService';
 import { useUIStore } from '../../stores/UIStore';
@@ -16,9 +17,23 @@ function switchToRegis() {
 async function LogIn() {
     requestLogin(store)
     UIStore.showWorldmap()
-    UIStore.clickSound.play()
     ambience.music.play()
 }
+
+
+function playSoundPointerDown() {
+    UIStore.pointerDownSound.play()
+}
+function playSoundPointerUp() {
+    UIStore.pointerUpSound.play()
+}
+
+const button_login = ref(null);
+onMounted(() => {
+    button_login.value.addEventListener('pointerdown', playSoundPointerDown);
+    button_login.value.addEventListener('pointerup', playSoundPointerUp);
+})        
+
 </script>
 
 <template>
@@ -27,7 +42,7 @@ async function LogIn() {
         <input v-model="store.Email" id="email_address" />
         <label>Passwort</label>
         <input v-model="store.Password" type="password" id="password" />
-        <button v-on:click="LogIn()">Einloggen</button>
+        <button ref="button_login" v-on:click="LogIn()">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
             <input v-model="store.stayLoggedIn" type="checkbox" />
