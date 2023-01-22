@@ -1,31 +1,33 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '../../stores/AuthStore.js'
-import { requestLogin } from '../../services/AuthService';
 import { useUIStore } from '../../stores/UIStore';
+import { useGameAssetStore } from '../../stores/GameAssetStore';
+import { requestLogin } from '../../services/AuthService';
 import { Ambience } from '../../services/howlee.js'
 
-const UIStore = useUIStore()
-const store = useAuthStore()
+const authStore = useAuthStore()
+const uiStore = useUIStore()
+const assetStore = useGameAssetStore()
 const ambience = new Ambience()
 
 function switchToRegis() {
-    store.hideLoginForm()
-    store.showRegisForm()
+    authStore.hideLoginForm()
+    authStore.showRegisForm()
 }
 
 async function LogIn() {
-    requestLogin(store)
-    UIStore.showWorldmap()
+    requestLogin(authStore)
+    uiStore.showWorldmap()
     ambience.music.play()
 }
 
 
 function playSoundPointerDown() {
-    UIStore.pointerDownSound.play()
+    assetStore.pointerDownSound.play()
 }
 function playSoundPointerUp() {
-    UIStore.pointerUpSound.play()
+    assetStore.pointerUpSound.play()
 }
 
 const button_login = ref(null);
@@ -39,13 +41,13 @@ onMounted(() => {
 <template>
     <div id="login_form">
         <label>E-Mail Adresse</label>
-        <input v-model="store.Email" id="email_address" />
+        <input v-model="authStore.Email" id="email_address" />
         <label>Passwort</label>
-        <input v-model="store.Password" type="password" id="password" />
+        <input v-model="authStore.Password" type="password" id="password" />
         <button ref="button_login" v-on:click="LogIn()">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
-            <input v-model="store.stayLoggedIn" type="checkbox" />
+            <input v-model="authStore.stayLoggedIn" type="checkbox" />
         </div>
         <div>
             Noch kein Konto?

@@ -8,15 +8,6 @@ export const useUIStore = defineStore('UIStore', {
         editorMode: true,
         
         currentTime: "",
-        pointerDownSound: new Howl({
-            src: 'isef_pointer_down.mp3',
-            volume: 1
-        }),
-
-        pointerUpSound: new Howl({
-            src: 'isef_pointer_up.mp3',
-            volume: 1
-        }),
 
         showingAuthentication: false,
         showingAvatarCreator: false,
@@ -63,9 +54,6 @@ export const useUIStore = defineStore('UIStore', {
             this.showingImprint = false
             var header = document.getElementById("header")
             header.style.background = "rgba(0,0,0,0)"
-        },
-        playMusicProxy(component){
-
         }
     },
 })

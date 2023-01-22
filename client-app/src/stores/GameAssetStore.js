@@ -10,7 +10,22 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
         HexCursor: null,
         hexTextures: [new THREE.TextureLoader().load('grass_texture_1.jpg'), 
                     new THREE.TextureLoader().load('grass_texture_2.jpg'), 
-                    new THREE.TextureLoader().load('grass_texture_3.jpg')]
+                    new THREE.TextureLoader().load('grass_texture_3.jpg')],
+        pointerDownSound: new Howl({
+            src: 'isef_pointer_down.mp3',
+            volume: 1
+        }),
+
+        pointerUpSound: new Howl({
+            src: 'isef_pointer_up.mp3',
+            volume: 1
+        }),
+
+        placeObjectSound: new Howl({
+            src: 'isef_place_building.mp3',
+            volume: .1
+        }),
+            
     }),
     getters: {
         getHexModel: (state) => state.HexModel,
