@@ -1,9 +1,14 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import * as ORBIT from 'three/examples/jsm/controls/OrbitControls'
 import _ from 'lodash';
+import { useGameAssetStore } from '../stores/GameAssetStore';
+import { useUIStore } from '../stores/UIStore'
 
 export function initCameraPawn(canvas, scene, worldStore) {
 
+    const assetStore = useGameAssetStore()
+    const uiStore = useUIStore()
 
     const _renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
     _renderer.setSize(window.innerWidth, window.innerHeight*.75);
@@ -14,22 +19,35 @@ export function initCameraPawn(canvas, scene, worldStore) {
     const _camera = new THREE.PerspectiveCamera
         (60, window.innerWidth / (window.innerHeight*.75), 0.1, 20000);
     _camera.position.x = 0
-    _camera.position.y = 16
-    _camera.position.z = 6
+    _camera.position.y = 10
+    _camera.position.z = 14
     _camera.lookAt(scene.position)
-
+    
     const _orbit = new OrbitControls(_camera, _renderer.domElement)
+    _orbit.mouseButtons = { RIGHT: THREE.MOUSE.ROTATE, LEFT: THREE.MOUSE.PAN }
+    _orbit.enablePan = false
+    _orbit.enableZoom = true
+    _orbit.target.set(0, 0, 0)
+    const distance = _camera.position.distanceTo( scene.position )
+    _orbit.minDistance = _orbit.maxDistance = distance
+    const angle = Math.atan2(_camera.position.y - scene.position.y, distance)
+    _orbit.minPolarAngle = _orbit.maxPolarAngle = angle
+    console.log(_orbit)
+    _orbit.update()
+
     const _pointer = new THREE.Vector2()
     const _raycaster = new THREE.Raycaster()
 
     var intersects
 
-
     let placeActor = _.debounce((event) => {
         
     })
 
-    window.addEventListener('pointerdown', () => {
+    window.addEventListener('pointerdown', (e) => {
+        if (e.button === 0 && uiStore.showingWorldmap && worldStore.objectSnapped) {
+            assetStore.placeObjectSound.play()
+        }
     })
 
     let updateWorldCursor = _.debounce((event) => {
@@ -39,7 +57,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
         _raycaster.setFromCamera(_pointer, _camera)
         intersects = _raycaster.intersectObjects(worldStore.intersectables)
 
-        if (intersects.length > 0) {
+        if (uiStore.showingWorldmap && intersects.length > 0) {
             let hex = intersects[0].object.parent
             let vec = new THREE.Vector3();
             const point = intersects[ 0 ].point;
@@ -48,22 +66,29 @@ export function initCameraPawn(canvas, scene, worldStore) {
                 worldStore.cursor.visible = true
             }
             vec.setFromMatrixPosition(hex.matrixWorld);
-            if (worldStore.cursor && vec.distanceTo(point) < .80) {
+            if (worldStore.cursor && vec.distanceTo(point) < .83) {
                     worldStore.hoveredItem = hex.userData.wrapper
                     worldStore.cursor.position.set(vec.x, vec.y, vec.z)
                     worldStore.cursor.visible = true
+                    worldStore.objectSnapped = true
                 }
-        }
-        else {
-            worldStore.hoveredItem = null
+            else {
+                worldStore.objectSnapped = false
+            }
+            }
+            else {
+                worldStore.hoveredItem = null
             try {
                 worldStore.cursor.visible = false
+                worldStore.objectSnapped = false
             }
             catch (e) {
-                console.log(e)
             }
         }
     }, 1)
+
+    function getHalfwayPoints(origin) {}
+    function getCornerVectors(origin) {}
 
     window.addEventListener('mousemove', updateWorldCursor)
 

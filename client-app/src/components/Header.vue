@@ -2,44 +2,50 @@
 import { Howl } from 'howler';
 import { Ambience } from '../services/howlee.js'
 import { useAuthStore } from '../stores/AuthStore.js'
-import { LogOut } from '../services/AuthService.js'
 import { useUIStore } from '../stores/UIStore.js';
+import { useGameAssetStore } from '../stores/GameAssetStore';
+import { LogOut } from '../services/AuthService.js'
 import { ref, onMounted } from 'vue';
 
-    const AuthStore = useAuthStore()
-    const UIStore = useUIStore()
+    const uiStore = useUIStore()
+    const authStore = useAuthStore()
+    const assetStore = useGameAssetStore()
+
     const ambience = new Ambience()
 
 
     function playGame() {
-        if (!AuthStore.loggedIn) {
-            UIStore.showAuthentication()
-            AuthStore.showLoginForm()
+        if (!authStore.loggedIn) {
+            uiStore.showAuthentication()
+            authStore.showLoginForm()
         }
         else {
-            UIStore.showWorldmap()
-            ambience.music.play()
+            uiStore.showWorldmap()
+            if (!ambience.music.playing()) {
+                ambience.music.play()
+            }
+            ambience.music.mute(false)
         }
     }
 
     function clickLogout(store) {
         LogOut(store)
-        UIStore.showHome()
+        uiStore.showHome()
         ambience.music.pause()
     }
     
     function clickHome() {
-        UIStore.showHome()
-        AuthStore.hideRegisForm()
-        AuthStore.hideLoginForm()
-        ambience.music.pause()
+        uiStore.showHome()
+        authStore.hideRegisForm()
+        authStore.hideLoginForm()
+        ambience.music.mute(true)
     }
 
     function playSoundPointerDown() {
-        UIStore.pointerDownSound.play()
+        assetStore.pointerDownSound.play()
     }
     function playSoundPointerUp() {
-        UIStore.pointerUpSound.play()
+        assetStore.pointerUpSound.play()
     }
 
     const button_play = ref(null);
@@ -60,14 +66,14 @@ import { ref, onMounted } from 'vue';
 <template>
     <div id="header">
         <div id="3js_gui"></div>
-        <h3 id="logged_in" v-if="AuthStore.loggedIn">
-            Eingeloggt: {{AuthStore.Email}}
+        <h3 id="logged_in" v-if="authStore.loggedIn">
+            Eingeloggt: {{authStore.Email}}
         </h3>
         
         <button id="button_play" 
             @click="playGame" 
             ref="button_play"
-            v-show="!UIStore.showingAuthentication && !UIStore.showingWorldmap">
+            v-show="!uiStore.showingAuthentication && !uiStore.showingWorldmap">
             jetzt spielen
         </button>
 
@@ -75,7 +81,7 @@ import { ref, onMounted } from 'vue';
             home
         </button>
 
-        <button id="button_logout" ref="button_logout" v-show="AuthStore.loggedIn" @click="clickLogout(AuthStore)">
+        <button id="button_logout" ref="button_logout" v-show="authStore.loggedIn" @click="clickLogout(authStore)">
             ausloggen
         </button>
 

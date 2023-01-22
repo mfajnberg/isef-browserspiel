@@ -14,6 +14,9 @@ export const useWorldStore = defineStore('WorldStore', {
         intersectables: [],
         
         hoveredItem: null,
+        objectSnapped: false,
+
+        hexDataBuffer: [],
     }),
     getters: {
         getHexes: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
