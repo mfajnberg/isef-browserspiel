@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia' 
-import { requestRegis } from '../services/WorldEditorService'
+import { requestWorldSave } from '../services/WorldEditorService'
 import { HexVector } from '../threejs/HexVector'
 
 export const useWorldStore = defineStore('WorldStore', {

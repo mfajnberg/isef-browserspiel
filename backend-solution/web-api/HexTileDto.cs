@@ -12,7 +12,7 @@ namespace web_api
         //{
         //    AxialCoordinates = new HexVector(Q, R);
         //    SiteType = siteType;
-        //}
+        //} 
 
         //public HexTileDto()
         //{

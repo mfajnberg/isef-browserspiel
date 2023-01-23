@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore'
+import { requestWorldSave } from '../../services/WorldEditorService'
 
     const uiStore = useUIStore()
     const worldStore = useWorldStore()
@@ -103,7 +104,7 @@ import { useGameAssetStore } from '../../stores/GameAssetStore'
             <div class="slot" ref="slot_7" id="slot_7">slot 7</div>
         </div>
         <div id="action_panel">
-            <div class="action" ref="action_1">action 1</div>
+            <div class="action" ref="action_1" @click="requestWorldSave(worldStore)">action 1</div>
             <div class="action" ref="action_2">action 2</div>
             <div class="action" ref="action_3">action 3</div>
             <div class="action" ref="action_4">action 4</div>
@@ -181,7 +182,7 @@ import { useGameAssetStore } from '../../stores/GameAssetStore'
     display: flex;
     flex-direction: column;
 } .action {
-    display: none; /* for now */
+    display: flex; /* for now */
     align-self: center;
     margin: 15px;
 
