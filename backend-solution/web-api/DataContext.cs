@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using web_api.GameModel;
 using web_api.GameModel.AvatarModel;
+using web_api.GameModel.Creatures;
 using web_api.GameModel.Sites;
 
 namespace web_api
@@ -12,8 +13,15 @@ namespace web_api
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<HexTile>().HasKey(h => new { h.AxialQ, h.AxialR });
+        }
+
         public DbSet <User> Users { get; set; }
-        public DbSet <CreatureBase> Avatars { get; set; }
+        public DbSet <Avatar> Avatars { get; set; }
 
         public DbSet<UserConfirmation> Confirmation { get; set; }
 
@@ -24,5 +32,6 @@ namespace web_api
         public DbSet<SiteInteractive> SitesInteractive { get; set; }
 
         public DbSet<SiteObstacle> SitesObstacle { get; set; }
+
     }
 }
