@@ -13,15 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddCors(options =>
-{
-options.AddPolicy(name: "sexy",
-    policy => {
-        policy.WithOrigins("http://127.0.0.1:5173") // Frontend Dev Server
-        .AllowCredentials()
-        .WithHeaders("Content-Type");
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//options.AddPolicy(name: "sexy",
+//    policy => {
+//        policy.WithOrigins("http://127.0.0.1:5173") // Frontend Dev Server
+//        .AllowCredentials()
+//        .WithHeaders("Content-Type");
+//    });
+//});
 
 builder.Services.AddControllers();
 
@@ -99,12 +99,11 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors("sexy");
-}
+//}
 
 app.UseHttpsRedirection();
 

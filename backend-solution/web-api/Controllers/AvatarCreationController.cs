@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using web_api.GameModel.AvatarModel;
+using web_api.GameModel.Creatures;
 using web_api.Services;
 
 namespace web_api.Controllers
@@ -51,6 +54,30 @@ namespace web_api.Controllers
             // return Ok
 
             return Ok();
+        }
+
+
+        [HttpPost("api/create-avatar")]
+        [Authorize]
+        public async Task<ActionResult> SetAvatar([FromBody] AvatarDto avatar)
+        {
+            var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
+            var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();
+            if (user != null)
+            {
+                var av = _context.Avatars.Where(a => a.User.Id == user.Id).FirstOrDefault();
+                if (av == null)
+                {
+                    Avatar newAvatar = new Avatar { Name = avatar.Name, User = user };
+                    newAvatar.Fellowship = new GameModel.Party();
+                    _context.Avatars.Add(newAvatar);
+                    await _context.SaveChangesAsync();
+
+                    return Ok();
+                }
+            }
+
+            return BadRequest("You already have an avatar");
         }
     }
 }

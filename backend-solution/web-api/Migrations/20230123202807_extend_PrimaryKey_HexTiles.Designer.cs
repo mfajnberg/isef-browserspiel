@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using web_api;
 
@@ -10,16 +11,17 @@ using web_api;
 namespace web_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230123202807_extend_PrimaryKey_HexTiles")]
+    partial class extend_PrimaryKey_HexTiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("web_api.GameModel.Creatures.Avatar", b =>
+            modelBuilder.Entity("web_api.GameModel.AvatarModel.CreatureBase", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,16 +64,11 @@ namespace web_api.Migrations
                     b.Property<int>("Temperament")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FellowshipId");
 
                     b.HasIndex("PossessorId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Avatars");
                 });
@@ -106,12 +103,12 @@ namespace web_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("AvatarId")
+                    b.Property<int?>("CreatureBaseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AvatarId");
+                    b.HasIndex("CreatureBaseId");
 
                     b.ToTable("ItemBase");
                 });
@@ -240,7 +237,7 @@ namespace web_api.Migrations
                     b.HasDiscriminator().HasValue("SiteObstacle");
                 });
 
-            modelBuilder.Entity("web_api.GameModel.Creatures.Avatar", b =>
+            modelBuilder.Entity("web_api.GameModel.AvatarModel.CreatureBase", b =>
                 {
                     b.HasOne("web_api.GameModel.Party", "Fellowship")
                         .WithMany()
@@ -252,17 +249,9 @@ namespace web_api.Migrations
                         .WithMany()
                         .HasForeignKey("PossessorId");
 
-                    b.HasOne("web_api.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Fellowship");
 
                     b.Navigation("Possessor");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("web_api.GameModel.HexTile", b =>
@@ -276,12 +265,12 @@ namespace web_api.Migrations
 
             modelBuilder.Entity("web_api.GameModel.Items.ItemBase", b =>
                 {
-                    b.HasOne("web_api.GameModel.Creatures.Avatar", null)
+                    b.HasOne("web_api.GameModel.AvatarModel.CreatureBase", null)
                         .WithMany("Backpack")
-                        .HasForeignKey("AvatarId");
+                        .HasForeignKey("CreatureBaseId");
                 });
 
-            modelBuilder.Entity("web_api.GameModel.Creatures.Avatar", b =>
+            modelBuilder.Entity("web_api.GameModel.AvatarModel.CreatureBase", b =>
                 {
                     b.Navigation("Backpack");
                 });

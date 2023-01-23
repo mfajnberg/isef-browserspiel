@@ -19,8 +19,9 @@ namespace web_api.GameModel.AvatarModel
         public int Temperament { get; set; }
         public int Morale { get; set; }
 
-        public Party Fellowship { get; set; }
-        public List<ItemBase> Backpack { get; set; }
+
+        public Party? Fellowship { get; set; }
+        public List<ItemBase>? Backpack { get; set; }
 
         public CreatureBase() { }
 

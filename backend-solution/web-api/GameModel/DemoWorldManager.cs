@@ -14,7 +14,8 @@ namespace web_api.GameModel
                 // validate placement
                 HexTile hexTile = new HexTile()
                 {
-                    AxialCoordinates = item.AxialCoordinates,
+                    AxialQ = item.AxialCoordinates.AxialQ,
+                    AxialR = item.AxialCoordinates.AxialR,
                     Site = CreateSite(item.SiteType)
                 };
 
