@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import PrimeVue from 'primevue/config'
 
 import './style.css'
 
@@ -10,6 +11,7 @@ import { init } from './threejs/init'
 const app = createApp(App)
 const pinia = createPinia()
 
+app.use(PrimeVue)
 app.use(pinia)
 app.mount('#app')
 init("adventure_map", app)

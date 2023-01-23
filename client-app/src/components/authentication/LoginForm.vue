@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
-import { useUIStore } from '../../stores/UIStore';
-import { useGameAssetStore } from '../../stores/GameAssetStore';
-import { requestLogin } from '../../services/AuthService';
-import { Ambience } from '../../services/howlee.js'
+import { useUIStore } from '../../stores/UIStore'
+import { useGameAssetStore } from '../../stores/GameAssetStore'
+import { requestLogin } from '../../services/AuthService'
+import { Ambience } from '../../services/Ambience.js'
 
 const authStore = useAuthStore()
 const uiStore = useUIStore()
@@ -30,7 +30,8 @@ function playSoundPointerUp() {
     assetStore.pointerUpSound.play()
 }
 
-const button_login = ref(null);
+const button_login = ref(null)
+const login_form = ref(null)
 onMounted(() => {
     button_login.value.addEventListener('pointerdown', playSoundPointerDown);
     button_login.value.addEventListener('pointerup', playSoundPointerUp);
@@ -39,12 +40,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <div id="login_form">
+    <div id="login_form" ref="login_form">
         <label>E-Mail Adresse</label>
-        <input v-model="authStore.Email" id="email_address" />
+        <input v-model="authStore.Email" id="email_address" @keyup.enter.native="LogIn"/>
         <label>Passwort</label>
-        <input v-model="authStore.Password" type="password" id="password" />
-        <button ref="button_login" v-on:click="LogIn()">Einloggen</button>
+        <input v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogIn"/>
+        <button id="btn_login" ref="button_login" v-on:click="LogIn()">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
             <input v-model="authStore.stayLoggedIn" type="checkbox" />

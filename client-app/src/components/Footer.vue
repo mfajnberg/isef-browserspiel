@@ -30,10 +30,10 @@ const UIStore = useUIStore()
         
         font-size: 14px;
 
-        background-color: rgb(22, 22, 22);
+        background-color: rgb(0, 0, 0);
     }
     .item {
-        color: grey;
+        color: rgb(53, 53, 53);
         cursor: pointer;
     }
 </style>

@@ -3,7 +3,7 @@ import { useWorldStore } from '../stores/WorldStore'
 import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
 import { initCameraPawn } from './Crew'
-import { initActors, loadWorldCursor } from './ActorManager'
+import { initActors, loadSitePreview } from './ActorManager'
 import { GUI } from 'dat.gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
@@ -40,15 +40,16 @@ export async function init(canvasDomId, vue) {
   function run() {
     requestAnimationFrame(run)
 
-    if (worldStore.changedCursorURL === true) {
-      loadWorldCursor(worldStore.cursorURL, gltfLoader, scene, worldStore)
-      worldStore.changedCursorURL = false
+    if (worldStore.changedPreviewURL === true) {
+      
+      loadSitePreview(gltfLoader, scene, worldStore)
+      worldStore.changedPreviewURL = false
     }
 
     clockStore.getCurrentTime()
-    try {
-      // worldStore.worldmap.sites[0].scene.rotation.y += (0.01) 
-    } catch (e) { }
+    // try {
+    //   worldStore.cursor.rotation.y += (0.01) 
+    // } catch (e) { }
 
     renderer.render(scene, crew.camera)
   }
