@@ -1,14 +1,15 @@
-export async function requestRegis(worldStore) {
+export async function requestWorldSave(worldStore) {
     const options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${localStorage.getItem("token")}`
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
         },
         credentials: 'include',
-        body: JSON.stringify(worldStore.hexTileBuffer)
+        body: JSON.stringify(worldStore.sitesBuffer)
     }
     
+    console.log(localStorage.getItem("token"))
     console.log(options.body)
 
     await fetch("/api/admin/world/init", options)
