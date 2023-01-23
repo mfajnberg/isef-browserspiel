@@ -1,11 +1,10 @@
 <script setup>
-import { Howl } from 'howler';
-import { Ambience } from '../services/howlee.js'
+import { Ambience } from '../services/Ambience.js'
 import { useAuthStore } from '../stores/AuthStore.js'
-import { useUIStore } from '../stores/UIStore.js';
-import { useGameAssetStore } from '../stores/GameAssetStore';
+import { useUIStore } from '../stores/UIStore.js'
+import { useGameAssetStore } from '../stores/GameAssetStore'
 import { LogOut } from '../services/AuthService.js'
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
@@ -94,7 +93,7 @@ import { ref, onMounted } from 'vue';
         align-items: center;
         justify-content: center;
         width: 100vw;
-        height: 20vh;
+        height: 10vh;
         
         background: rgba(0,0,0,0);
 
@@ -109,19 +108,19 @@ import { ref, onMounted } from 'vue';
     #button_home {
         position: absolute;
         left: 25vw;
-        top: 10vh;
+        top: 7vh;
         color: white;
     }
 
     #button_play {
         position: absolute;
-        top: 10vh;
+        top: 7vh;
     }
 
     #logged_in {
         position: absolute;
         right: 25vw;
-        top: 0%;
+        /* top: 0%; */
 
         color: white;
         text-shadow: 
@@ -134,7 +133,7 @@ import { ref, onMounted } from 'vue';
         position: absolute;
         color: red;
         position: fixed;
-        top: 10vh;
+        top: 7vh;
         right: 25vw;
     }    
 @media (max-width: 700px) {

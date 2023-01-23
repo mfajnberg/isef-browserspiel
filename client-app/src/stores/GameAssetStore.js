@@ -13,12 +13,12 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
                     new THREE.TextureLoader().load('grass_texture_3.jpg')],
         pointerDownSound: new Howl({
             src: 'isef_pointer_down.mp3',
-            volume: 1
+            volume: .7
         }),
 
         pointerUpSound: new Howl({
             src: 'isef_pointer_up.mp3',
-            volume: 1
+            volume: .7
         }),
 
         placeObjectSound: new Howl({

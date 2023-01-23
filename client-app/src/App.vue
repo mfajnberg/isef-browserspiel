@@ -57,11 +57,11 @@ import Authenticator from './components/authentication/Authenticator.vue'
     .content {
         display: flex;
         width: 100%;
-        height: 75vh;
+        height: 85vh;
 
         position: relative;
         left: 0%;
-        top: 20vh;
+        top: 10vh;
 
         align-items: center;
         justify-content: center;

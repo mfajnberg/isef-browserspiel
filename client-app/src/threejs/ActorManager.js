@@ -1,17 +1,17 @@
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 import { HexVector } from './HexVector'
 import { Worldmap } from './actors/Worldmap'
 import { HexTile } from './actors/HexTile'
 import { ActorBase } from './actors/ActorBase'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export async function initActors(scene, loader, worldStore, assetStore) {
     // dummy data
-    await worldStore.loadVisibleHexTiles()
+    // await worldStore.loadVisibleHexTiles()
     
     worldStore.worldmap = new Worldmap()
-    const visible = Worldmap.makeHexGridVectors(4)
+    const visible = Worldmap.makeHexGridVectors(5)
     
     await assetStore.loadHex()
 
@@ -19,56 +19,79 @@ export async function initActors(scene, loader, worldStore, assetStore) {
         initHex(loader, scene, worldStore, assetStore, visible[i], i%3)
     }
 
-    loadWorldCursor('tree_cluster_fir_1.glb', loader, scene, worldStore, null)
+    loadHexCursor(loader, scene, worldStore, null)
+    loadSitePreview(loader, scene, worldStore, null)
 }
 
 function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation) {
     const newHex = new HexTile(hexData)
-    var tex
-
-    // 3d model
-    loader.parse(assetStore.getHexModel, '', (loadedHex) => {
-        loadedHex.scene.traverse((child) => {
+    loader.parse(assetStore.getHexModel, '', (loadedObject) => {
+        loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
                     map: assetStore.hexTextures[randomRotation],
                 })
-                tex = child.material
-                tex.map.wrapS = THREE.RepeatWrapping
-                tex.map.wrapT = THREE.ClampToEdgeWrapping
-                tex.map.offset.set(.5, .5)
-                tex.map.repeat.set(.5, .5)
+                child.material.map.wrapS = THREE.RepeatWrapping
+                child.material.map.wrapT = THREE.ClampToEdgeWrapping
+                child.material.map.offset.set(.5, .5)
+                child.material.map.repeat.set(.5, .5)
                 child.receiveShadow = true
             }
         })
-        loadedHex.scene.translateX(hexData.getWorldXFromAxialQ())
-        loadedHex.scene.translateZ(hexData.getWorldZFromAxialR())
-        scene.add(loadedHex.scene)
-        worldStore.intersectables.push(loadedHex.scene)
-        newHex.object3d = loadedHex
-        loadedHex.scene.userData.wrapper = newHex
-        loadedHex.scene.name = `${hexData.Q}|${hexData.R}`
-        worldStore.worldmap.hexGrid.push(newHex)
-
+        loadedObject.scene.translateX(hexData.getWorldXFromAxialQ())
+        loadedObject.scene.translateZ(hexData.getWorldZFromAxialR())
+        loadedObject.scene.userData.Q = hexData.Q
+        loadedObject.scene.userData.R = hexData.R
+        loadedObject.scene.name = `${hexData.Q}|${hexData.R}`
+        scene.add(loadedObject.scene)
+        worldStore.hexes3d.push(loadedObject.scene)
     })
 
 }
 
-export function loadWorldCursor(modelURL, loader, scene, worldStore) {
+function loadHexCursor(loader, scene, worldStore) {
 
-    loader.load(modelURL, (loadedCursor => {
-        loadedCursor.scene.traverse((child) => {
+    loader.load('HexCursor.glb', (loadedObject => {
+        loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
             child.castShadow = true
             }
         })
-        loadedCursor.scene.visible = false
+        worldStore.cursor = loadedObject.scene
+        scene.add(loadedObject.scene)
+    }))
+}
 
-        if (worldStore.cursor != null) {
-            worldStore.cursor.removeFromParent()
+export function loadSitePreview(loader, scene, worldStore) {
+    
+    loader.load(worldStore.previewUrl, (loadedObject => {
+        loadedObject.scene.traverse((child) => {
+            if (child.isMesh) {
+            child.castShadow = true
+            }
+        })
+        loadedObject.scene.visible = false
+
+        if (worldStore.preview != null) {
+            worldStore.preview.removeFromParent()
         }
         
-        worldStore.cursor = loadedCursor.scene
-        scene.add(loadedCursor.scene)
+        worldStore.preview = loadedObject.scene
+        scene.add(loadedObject.scene)
+    }))
+}
+
+export function spawnActor(loader, scene, worldStore, hexVector, modelUrl) {
+    var actor = new ActorBase()
+    loader.load(modelUrl, (loadedObject => {
+        loadedObject.scene.traverse((child) => {
+            if (child.isMesh) {
+            child.castShadow = true
+            }
+        })
+        scene.add(loadedObject.scene)
+        loadedObject.scene.translateX(hexVector.getWorldXFromAxialQ())
+        loadedObject.scene.translateZ(hexVector.getWorldZFromAxialR())
+        loadedObject.scene.userData.hexVector = hexVector
     }))
 }

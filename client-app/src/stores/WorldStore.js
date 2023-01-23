@@ -1,44 +1,55 @@
 import { defineStore } from 'pinia' 
+import { requestRegis } from '../services/WorldEditorService'
 import { HexVector } from '../threejs/HexVector'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
     state: () => ({
-        worldmap: null,
+        hexes3d: [],
 
-        cursorURL: "test",
-        changedCursorURL: false,
         cursor: null,
-        
-        placables: [],
-        intersectables: [],
-        
+
+        previewUrl: "",
+        changedPreviewURL: false,
+        preview: null,
+
         hoveredItem: null,
+
         objectSnapped: false,
 
-        hexDataBuffer: [],
+        sitesBuffer: [],
     }),
     getters: {
         getHexes: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
-        getIntersectables: (state) => state.intersectables,
-        getHovered: (state) => {
+        getIntersectables: (state) => state.hexes3d,
+        getHoveredName: (state) => {
             if (state.hoveredItem != null) {
-                return state.hoveredItem.axial
+                return state.hoveredItem.name
             }
             return ""
             }
     },
     actions: {
-        async loadVisibleHexTiles() {
-                // dummy data:
-                const response = await (await fetch("VisibleHexes_example.json")).json()
-                this.visibleHexData = response          
+        async loadVisibleTiles() {
+            // dummy data:
+            const response = await (await fetch("VisibleHexes_example.json")).json()
+            this.visibleHexData = response          
         },
+
+        getHexTile(axialQ, axialR) {
+            for (let hex of this.hexes3d) {
+                if (hex.userData.Q === axialQ && hex.userData.R === axialR) {
+                    return hex
+                }
+                return null
+            }
+
+        },
+
 
         // EDITOR MODE...
 
-        saveLayout(layoutData, name) {
-            // save to localStorage
+        saveLayout() {
             // post request
         },
 

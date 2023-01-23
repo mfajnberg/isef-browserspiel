@@ -1,11 +1,15 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { useUIStore } from '../../stores/UIStore.js'
+import { useGameAssetStore } from '../../stores/GameAssetStore';
 import { requestRegis } from '../../services/AuthService';
+import { Ambience } from '../../services/Ambience.js'
 
     const authStore = useAuthStore()
-    const UIStore = useUIStore()
+    const uiStore = useUIStore()
+    const assetStore = useGameAssetStore()
+    const ambience = new Ambience()
     var pwdFocused = ref(false)
 
     function switchToLogin() {
@@ -23,7 +27,9 @@ import { requestRegis } from '../../services/AuthService';
         if (authStore.emailValid && authStore.pwdValid && authStore.repeatValid) {
             await requestRegis(authStore)
             if (authStore.authResponse.status == 200) {
-                UIStore.showWorldmap()
+                uiStore.showWorldmap()
+                ambience.music.play()
+                ambience.music.mute(false)
             }
             else {
                 console.log(authStore.authResponse)
@@ -32,7 +38,7 @@ import { requestRegis } from '../../services/AuthService';
         else {
             console.log("invalid form input")
         }
-        UIStore.clickSound.play()
+        assetStore.pointerDownSound.play()
     }
 
 </script>
