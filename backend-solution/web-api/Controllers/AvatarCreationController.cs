@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using web_api.GameModel.AvatarModel;
 using web_api.GameModel.Creatures;
 using web_api.Services;
 
@@ -38,7 +37,7 @@ namespace web_api.Controllers
         [HttpGet("api/create-avatar/choose-premade")]
         public async Task<ActionResult> ChoosePremade(string? name)
         {
-            CreatureBase avatarChoice;
+            Creature avatarChoice;
             try
             {
                 avatarChoice = PremadeAvatars.SelectFromAvatarList(name);
@@ -65,11 +64,11 @@ namespace web_api.Controllers
             var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();
             if (user != null)
             {
-                var av = _context.Avatars.Where(a => a.User.Id == user.Id).FirstOrDefault();
-                if (av == null)
+                if (user.Avatar == null)
                 {
-                    Avatar newAvatar = new Avatar { Name = avatar.Name, User = user };
+                    Avatar newAvatar = new Avatar { Name = avatar.Name };
                     newAvatar.Fellowship = new GameModel.Party();
+                    user.Avatar = newAvatar;
                     _context.Avatars.Add(newAvatar);
                     await _context.SaveChangesAsync();
 

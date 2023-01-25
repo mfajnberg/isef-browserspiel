@@ -1,6 +1,6 @@
 ﻿namespace web_api.GameModel.Items
 {
-    public class ItemBase
+    public class Item
     {
         public int Id { get; set; }
     }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using web_api.GameModel;
-using web_api.GameModel.AvatarModel;
 using web_api.GameModel.Creatures;
 using web_api.GameModel.Sites;
 
@@ -18,10 +17,19 @@ namespace web_api
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<HexTile>().HasKey(h => new { h.AxialQ, h.AxialR });
+
+
+            modelBuilder.Entity<Creature>().HasOne(c => c.Fellowship).WithMany(p => p.Members).HasForeignKey(c => c.FellowshipId);
+
+
         }
 
         public DbSet <User> Users { get; set; }
         public DbSet <Avatar> Avatars { get; set; }
+
+        public DbSet<Creature> Creatures { get; set; }
+
+        public DbSet<Party> Parties { get; set; }
 
         public DbSet<UserConfirmation> Confirmation { get; set; }
 

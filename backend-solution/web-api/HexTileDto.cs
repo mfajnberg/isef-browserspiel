@@ -8,15 +8,5 @@ namespace web_api
     {
         public HexVector AxialCoordinates { get; set; }
         public SiteType SiteType { get; set; }
-        //public HexTileDto(int Q, int R, SiteType siteType)
-        //{
-        //    AxialCoordinates = new HexVector(Q, R);
-        //    SiteType = siteType;
-        //} 
-
-        //public HexTileDto()
-        //{
-
-        //}
     }
 }

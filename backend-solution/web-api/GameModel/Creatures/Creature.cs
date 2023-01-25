@@ -1,11 +1,12 @@
-﻿using web_api.GameModel.Items;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using web_api.GameModel.Items;
 
-namespace web_api.GameModel.AvatarModel
+namespace web_api.GameModel.Creatures
 {
-    public class CreatureBase
+    public class Creature
     {
         public int Id { get; set; }
-        public User? Possessor { get; set; }
+
         public string Name { get; set; }
 
         public int Intellect { get; set; }
@@ -19,11 +20,15 @@ namespace web_api.GameModel.AvatarModel
         public int Temperament { get; set; }
         public int Morale { get; set; }
 
+        
+        public Party Fellowship { get; set; }
+        public int FellowshipId { get; set; }
+        public List<Item>? Backpack { get; set; }
 
-        public Party? Fellowship { get; set; }
-        public List<ItemBase>? Backpack { get; set; }
-
-        public CreatureBase() { }
+        public Creature() 
+        {
+           
+        }
 
     }
 }
