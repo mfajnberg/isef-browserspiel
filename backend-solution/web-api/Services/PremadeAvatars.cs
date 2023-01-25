@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using web_api.GameModel;
-using web_api.GameModel.AvatarModel;
+using web_api.GameModel.Creatures;
 
 namespace web_api.Services
 {
     public static class PremadeAvatars
     {
-        static List<CreatureBase> PremadeOptions = new List<CreatureBase>() {
-            new CreatureBase() {
+        static List<Creature> PremadeOptions = new List<Creature>() {
+            new Creature() {
                 Name = "Leito Froste",
 
                 Intellect = 10,
@@ -22,7 +22,7 @@ namespace web_api.Services
                 Morale = 10,
                 Fellowship = new Party(),
             },
-            new CreatureBase() {
+            new Creature() {
                 Name = "Eliana Dawnbreak",
 
                 Intellect = 13,
@@ -37,7 +37,7 @@ namespace web_api.Services
                 Morale = 0,
                 Fellowship = new Party(),
             },
-            new CreatureBase() {
+            new Creature() {
                 Name = "Marsilio Mirandola",
 
                 Intellect = 17,
@@ -54,14 +54,14 @@ namespace web_api.Services
             }
         };
 
-        public static List<CreatureBase> GetAvatarList()
+        public static List<Creature> GetAvatarList()
         {
             return PremadeOptions;
         }
 
-        public static CreatureBase SelectFromAvatarList(string name)
+        public static Creature SelectFromAvatarList(string name)
         {
-            CreatureBase? result = PremadeOptions.Find(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            Creature? result = PremadeOptions.Find(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
             if (result == null)
             {
                 if (string.IsNullOrEmpty(name))

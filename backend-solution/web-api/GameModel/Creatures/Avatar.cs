@@ -1,10 +1,7 @@
-﻿using web_api.GameModel.AvatarModel;
-
-namespace web_api.GameModel.Creatures
+﻿namespace web_api.GameModel.Creatures
 {
-    public class Avatar : CreatureBase
+    public class Avatar : Creature
     {
-        public User User { get; set; }
-
+        public int irgendwas { get; set; }
     }
 }

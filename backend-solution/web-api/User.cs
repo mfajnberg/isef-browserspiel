@@ -1,4 +1,6 @@
-﻿namespace web_api
+﻿using web_api.GameModel.Creatures;
+
+namespace web_api
 {
     public class User
     {
@@ -25,5 +27,7 @@
         public string? RefreshToken { get; set; }
         public DateTime? TokenCreated { get; set; }
         public DateTime? TokenExpires { get; set; }
+
+        public Avatar Avatar { get; set; }
     }
 }
