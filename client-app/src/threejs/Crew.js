@@ -45,13 +45,9 @@ export function initCameraPawn(canvas, scene, worldStore) {
         let qHov = worldStore.hoveredItem.userData.Q
         let rHov = worldStore.hoveredItem.userData.R
 
-        for (let site of worldStore.sitesBuffer) {
-            let qSite = site.AxialCoordinates.Q
-            let rSite = site.AxialCoordinates.R
-            if (qSite === qHov && rSite === rHov) {
-                console.log(`hex ${qSite}|${rSite} already occupied`)
-                return
-            }
+        if (!worldStore.hoveredItem.userData.free) {
+            console.log(`hex ${qHov}|${rHov} already occupied`)
+            return
         }
         assetStore.placeObjectSound.play()
         worldStore.sitesBuffer.push({
@@ -65,8 +61,8 @@ export function initCameraPawn(canvas, scene, worldStore) {
     })
 
     window.addEventListener('pointerdown', (e) => {
-        if (e.button === 0 && uiStore.showingWorldmap && worldStore.objectSnapped) {
-            if (uiStore.editorMode) {
+        if (e.button === 0 && uiStore.showingWorldmap && worldStore.hoveredItem) {
+            if (uiStore.editorMode && worldStore.preview && worldStore.objectSnapped) {
                 placeActor()
             }
         }
@@ -90,8 +86,10 @@ export function initCameraPawn(canvas, scene, worldStore) {
             vec.setFromMatrixPosition(hex.matrixWorld)
             worldStore.cursor.visible = true
             worldStore.cursor.position.set(point.x, point.y, point.z)
-            if (worldStore.preview && vec.distanceTo(point) < .83) {
-                    worldStore.hoveredItem = hex
+            worldStore.hoveredItem = hex
+            if (worldStore.preview 
+                && hex.userData.free
+                && vec.distanceTo(point) < .82) {
                     worldStore.preview.position.set(vec.x, vec.y, vec.z)
                     worldStore.preview.visible = true
                     worldStore.objectSnapped = true

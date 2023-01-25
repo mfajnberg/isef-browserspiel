@@ -31,6 +31,9 @@ const UIStore = useUIStore()
         font-size: 14px;
 
         background-color: rgb(0, 0, 0);
+        border-top-style: double;
+        border-top-width: 2px;
+        border-top-color: rgba(133, 113, 86, 0.551);
     }
     .item {
         color: rgb(53, 53, 53);

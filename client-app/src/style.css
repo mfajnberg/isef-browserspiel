@@ -48,7 +48,6 @@ h1 {
 
 button {
   display: flex;
-  border-radius: 1px;
   border: 1px solid transparent;
   margin-top: 16px;
   margin-bottom: 10px;
@@ -59,16 +58,22 @@ button {
   font-family: inherit;
   font-style: italic;
   color: rgb(0, 255, 0);
-  background-color: #36221264;
+  background-color: #000000;
+  border-style: outset;
+  border-color: rgb(133, 113, 86);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: rgb(252, 205, 143);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  /* outline: 4px auto -webkit-focus-ring-color; */
+}
+
+button:active {
+  border-style:inset;
 }
 
 .card {

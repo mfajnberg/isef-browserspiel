@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore'
-import { requestWorldSave } from '../../services/WorldEditorService'
+import { requestWorldSave } from '../../services/EditorService'
 
     const uiStore = useUIStore()
     const worldStore = useWorldStore()
@@ -32,17 +32,18 @@ import { requestWorldSave } from '../../services/WorldEditorService'
     function clickSlot(num) {
         if (uiStore.editorMode) {
             if (selected.length != 0) {
-                selected[0].value.style.borderColor = "rgba(133, 113, 86, 0)"
+                selected[0].value.style.borderColor = "rgba(133, 113, 86, 100)"
+                selected[0].value.style.borderStyle = "groove"
                 selected.pop()
             }
             selected.push(slots[num])
+            slots[num].value.style.borderColor = "rgb(252, 205, 143)"
             worldStore.changedPreviewURL = true
             worldStore.previewUrl = previewUrls[num]
-            slots[num].value.style.borderColor = "rgb(252, 205, 143)"
         }
         else {
             if (selected.includes(num)) {
-                slots[num].value.style.borderColor = "rgba(133, 113, 86, 0)"
+                slots[num].value.style.borderColor = "rgba(133, 113, 86, 100)"
                 for (var i = 0; i < selected.length; i++) {
                     if (selected[i] === num) {
                         selected.splice(i, 1)
@@ -65,8 +66,9 @@ import { requestWorldSave } from '../../services/WorldEditorService'
                 }
             })
             slot.value.addEventListener('pointerup', (e) => {
-                if (e.button === 0 && slotPressed === slot) {
+                if (e.button === 0) {
                     assetStore.pointerUpSound.play()
+                    slotPressed.value.style.borderStyle = "outset"
                 }
             })
         }
@@ -101,7 +103,7 @@ import { requestWorldSave } from '../../services/WorldEditorService'
             <div class="slot" ref="slot_4">slot 4</div>
             <div class="slot" ref="slot_5">slot 5</div>
             <div class="slot" ref="slot_6">slot 6</div>
-            <div class="slot" ref="slot_7" id="slot_7">slot 7</div>
+            <div class="slot" ref="slot_7">slot 7</div>
         </div>
         <div id="action_panel">
             <div class="action" ref="action_1" @click="requestWorldSave(worldStore)">action 1</div>
@@ -132,7 +134,6 @@ import { requestWorldSave } from '../../services/WorldEditorService'
     user-select: none;
 }
 
-
 #slot_panel{
     display: flex;
     height: 130px;
@@ -141,7 +142,7 @@ import { requestWorldSave } from '../../services/WorldEditorService'
     left: 0%;
     right: auto;
     background-image: url('leather_texture.jpg');
-    border-style: solid;
+    border-style: groove;
     border-width: 1px;
     border-top-right-radius: 5px;
     border-color: rgb(133, 113, 86);
@@ -160,7 +161,7 @@ import { requestWorldSave } from '../../services/WorldEditorService'
     cursor: pointer;
 } .slot {
     align-self: center;
-    margin: 1px;
+    /* margin: -.5px; */
     width: 100px;
     height: 130px;
 
@@ -168,14 +169,19 @@ import { requestWorldSave } from '../../services/WorldEditorService'
     pointer-events: all;
     user-select: none;
 
-    border-style:solid;
+    border-style: groove;
     border-width: 1px;
-    border-color: rgba(133, 113, 86, 0);
-} #slot_7 {
-    margin-right: 0;
-    border-top-right-radius: 5px;
-}
+    border-color: rgba(133, 113, 86, 100);
+    
+    box-shadow: 0px 0px 7px -3px rgba(133, 113, 86, 0.551) inset;
 
+    /* transition: border-color 0.15s; */
+
+} .slot:active {
+    border-style: inset;
+    /* box-shadow: 10px 14px 16px -4px black inset; */
+    margin-top: 2px;
+}
 #action_panel {
     grid-row: 3 / 5;
     grid-column: 8;

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { useUIStore } from '../../stores/UIStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore';
@@ -11,6 +11,7 @@ import { Ambience } from '../../services/Ambience.js'
     const assetStore = useGameAssetStore()
     const ambience = new Ambience()
     var pwdFocused = ref(false)
+    var mailNotifSent = ref(false)
 
     function switchToLogin() {
         authStore.hideRegisForm()
@@ -27,7 +28,7 @@ import { Ambience } from '../../services/Ambience.js'
         if (authStore.emailValid && authStore.pwdValid && authStore.repeatValid) {
             await requestRegis(authStore)
             if (authStore.authResponse.status == 200) {
-                uiStore.showWorldmap()
+                mailNotifSent.value = true
                 ambience.music.play()
                 ambience.music.mute(false)
             }
@@ -44,7 +45,7 @@ import { Ambience } from '../../services/Ambience.js'
 </script>
 
 <template>
-    <div id="registration_form">
+    <div id="registration_form" v-if="!mailNotifSent">
         <div class="item email">
             <label>E-Mail Adresse</label>
             <input @input="authStore.updateValidation()" v-model="authStore.Email" type="text" id="email_address"/> 
@@ -60,16 +61,21 @@ import { Ambience } from '../../services/Ambience.js'
             <span v-if="!authStore.pwdValid && pwdFocused" class="invalid_input"> 6-20 Zeichen, mind. 1x Zahl, Groß- & Kleinbuchstabe </span>
         </div>
         
-        <div class="item repeat">
+        <div class="item repeat" v-if="authStore.showingRegisForm">
             <label> Passwort wiederholen </label>
             <input @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password"/>
             <span class="valid_input">⠀</span>
         </div>
     </div>
-    <button @click="clickRegis()">
+    <div id="mail_notif_sent" v-if="mailNotifSent">
+        Aktiviere dein Konto über den Validierungs-Link in deinem E-Mail Postfach.
+        <br/>
+        (Es kann teilweise ein paar Minuten dauern, bis die E-Mail ankommt.)
+    </div>
+    <button @click="clickRegis()" v-if="!mailNotifSent">
         jetzt registrieren
     </button>
-    <div>
+    <div v-if="!mailNotifSent">
         Bereits registriert?
         <a @click="switchToLogin" style="cursor: pointer;">Jetzt einloggen!</a>
     </div>

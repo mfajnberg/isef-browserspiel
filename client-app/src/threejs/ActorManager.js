@@ -42,6 +42,7 @@ function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation)
         loadedObject.scene.translateZ(hexData.getWorldZFromAxialR())
         loadedObject.scene.userData.Q = hexData.Q
         loadedObject.scene.userData.R = hexData.R
+        loadedObject.scene.userData.free = true
         loadedObject.scene.name = `${hexData.Q}|${hexData.R}`
         scene.add(loadedObject.scene)
         worldStore.hexes3d.push(loadedObject.scene)
@@ -82,7 +83,6 @@ export function loadSitePreview(loader, scene, worldStore) {
 }
 
 export function spawnActor(loader, scene, worldStore, hexVector, modelUrl) {
-    var actor = new ActorBase()
     loader.load(modelUrl, (loadedObject => {
         loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
@@ -90,8 +90,18 @@ export function spawnActor(loader, scene, worldStore, hexVector, modelUrl) {
             }
         })
         scene.add(loadedObject.scene)
+
         loadedObject.scene.translateX(hexVector.getWorldXFromAxialQ())
         loadedObject.scene.translateZ(hexVector.getWorldZFromAxialR())
         loadedObject.scene.userData.hexVector = hexVector
+
+        let hexTile
+        for (let hex of worldStore.hexes3d) {
+            if (hex.userData.Q === hexVector.Q && hex.userData.R === hexVector.R) {
+                hexTile = hex
+            }
+        }
+
+        hexTile.userData.free = false
     }))
 }
