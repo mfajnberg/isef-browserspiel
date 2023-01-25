@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia' 
-import { requestWorldSave } from '../services/WorldEditorService'
+import { requestWorldSave } from '../services/EditorService'
 import { HexVector } from '../threejs/HexVector'
 
 export const useWorldStore = defineStore('WorldStore', {
@@ -20,14 +20,16 @@ export const useWorldStore = defineStore('WorldStore', {
         sitesBuffer: [],
     }),
     getters: {
-        getHexes: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
+        loadHexData: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
         getIntersectables: (state) => state.hexes3d,
         getHoveredName: (state) => {
             if (state.hoveredItem != null) {
                 return state.hoveredItem.name
             }
             return ""
-            }
+            },
+
+
     },
     actions: {
         async loadVisibleTiles() {
@@ -36,17 +38,10 @@ export const useWorldStore = defineStore('WorldStore', {
             this.visibleHexData = response          
         },
 
+            
         getHexTile(axialQ, axialR) {
-            for (let hex of this.hexes3d) {
-                if (hex.userData.Q === axialQ && hex.userData.R === axialR) {
-                    return hex
-                }
-                return null
-            }
 
         },
-
-
         // EDITOR MODE...
 
         saveLayout() {

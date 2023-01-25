@@ -75,7 +75,9 @@ onMounted(() => {
 
     position: absolute;
     z-index: 100000;
-    border-radius: 6px;
+    border-style: double;
+    border-color: rgb(252, 205, 143);
+    border-width: 1px;
 
     translate: 20px 20px
 
@@ -90,7 +92,7 @@ onMounted(() => {
         padding: 3em;
         background-color: rgba(0, 0, 0, 0.832);
         z-index: 19;
-        border-radius: 6px;
+
     }
     @media (max-width: 700px) {
         #content {
