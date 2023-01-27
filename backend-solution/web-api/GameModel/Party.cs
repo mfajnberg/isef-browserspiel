@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using web_api.GameModel.Creatures;
 using web_api.GameModel.Items;
+using web_api.GameModel.Worldmap;
 
 namespace web_api.GameModel
 {

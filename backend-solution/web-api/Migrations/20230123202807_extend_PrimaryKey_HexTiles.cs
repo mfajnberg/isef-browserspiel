@@ -23,14 +23,14 @@ namespace web_api.Migrations
                 .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
             migrationBuilder.AddColumn<int>(
-                name: "AxialQ",
+                name: "Q",
                 table: "HexTiles",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "AxialR",
+                name: "R",
                 table: "HexTiles",
                 type: "int",
                 nullable: false,
@@ -39,7 +39,7 @@ namespace web_api.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_HexTiles",
                 table: "HexTiles",
-                columns: new[] { "AxialQ", "AxialR" });
+                columns: new[] { "Q", "R" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -49,11 +49,11 @@ namespace web_api.Migrations
                 table: "HexTiles");
 
             migrationBuilder.DropColumn(
-                name: "AxialQ",
+                name: "Q",
                 table: "HexTiles");
 
             migrationBuilder.DropColumn(
-                name: "AxialR",
+                name: "R",
                 table: "HexTiles");
 
             migrationBuilder.AlterColumn<int>(

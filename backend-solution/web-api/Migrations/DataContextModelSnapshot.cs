@@ -19,7 +19,7 @@ namespace web_api.Migrations
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("web_api.GameModel.Creatures.Avatar", b =>
+            modelBuilder.Entity("web_api.GameModel.Creatures.Creature", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,6 +37,10 @@ namespace web_api.Migrations
                     b.Property<int>("Discipline")
                         .HasColumnType("int");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<int>("FellowshipId")
                         .HasColumnType("int");
 
@@ -53,35 +57,27 @@ namespace web_api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("PossessorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Power")
                         .HasColumnType("int");
 
                     b.Property<int>("Temperament")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FellowshipId");
 
-                    b.HasIndex("PossessorId");
+                    b.ToTable("Creatures");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Avatars");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Creature");
                 });
 
             modelBuilder.Entity("web_api.GameModel.HexTile", b =>
                 {
-                    b.Property<int>("AxialQ")
+                    b.Property<int>("Q")
                         .HasColumnType("int");
 
-                    b.Property<int>("AxialR")
+                    b.Property<int>("R")
                         .HasColumnType("int");
 
                     b.Property<int>("Id")
@@ -93,30 +89,35 @@ namespace web_api.Migrations
                     b.Property<bool>("isBlocked")
                         .HasColumnType("tinyint(1)");
 
-                    b.HasKey("AxialQ", "AxialR");
+                    b.HasKey("Q", "R");
 
                     b.HasIndex("SiteId");
 
                     b.ToTable("HexTiles");
                 });
 
-            modelBuilder.Entity("web_api.GameModel.Items.ItemBase", b =>
+            modelBuilder.Entity("web_api.GameModel.Items.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("AvatarId")
+                    b.Property<int?>("CreatureId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PartyId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AvatarId");
+                    b.HasIndex("CreatureId");
 
-                    b.ToTable("ItemBase");
+                    b.HasIndex("PartyId");
+
+                    b.ToTable("Item");
                 });
 
-            modelBuilder.Entity("web_api.GameModel.OngoingInteraction", b =>
+            modelBuilder.Entity("web_api.GameModel.OGIs.OngoingGameplayInteraction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -130,7 +131,7 @@ namespace web_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Interactions");
+                    b.ToTable("OGIs");
                 });
 
             modelBuilder.Entity("web_api.GameModel.Party", b =>
@@ -139,9 +140,30 @@ namespace web_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("DestinationAxialQ")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DestinationAxialR")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LocationAxialQ")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LocationAxialR")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Party");
+                    b.HasIndex("LeaderId");
+
+                    b.HasIndex("DestinationAxialQ", "DestinationAxialR");
+
+                    b.HasIndex("LocationAxialQ", "LocationAxialR");
+
+                    b.ToTable("Parties");
                 });
 
             modelBuilder.Entity("web_api.GameModel.Sites.SiteBase", b =>
@@ -168,6 +190,9 @@ namespace web_api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AvatarId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -205,6 +230,8 @@ namespace web_api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AvatarId");
+
                     b.ToTable("Users");
                 });
 
@@ -223,7 +250,14 @@ namespace web_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Confirmation");
+                    b.ToTable("Confirmations");
+                });
+
+            modelBuilder.Entity("web_api.GameModel.Creatures.Avatar", b =>
+                {
+                    b.HasBaseType("web_api.GameModel.Creatures.Creature");
+
+                    b.HasDiscriminator().HasValue("Avatar");
                 });
 
             modelBuilder.Entity("web_api.GameModel.Sites.SiteInteractive", b =>
@@ -240,29 +274,15 @@ namespace web_api.Migrations
                     b.HasDiscriminator().HasValue("SiteObstacle");
                 });
 
-            modelBuilder.Entity("web_api.GameModel.Creatures.Avatar", b =>
+            modelBuilder.Entity("web_api.GameModel.Creatures.Creature", b =>
                 {
                     b.HasOne("web_api.GameModel.Party", "Fellowship")
-                        .WithMany()
+                        .WithMany("Members")
                         .HasForeignKey("FellowshipId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("web_api.User", "Possessor")
-                        .WithMany()
-                        .HasForeignKey("PossessorId");
-
-                    b.HasOne("web_api.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Fellowship");
-
-                    b.Navigation("Possessor");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("web_api.GameModel.HexTile", b =>
@@ -274,16 +294,63 @@ namespace web_api.Migrations
                     b.Navigation("Site");
                 });
 
-            modelBuilder.Entity("web_api.GameModel.Items.ItemBase", b =>
+            modelBuilder.Entity("web_api.GameModel.Items.Item", b =>
                 {
-                    b.HasOne("web_api.GameModel.Creatures.Avatar", null)
+                    b.HasOne("web_api.GameModel.Creatures.Creature", null)
                         .WithMany("Backpack")
-                        .HasForeignKey("AvatarId");
+                        .HasForeignKey("CreatureId");
+
+                    b.HasOne("web_api.GameModel.Party", null)
+                        .WithMany("Items")
+                        .HasForeignKey("PartyId");
                 });
 
-            modelBuilder.Entity("web_api.GameModel.Creatures.Avatar", b =>
+            modelBuilder.Entity("web_api.GameModel.Party", b =>
+                {
+                    b.HasOne("web_api.GameModel.Creatures.Creature", "Leader")
+                        .WithMany()
+                        .HasForeignKey("LeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("web_api.GameModel.HexTile", "Destination")
+                        .WithMany()
+                        .HasForeignKey("DestinationAxialQ", "DestinationAxialR");
+
+                    b.HasOne("web_api.GameModel.HexTile", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationAxialQ", "LocationAxialR")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Destination");
+
+                    b.Navigation("Leader");
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("web_api.User", b =>
+                {
+                    b.HasOne("web_api.GameModel.Creatures.Avatar", "Avatar")
+                        .WithMany()
+                        .HasForeignKey("AvatarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Avatar");
+                });
+
+            modelBuilder.Entity("web_api.GameModel.Creatures.Creature", b =>
                 {
                     b.Navigation("Backpack");
+                });
+
+            modelBuilder.Entity("web_api.GameModel.Party", b =>
+                {
+                    b.Navigation("Items");
+
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using web_api.Services;
+using web_api.DTOs;
+using web_api.Services.Authentication;
 
 namespace web_api.Controllers
 {
@@ -16,7 +17,7 @@ namespace web_api.Controllers
         }
 
         [HttpPost("api/notification/sendto")]
-        public async Task<ActionResult<string>> SendTo([FromBody] UserDto request)
+        public async Task<ActionResult<string>> SendTo([FromBody] UserDTO request)
         {
             await _notification.SendToAsync("Hallo Welt", "Test - Nachricht", request.Email);
             return Ok("test");

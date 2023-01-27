@@ -79,7 +79,8 @@ onMounted(() => {
     border-color: rgb(252, 205, 143);
     border-width: 1px;
 
-    translate: 20px 20px
+    translate: 20px 20px;
+    user-select: none;
 
 }
 

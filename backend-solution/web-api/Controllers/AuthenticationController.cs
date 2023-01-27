@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using System.Text;
-using web_api.Services;
+using web_api.DTOs;
+using web_api.Services.Authentication;
 
 namespace web_api.Controllers
 {
@@ -24,10 +25,10 @@ namespace web_api.Controllers
         /// </summary>
         /// <response code="200">when the new user has been successfully stored in the database</response>
         /// <response code="409">if the Emailaddress is already stored in the database</response>
-        /// <param name="request">UserDto, with Email and Password</param>
+        /// <param name="request">UserDTO, with Email and Password</param>
         /// <returns></returns>
         [HttpPost("api/user/register")]
-        public async Task<ActionResult<string>> Register([FromBody] UserDto request)
+        public async Task<ActionResult<string>> Register([FromBody] UserDTO request)
         {
 
             // email-addresses are not case sensitive, so the test must ignore case sensitivity
@@ -37,7 +38,7 @@ namespace web_api.Controllers
                 return Conflict("Ein Konto mit dieser E-Mail-Adresse existiert bereits");
             }
 
-            Authentication.CreatePasswordHash(request.Password, out byte[] pwdHash, out byte[] pwdSalt);
+            AuthenticationService.CreatePasswordHash(request.Password, out byte[] pwdHash, out byte[] pwdSalt);
 
             User newUser = new User(request.Email, pwdHash, pwdSalt);
             newUser.RegistrationTime = DateTime.UtcNow;
@@ -48,7 +49,7 @@ namespace web_api.Controllers
             // after saving the dataContext, the User-Id is automaticly set in the newUser-object
             UserConfirmation userConfirmation = new UserConfirmation();
             userConfirmation.UserId = newUser.Id;
-            _context.Confirmation.Add(userConfirmation);
+            _context.Confirmations.Add(userConfirmation);
 
             await _context.SaveChangesAsync();
 
@@ -66,20 +67,20 @@ namespace web_api.Controllers
         /// </summary>
         /// <response code="200">when the user exist, the password is equal and the refresh token is updated </response>
         /// <response code="400">when the user <b>not</b> exists in the database or the given password is unequal to the stored password</response>
-        /// <param name="request">UserDto, with Email and Password</param>
+        /// <param name="request">UserDTO, with Email and Password</param>
         /// <returns></returns>
         [HttpPost("api/user/login")]
-        public async Task<ActionResult<string>> LogIn([FromBody] UserDto request)
+        public async Task<ActionResult<string>> LogIn([FromBody] UserDTO request)
         {
             var user = _context.Users.Where(u => u.Email.ToLower() == request.Email.ToLower()).FirstOrDefault();
-            if (user == null || !Authentication.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            if (user == null || !AuthenticationService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest("Wrong username or password");
 
             if (!user.IsActive)
                 return BadRequest("User isn't confirmed yet");
 
-            string accessToken = Authentication.CreateAccessToken(user, _configuration);
-            var newRefreshToken = Authentication.GenerateRefreshToken(user);
+            string accessToken = AuthenticationService.CreateAccessToken(user, _configuration);
+            var newRefreshToken = AuthenticationService.GenerateRefreshToken(user);
 
             await UpdateRefreshTokenInDbAsync(newRefreshToken, user);
 
@@ -102,8 +103,8 @@ namespace web_api.Controllers
             if (user == null || user.TokenExpires < DateTime.Now)
                 return Unauthorized("Invalid Refresh Token.");
 
-            string accessToken = Authentication.CreateAccessToken(user, _configuration);
-            var newRefreshToken = Authentication.GenerateRefreshToken(user);
+            string accessToken = AuthenticationService.CreateAccessToken(user, _configuration);
+            var newRefreshToken = AuthenticationService.GenerateRefreshToken(user);
 
             await UpdateRefreshTokenInDbAsync(newRefreshToken, user);
 

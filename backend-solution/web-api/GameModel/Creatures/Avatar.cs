@@ -2,6 +2,5 @@
 {
     public class Avatar : Creature
     {
-        public int irgendwas { get; set; }
     }
 }

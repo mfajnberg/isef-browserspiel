@@ -80,10 +80,10 @@ namespace web_api.Migrations
 
             modelBuilder.Entity("web_api.GameModel.HexTile", b =>
                 {
-                    b.Property<int>("AxialQ")
+                    b.Property<int>("Q")
                         .HasColumnType("int");
 
-                    b.Property<int>("AxialR")
+                    b.Property<int>("R")
                         .HasColumnType("int");
 
                     b.Property<int>("Id")
@@ -95,7 +95,7 @@ namespace web_api.Migrations
                     b.Property<bool>("isBlocked")
                         .HasColumnType("tinyint(1)");
 
-                    b.HasKey("AxialQ", "AxialR");
+                    b.HasKey("Q", "R");
 
                     b.HasIndex("SiteId");
 
