@@ -9,7 +9,7 @@ import { requestWorldSave } from '../../services/EditorService'
     const worldStore = useWorldStore()
     const assetStore = useGameAssetStore()
 
-    const previewUrls = ['tree_cluster_fir_1.glb', 'tower_medieval.glb', 'crystals.glb', 'crystals.glb', 'crystals.glb', 'crystals.glb', 'crystals.glb']
+    const previewUrls = ['forest_1.glb', 'cliffs.glb', 'house.glb', 'tent_field_camp.glb', 'crystals.glb', 'chest_lp.glb', 'crystals.glb']
     
     const slot_1 = ref(null);
     const slot_2 = ref(null);
@@ -65,13 +65,12 @@ import { requestWorldSave } from '../../services/EditorService'
                     clickSlot(slots.indexOf(slot))
                 }
             })
-            slot.value.addEventListener('pointerup', (e) => {
-                if (e.button === 0) {
-                    assetStore.pointerUpSound.play()
-                    slotPressed.value.style.borderStyle = "outset"
-                }
-            })
         }
+        document.addEventListener('pointerup', (e) => {
+            if (e.button === 0) {
+                slotPressed.value.style.borderStyle = "outset"
+            }
+        })
         for (let action of actions) {
             action.value.addEventListener('pointerdown', (e) => {
                 if (e.button === 0) {
@@ -144,7 +143,7 @@ import { requestWorldSave } from '../../services/EditorService'
     background-image: url('leather_texture.jpg');
     border-style: groove;
     border-width: 1px;
-    border-top-right-radius: 5px;
+    /* border-top-right-radius: 5px; */
     border-color: rgb(133, 113, 86);
 } #portrait {
     background-image: url('Portrait_Eliana.jpg');
@@ -172,6 +171,7 @@ import { requestWorldSave } from '../../services/EditorService'
     border-style: groove;
     border-width: 1px;
     border-color: rgba(133, 113, 86, 100);
+    /* border-top-right-radius: 6px; */
     
     box-shadow: 0px 0px 7px -3px rgba(133, 113, 86, 0.551) inset;
 

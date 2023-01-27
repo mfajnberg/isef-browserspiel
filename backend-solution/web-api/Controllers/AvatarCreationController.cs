@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using web_api.DTOs;
 using web_api.GameModel.Creatures;
 using web_api.Services;
 
@@ -58,7 +59,7 @@ namespace web_api.Controllers
 
         [HttpPost("api/create-avatar")]
         [Authorize]
-        public async Task<ActionResult> SetAvatar([FromBody] AvatarDto avatar)
+        public async Task<ActionResult> SetAvatar([FromBody] CreatureDTO avatar)
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
             var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();

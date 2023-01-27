@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using web_api.Services;
+using web_api.Services.Authentication;
 
 namespace web_api.Controllers
 {
@@ -28,7 +28,7 @@ namespace web_api.Controllers
         public async Task<ActionResult<string>> Confirm([FromRoute] string confirmationId)
         {
             // check if the requested confimationId is known
-            var confirm = _context.Confirmation.Where(c => c.ConfirmationId == confirmationId).FirstOrDefault();
+            var confirm = _context.Confirmations.Where(c => c.ConfirmationId == confirmationId).FirstOrDefault();
             if (confirm == null)
                 return NotFound();
 

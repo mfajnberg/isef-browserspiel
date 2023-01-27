@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using web_api.DTOs;
 using web_api.GameModel;
+using web_api.GameModel.Creatures;
+using web_api.GameModel.Worldmap;
 
 namespace web_api.Controllers
 {
@@ -25,18 +28,24 @@ namespace web_api.Controllers
             if (user == null)
                 return BadRequest();
 
-            return Ok();
+            Avatar avatar = user.Avatar;
+            HexVector dtoVec = new HexVector(avatar.Fellowship.Location.AxialQ, avatar.Fellowship.Location.AxialR);
+            HexTileDTO dto = new HexTileDTO() { AxialCoordinates = dtoVec };
+
+            List<HexTile> result = await WorldManager.GetSliceAsync(_context, dto);
+
+            return Ok(result);
         }
 
         [HttpPost("travel")]
-        public async Task<ActionResult> TravelTo([FromBody] HexTileDto destination )
+        public async Task<ActionResult> TravelTo([FromBody] HexTileDTO destination )
         {
             var user = GetUserFromClaim();
             if (user?.Avatar?.Fellowship == null)
                 return BadRequest();
 
-            var destinationHex = _context.HexTiles.Where(h => h.AxialR == destination.AxialCoordinates.AxialR 
-                                            && h.AxialQ == destination.AxialCoordinates.AxialQ).FirstOrDefault();
+            var destinationHex = _context.HexTiles.Where(h => h.AxialR == destination.AxialCoordinates.R 
+                                            && h.AxialQ == destination.AxialCoordinates.Q).FirstOrDefault();
 
             if (destinationHex == null)
                 return BadRequest("Destination not found");

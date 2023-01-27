@@ -1,4 +1,4 @@
- using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -8,6 +8,7 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using web_api;
 using web_api.Services;
+using web_api.Services.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,7 +87,7 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.Services.AddHostedService<InteractionClock>();
+builder.Services.AddHostedService<OGIConductor>();
 
 
 var app = builder.Build();
