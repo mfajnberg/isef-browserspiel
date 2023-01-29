@@ -43,11 +43,10 @@ namespace web_api.Services
             {
                 resultBase = await context.TravelOGIs
                     .OrderBy(i => i.ScheduledFor).FirstOrDefaultAsync();
-
-                if (resultBase != null)
-                {
-                    ConsoleLogger.LogInfo(resultBase.ToString());
-                }
+                if (resultBase == null) 
+                    return null;
+                
+                ConsoleLogger.LogInfo(resultBase.ToString());
 
                 switch (resultBase.Type)
                 {

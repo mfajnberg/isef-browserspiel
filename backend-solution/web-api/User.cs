@@ -27,7 +27,6 @@ namespace web_api
         public string? RefreshToken { get; set; }
         public DateTime? TokenCreated { get; set; }
         public DateTime? TokenExpires { get; set; }
-
-        public Avatar Avatar { get; set; }
+        public Avatar? Avatar { get; set; }
     }
 }

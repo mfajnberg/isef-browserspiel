@@ -86,7 +86,11 @@ namespace web_api.Controllers
 
             SetRefreshTokenToCookieData(newRefreshToken);
 
-            return Ok(accessToken);
+            LoginResponse response = new LoginResponse();
+            response.AccessToken = accessToken;
+            response.Avatar = user.Avatar;
+
+            return Ok(response);
         }
 
         /// <summary>

@@ -6,8 +6,8 @@ namespace web_api.Services
 {
     public static class PremadeAvatars
     {
-        static List<Creature> PremadeOptions = new List<Creature>() {
-            new Creature() {
+        static List<Avatar> PremadeOptions = new List<Avatar>() {
+            new Avatar() {
                 Name = "Leito Froste",
 
                 Intellect = 10,
@@ -22,7 +22,7 @@ namespace web_api.Services
                 Morale = 10,
                 Party = new Party(),
             },
-            new Creature() {
+            new Avatar() {
                 Name = "Eliana Dawnbreak",
 
                 Intellect = 13,
@@ -37,7 +37,7 @@ namespace web_api.Services
                 Morale = 0,
                 Party = new Party(),
             },
-            new Creature() {
+            new Avatar() {
                 Name = "Marsilio Mirandola",
 
                 Intellect = 17,
@@ -54,14 +54,14 @@ namespace web_api.Services
             }
         };
 
-        public static List<Creature> GetAvatarList()
+        public static List<Avatar> GetAvatarList()
         {
             return PremadeOptions;
         }
 
-        public static Creature SelectFromAvatarList(string name)
+        public static Avatar SelectFromAvatarList(string name)
         {
-            Creature? result = PremadeOptions.Find(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            Avatar? result = PremadeOptions.Find(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
             if (result == null)
             {
                 if (string.IsNullOrEmpty(name))
