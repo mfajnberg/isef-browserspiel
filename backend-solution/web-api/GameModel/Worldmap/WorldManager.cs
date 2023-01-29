@@ -21,7 +21,10 @@ namespace web_api.GameModel.Worldmap
                     AxialQ = item.AxialCoordinates.Q,
                     AxialR = item.AxialCoordinates.R,
                     Site = CreateSite(item.SiteType)
+                        
                 };
+                if ((int)item.SiteType > 100 && (int)item.SiteType < 200)
+                    hexTile.isBlocked = true;
 
                 context.HexTiles.Add(hexTile);
             }
@@ -47,7 +50,6 @@ namespace web_api.GameModel.Worldmap
 
             }
 
-
             throw new NotImplementedException();
         }
 
@@ -63,7 +65,7 @@ namespace web_api.GameModel.Worldmap
                 vec.R += RelativeZero.AxialCoordinates.R;
                 HexTile? hex = context.HexTiles.Where(h => h.AxialQ == vec.Q && h.AxialR == vec.R).FirstOrDefault();
 
-                // make special
+                // to be replaced with ProcGen
                 if (hex == null)
                 {
                     hex = new HexTile() { AxialQ = vec.Q, AxialR = vec.R };
