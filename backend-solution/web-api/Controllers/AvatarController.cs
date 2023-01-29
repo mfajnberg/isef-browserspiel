@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Xml.Linq;
 using web_api.DTOs;
+using web_api.GameModel;
 using web_api.GameModel.Creatures;
 using web_api.Services;
 
 namespace web_api.Controllers
 {
+    [Authorize]
+    [Route("api/avatar")]
     [ApiController]
-    public class AvatarCreationController : ControllerBase
+    public class AvatarController : ControllerBase
     {
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
-        public AvatarCreationController(DataContext context, IConfiguration configuration)
+        public AvatarController(DataContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -23,7 +27,7 @@ namespace web_api.Controllers
         /// </summary>
         /// <response code="200"></response>
         /// <returns></returns>
-        [HttpGet("api/create-avatar/get-premade-choices")]
+        [HttpGet("choices")]
         public async Task<ActionResult> GetPremadeChoices()
         {
             return Ok(PremadeAvatars.GetAvatarList());
@@ -34,32 +38,8 @@ namespace web_api.Controllers
         /// </summary>
         /// <param name="name">name of the premade character</param>
         /// <returns></returns>
-        // [Authorize]
-        [HttpGet("api/create-avatar/choose-premade")]
-        public async Task<ActionResult> ChoosePremade(string? name)
-        {
-            Creature avatarChoice;
-            try
-            {
-                avatarChoice = PremadeAvatars.SelectFromAvatarList(name);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            // todo: get user from db based on [token, email, cookie]
-            // set avatar for user
-            // save changes
-            // return Ok
-
-            return Ok();
-        }
-
-
-        [HttpPost("api/create-avatar")]
-        [Authorize]
-        public async Task<ActionResult> SetAvatar([FromBody] CreatureDTO avatar)
+        [HttpPost("select")]
+        public async Task<ActionResult> SelectAvatar(string? name)
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
             var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();
@@ -67,17 +47,25 @@ namespace web_api.Controllers
             {
                 if (user.Avatar == null)
                 {
-                    Avatar newAvatar = new Avatar { Name = avatar.Name };
-                    newAvatar.Fellowship = new GameModel.Party();
-                    user.Avatar = newAvatar;
-                    _context.Avatars.Add(newAvatar);
+                    Avatar avatarChoice;
+                    try
+                    {
+                        avatarChoice = (Avatar)PremadeAvatars.SelectFromAvatarList(name);
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+
+                    user.Avatar = avatarChoice;
+                    _context.Avatars.Add(avatarChoice);
                     await _context.SaveChangesAsync();
 
                     return Ok();
                 }
+                return BadRequest("You already have an avatar");
             }
-
-            return BadRequest("You already have an avatar");
+            return BadRequest("User not found");
         }
     }
 }

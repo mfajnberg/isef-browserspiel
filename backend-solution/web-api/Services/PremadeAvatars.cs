@@ -20,7 +20,7 @@ namespace web_api.Services
                 Alignment = 0,
                 Temperament = 5,
                 Morale = 10,
-                Fellowship = new Party(),
+                Party = new Party(),
             },
             new Creature() {
                 Name = "Eliana Dawnbreak",
@@ -35,7 +35,7 @@ namespace web_api.Services
                 Alignment = 5,
                 Temperament = 5,
                 Morale = 0,
-                Fellowship = new Party(),
+                Party = new Party(),
             },
             new Creature() {
                 Name = "Marsilio Mirandola",
@@ -50,7 +50,7 @@ namespace web_api.Services
                 Alignment = -5,
                 Temperament = -10,
                 Morale = 5,
-                Fellowship = new Party(),
+                Party = new Party(),
             }
         };
 

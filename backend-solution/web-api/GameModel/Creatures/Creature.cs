@@ -21,8 +21,8 @@ namespace web_api.GameModel.Creatures
         public int Morale { get; set; }
 
         
-        public Party Fellowship { get; set; }
-        public int FellowshipId { get; set; }
+        public Party Party { get; set; }
+        public int PartyId { get; set; }
         public List<Item>? Backpack { get; set; }
 
         public Creature() 

@@ -18,27 +18,30 @@ namespace web_api
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<HexTile>().HasKey(h => new { h.AxialQ, h.AxialR });
+            modelBuilder.Entity<HexTile>()
+                .HasKey(h => new { h.AxialQ, h.AxialR });
 
-            modelBuilder.Entity<Creature>().HasOne(c => c.Fellowship).WithMany(p => p.Members).HasForeignKey(c => c.FellowshipId);
+            modelBuilder.Entity<Creature>()
+                .HasOne(c => c.Party).WithMany(p => p.Members).HasForeignKey(c => c.PartyId);
 
+            modelBuilder.Entity<OngoingGameplayInteraction>()
+               .HasDiscriminator<InteractionType>("Type")
+               .HasValue<TravelOGI>(InteractionType.Travel);
+
+            modelBuilder.Entity<OngoingGameplayInteraction>()
+                .Property(ogi => ogi.Type).HasConversion(
+                    enumValue => enumValue.ToString(),
+                    stringRep => (InteractionType)Enum.Parse(typeof(InteractionType), stringRep));
         }
 
         public DbSet <User> Users { get; set; }
         public DbSet <Avatar> Avatars { get; set; }
-
         public DbSet<Creature> Creatures { get; set; }
-
         public DbSet<Party> Parties { get; set; }
-
         public DbSet<UserConfirmation> Confirmations { get; set; }
-
-        public DbSet<OngoingGameplayInteraction> OGIs { get; set; }
-
+        public DbSet<TravelOGI> TravelOGIs { get; set; }
         public DbSet<HexTile> HexTiles { get; set; }
-
         public DbSet<SiteInteractive> SitesInteractive { get; set; }
-
         public DbSet<SiteObstacle> SitesObstacle { get; set; }
 
     }

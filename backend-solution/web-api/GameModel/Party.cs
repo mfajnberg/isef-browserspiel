@@ -42,15 +42,12 @@ namespace web_api.GameModel
             return Destination != null;
         }
 
-
         public void UpdateLocation(HexTile location)
         {
             Location = location;
 
             if (location == Destination)
-            {
                 Destination = null;
-            }
         }
 
 

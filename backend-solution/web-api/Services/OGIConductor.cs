@@ -27,34 +27,45 @@ namespace web_api.Services
             {
 
                 ConsoleLogger.LogInfo("Read Database");
-                OngoingGameplayInteraction? interaction = await GetNextInteraction();
+                OngoingGameplayInteraction? interaction = await ExecuteNextOGI();
                 // ToDo: Execute OnGoingInteraction
 
-
-                //Todo: get optimal delay time
+                // Todo: determine optimal delay time
                 await Task.Delay(1000);
             }
         }
 
 
-        private async Task<OngoingGameplayInteraction?> GetNextInteraction()
+        private async Task<OngoingGameplayInteraction?> ExecuteNextOGI()
         {
-            OngoingGameplayInteraction? interactionResult = null;
+            OngoingGameplayInteraction? resultBase = null;
             using (DataContext context = GetDataContext())
             {
+                resultBase = await context.TravelOGIs
+                    .OrderBy(i => i.ScheduledFor).FirstOrDefaultAsync();
 
-                interactionResult = await context.OGIs.OrderBy(i => i.ScheduledAt).FirstOrDefaultAsync();
-
-                if (interactionResult != null)
+                if (resultBase != null)
                 {
-                    ConsoleLogger.LogInfo(interactionResult.ToString());
-                    context.OGIs.Remove(interactionResult);
-                    await context.SaveChangesAsync();
+                    ConsoleLogger.LogInfo(resultBase.ToString());
                 }
+
+                switch (resultBase.Type)
+                {
+                    case InteractionType.Travel:
+                        TravelOGI travelOGI = await context.TravelOGIs
+                            .Where(travel => travel.Id == resultBase.Id).FirstOrDefaultAsync();
+                        await travelOGI.ExecuteSelf(context);
+                        break;
+
+                    //...
+
+                    throw new NotImplementedException();
+                }
+                await context.SaveChangesAsync();
             }
-            return interactionResult;
+            return resultBase;
         }
-        
+
     }
 
 }

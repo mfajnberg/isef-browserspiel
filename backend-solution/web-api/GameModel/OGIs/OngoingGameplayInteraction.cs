@@ -1,18 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace web_api.GameModel.OGIs
 {
-    public class OngoingGameplayInteraction
+    [Table("OGIs")]
+    public abstract class OngoingGameplayInteraction
     {
         public int Id { get; set; }
-
+        public InteractionType Type { get; set; }
         public DateTime ScheduledAt { get; set; }
 
         public DateTime ScheduledFor { get; set; }
 
-        internal bool ValidateRule(DataContext context)
+        internal virtual bool ValidateRule(DataContext context)
         {
             return true;
+        }
+
+        public virtual async Task ExecuteSelf(DataContext context)
+        {
         }
 
         public override string ToString()

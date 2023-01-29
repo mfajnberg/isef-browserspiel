@@ -7,6 +7,7 @@ using System.Security.Claims;
 using web_api.DTOs;
 using web_api.GameModel;
 using web_api.GameModel.Creatures;
+using web_api.GameModel.OGIs;
 using web_api.GameModel.Worldmap;
 
 namespace web_api.Controllers
@@ -21,6 +22,21 @@ namespace web_api.Controllers
         {
             _context= context;
         }
+
+        [HttpGet("get")]
+        public async Task<ActionResult> GetParty()
+        {
+            var user = GetUserFromClaim();
+            var response = user == null ? UnprocessableEntity("User")
+                : user?.Avatar == null ? UnprocessableEntity("Avatar")
+                : user?.Avatar?.Party == null ? UnprocessableEntity("Party")
+                : null;
+            if (response != null)
+                return response;
+
+            return Ok(user.Avatar.Party);
+        }
+
         [HttpGet("vision")]
         public async Task<ActionResult> GetVisibleHexTiles()
         {
@@ -29,7 +45,7 @@ namespace web_api.Controllers
                 return BadRequest();
 
             Avatar avatar = user.Avatar;
-            HexVector dtoVec = new HexVector(avatar.Fellowship.Location.AxialQ, avatar.Fellowship.Location.AxialR);
+            HexVector dtoVec = new HexVector(avatar.Party.Location.AxialQ, avatar.Party.Location.AxialR);
             HexTileDTO dto = new HexTileDTO() { AxialCoordinates = dtoVec };
 
             List<HexTile> result = await WorldManager.GetSliceAsync(_context, dto);
@@ -41,26 +57,27 @@ namespace web_api.Controllers
         public async Task<ActionResult> TravelTo([FromBody] HexTileDTO destination )
         {
             var user = GetUserFromClaim();
-            if (user?.Avatar?.Fellowship == null)
-                return BadRequest();
+            var response = user == null ? UnprocessableEntity("User")
+                : user?.Avatar == null ? UnprocessableEntity("Avatar")
+                : user?.Avatar?.Party == null ? UnprocessableEntity("Party")
+                : null;
+            if (response != null) 
+                return response;
 
             var destinationHex = _context.HexTiles.Where(h => h.AxialR == destination.AxialCoordinates.R 
                                             && h.AxialQ == destination.AxialCoordinates.Q).FirstOrDefault();
-
             if (destinationHex == null)
-                return BadRequest("Destination not found");
+                return UnprocessableEntity("Destination");
 
-            await user.Avatar.Fellowship.StartTravelingAsync(destinationHex, _context);
+            await user.Avatar.Party.StartTravelingAsync(destinationHex, _context);
 
-            //OngoingInteraction interaction = new OngoingInteraction();
-            //interaction.ScheduledAt = DateTime.Now;
-            //interaction.ScheduledFor = DateTime.Now.AddSeconds(7);
-            //_context.Interactions.Add(interaction);
-            //await _context.SaveChangesAsync();
+            TravelOGI travel = new TravelOGI();
+            travel.ScheduledAt = DateTime.Now;
+            travel.ScheduledFor = DateTime.Now.AddSeconds(7); // add rules to calculate travel time
+            _context.TravelOGIs.Add(travel);
+            await _context.SaveChangesAsync();
 
             return Ok();
-
-
         }
 
 

@@ -1,10 +1,6 @@
 import * as THREE from 'three'
 
-import { HexVector } from './HexVector'
-import { Worldmap } from './actors/Worldmap'
-import { HexTile } from './actors/HexTile'
-import { ActorBase } from './actors/ActorBase'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { Worldmap } from './Worldmap'
 
 export async function initActors(scene, loader, worldStore, assetStore) {
     // dummy data
@@ -24,7 +20,6 @@ export async function initActors(scene, loader, worldStore, assetStore) {
 }
 
 function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation) {
-    const newHex = new HexTile(hexData)
     loader.parse(assetStore.getHexModel, '', (loadedObject) => {
         loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
