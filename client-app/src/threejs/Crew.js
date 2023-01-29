@@ -5,7 +5,7 @@ import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
 import { spawnActor } from './ActorManager';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { HexVector } from './HexVector';
+import { HexVector } from '../classes/HexVector';
 
 export function initCameraPawn(canvas, scene, worldStore) {
 

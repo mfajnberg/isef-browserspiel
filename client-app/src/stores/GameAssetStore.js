@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia' 
 import { Howl } from 'howler'
 import * as THREE from 'three'
-import { TextureLoader } from 'three'
 
 export const useGameAssetStore = defineStore('GameAssetStore', {
     id: 'GameAssetStore',
     state: () => ({
-        HexModel: null,
-        HexCursor: null,
+        hexModel: null,
+        hexCursor: null,
         hexTextures: [new THREE.TextureLoader().load('grass_texture_1.jpg'), 
                     new THREE.TextureLoader().load('grass_texture_2.jpg'), 
                     new THREE.TextureLoader().load('grass_texture_3.jpg')],
@@ -28,8 +27,8 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             
     }),
     getters: {
-        getHexModel: (state) => state.HexModel,
-        getHexCursor: (state) => state.HexCursor,
+        getHexModel: (state) => state.hexModel,
+        getHexCursor: (state) => state.hexCursor,
     },
     actions: {
         async loadHex() {
@@ -37,7 +36,7 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             await fetch("HexBase.glb")
             .then((response) => response.arrayBuffer())
             .then(arrayBuffer => {
-                this.HexModel = arrayBuffer
+                this.hexModel = arrayBuffer
             })
         },
         async loadHexCursor() {
@@ -45,7 +44,7 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             await fetch("tree_cluster_fir_1.glb")
             .then((response) => response.arrayBuffer())
             .then(arrayBuffer => {
-                this.HexCursor = arrayBuffer
+                this.hexCursor = arrayBuffer
             })
         },
     },

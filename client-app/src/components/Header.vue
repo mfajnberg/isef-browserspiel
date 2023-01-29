@@ -1,6 +1,7 @@
 <script setup>
-import { Ambience } from '../services/Ambience.js'
+import { Ambience } from '../services/AmbienceService.js'
 import { useAuthStore } from '../stores/AuthStore.js'
+import { usePartyStore } from '../stores/PartyStore';
 import { useUIStore } from '../stores/UIStore.js'
 import { useGameAssetStore } from '../stores/GameAssetStore'
 import { LogOut } from '../services/AuthService.js'
@@ -8,6 +9,7 @@ import { ref, onMounted } from 'vue'
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
+    const partyStore = usePartyStore()
     const assetStore = useGameAssetStore()
 
     const ambience = new Ambience()
@@ -22,13 +24,12 @@ import { ref, onMounted } from 'vue'
             uiStore.showWorldmap()
             if (!ambience.music.playing()) {
                 ambience.music.play()
-            }
-            ambience.music.mute(false)
+            } ambience.music.mute(false)
         }
     }
 
-    function clickLogout(store) {
-        LogOut(store)
+    function clickLogout() {
+        LogOut(authStore, partyStore)
         uiStore.showHome()
         ambience.music.pause()
     }
@@ -72,7 +73,7 @@ import { ref, onMounted } from 'vue'
         <button id="button_play" 
             @click="playGame" 
             ref="button_play"
-            v-show="!uiStore.showingAuthentication && !uiStore.showingWorldmap">
+            v-show="!uiStore.showingAuthentication && !uiStore.showingWorldmap && !uiStore.showingAvatarCreator">
             jetzt spielen
         </button>
 
@@ -80,7 +81,7 @@ import { ref, onMounted } from 'vue'
             home
         </button>
 
-        <button id="button_logout" ref="button_logout" v-show="authStore.loggedIn" @click="clickLogout(authStore)">
+        <button id="button_logout" ref="button_logout" v-show="authStore.loggedIn" @click="clickLogout()">
             ausloggen
         </button>
 

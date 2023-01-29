@@ -9,7 +9,10 @@ import { requestWorldSave } from '../../services/EditorService'
     const worldStore = useWorldStore()
     const assetStore = useGameAssetStore()
 
-    const previewUrls = ['forest_1.glb', 'cliffs.glb', 'house.glb', 'tent_field_camp.glb', 'crystals.glb', 'chest_lp.glb', 'crystals.glb']
+    const previewModelUrls = 
+        ['forest_1.glb', 'cliffs.glb', 'house.glb', 
+        'tent_field_camp.glb', 'crystals.glb', 
+        'chest_lp.glb', 'crystals.glb']
     
     const slot_1 = ref(null);
     const slot_2 = ref(null);
@@ -39,7 +42,7 @@ import { requestWorldSave } from '../../services/EditorService'
             selected.push(slots[num])
             slots[num].value.style.borderColor = "rgb(252, 205, 143)"
             worldStore.changedPreviewURL = true
-            worldStore.previewUrl = previewUrls[num]
+            worldStore.previewUrl = previewModelUrls[num]
         }
         else {
             if (selected.includes(num)) {
@@ -68,7 +71,10 @@ import { requestWorldSave } from '../../services/EditorService'
         }
         document.addEventListener('pointerup', (e) => {
             if (e.button === 0) {
-                slotPressed.value.style.borderStyle = "outset"
+                try {
+                    slotPressed.value.style.borderStyle = "outset"
+                }
+                catch (e) {}
             }
         })
         for (let action of actions) {
@@ -105,10 +111,10 @@ import { requestWorldSave } from '../../services/EditorService'
             <div class="slot" ref="slot_7">slot 7</div>
         </div>
         <div id="action_panel">
-            <div class="action" ref="action_1" @click="requestWorldSave(worldStore)">action 1</div>
-            <div class="action" ref="action_2">action 2</div>
-            <div class="action" ref="action_3">action 3</div>
-            <div class="action" ref="action_4">action 4</div>
+            <button class="action" ref="action_1" @click="requestWorldSave(worldStore)">action 1</button>
+            <button class="action" ref="action_2">action 2</button>
+            <button class="action" ref="action_3">action 3</button>
+            <button class="action" ref="action_4">action 4</button>
         </div>
         <div id="info_hex">{{worldStore.getHoveredName}}</div>
     </div>
@@ -121,6 +127,7 @@ import { requestWorldSave } from '../../services/EditorService'
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 3fr 7fr 12fr 7fr 1fr ;
+    width: 100%;
 }
 
 #clock {

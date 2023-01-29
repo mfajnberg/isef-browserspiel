@@ -34,9 +34,12 @@ const UIStore = useUIStore()
         border-top-style: double;
         border-top-width: 2px;
         border-top-color: rgba(133, 113, 86, 0.551);
+        user-select: none;
+
     }
     .item {
         color: rgb(53, 53, 53);
         cursor: pointer;
+        
     }
 </style>
