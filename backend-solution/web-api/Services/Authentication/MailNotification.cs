@@ -45,7 +45,7 @@ namespace web_api.Services.Authentication
 
                 try
                 {
-                    ConsoleLogger.LogInfo("try to Send Mail async ...");
+                    ConsoleLogger.LogInfo($"trying to Send Mail to {to} ...");
 
                     await client.SendMailAsync(mailMessage);
                     result = true;

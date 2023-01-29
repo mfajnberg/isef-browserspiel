@@ -6,6 +6,5 @@ namespace web_api.DTOs
     {
         public string Email { get; set; }
         public string Password { get; set; }
-        public Avatar Avatar { get; set; }
     }
 }

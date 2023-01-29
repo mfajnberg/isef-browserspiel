@@ -50,7 +50,7 @@ namespace web_api.Controllers
                     Avatar avatarChoice;
                     try
                     {
-                        avatarChoice = (Avatar)PremadeAvatars.SelectFromAvatarList(name);
+                        avatarChoice = PremadeAvatars.SelectFromAvatarList(name);
                     }
                     catch (Exception ex)
                     {

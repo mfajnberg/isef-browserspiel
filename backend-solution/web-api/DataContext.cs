@@ -21,8 +21,8 @@ namespace web_api
             modelBuilder.Entity<HexTile>()
                 .HasKey(h => new { h.AxialQ, h.AxialR });
 
-            modelBuilder.Entity<Creature>()
-                .HasOne(c => c.Party).WithMany(p => p.Members).HasForeignKey(c => c.PartyId);
+            modelBuilder.Entity<Creature>().HasOne(c => c.Party).WithMany(p => p.Members);
+            modelBuilder.Entity<Party>().HasOne(p => p.Leader);
 
             modelBuilder.Entity<OngoingGameplayInteraction>()
                .HasDiscriminator<InteractionType>("Type")

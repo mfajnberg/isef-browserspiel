@@ -8,24 +8,19 @@ namespace web_api.GameModel
 {
     public class Party 
     {
+        [JsonIgnore]
+        public int Id { get; set; }
+        public HexTile Location { get; set; }
+        public HexTile? Destination { get; set; } 
+        public Creature Leader { get; set; }
+        public List<Creature> Members {get ; set;}
+        public List<Item> Items { get; set; }
+
         public Party()
         {
             Items = new List<Item>();
             Members = new List<Creature>();
         }
-
-        public int Id { get; set; }
-
-        public Creature Leader { get; set; }
-
-        public List<Creature> Members {get ; set;}
-
-        public HexTile Location { get; set; }
-
-        public HexTile? Destination { get; set; } 
-
-        public List<Item> Items { get; set; }
-
         public async Task StartTravelingAsync(HexTile _destination, DataContext dataContext)
         {
             Destination = _destination;
