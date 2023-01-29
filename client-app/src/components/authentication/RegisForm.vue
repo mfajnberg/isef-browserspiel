@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore';
 import { requestRegis } from '../../services/AuthService';
-import { Ambience } from '../../services/Ambience.js'
+import { Ambience } from '../../services/AmbienceService.js'
 
     const authStore = useAuthStore()
     const assetStore = useGameAssetStore()

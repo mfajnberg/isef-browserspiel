@@ -1,4 +1,4 @@
-export async function requestTokenRefresh(store) {
+export async function requestTokenRefresh(authStore) {
     const options = {
         method: 'POST',
         headers: {
@@ -6,21 +6,21 @@ export async function requestTokenRefresh(store) {
         },
         credentials: 'include',
         body: JSON.stringify({
-            Email: store.Email,
-            Password: store.Password
+            Email: authStore.Email,
+            Password: authStore.Password
         })
     }
     fetch('/api/user/token-refresh', options).then((response) =>
         response.text().then(function(data) {
             if (response.ok) {
-                store.token = data
-                store.loggedIn = true
-                localStorage.setItem('token', store.token)
+                authStore.token = data
+                authStore.loggedIn = true
+                localStorage.setItem('token', authStore.token)
             }
         })
     )
 }
-export async function requestLogin(store) {
+export async function requestLogin(authStore, partyStore) {
     const options = {
         method: 'POST',
         headers: {
@@ -28,18 +28,18 @@ export async function requestLogin(store) {
         },
         credentials: 'include',
         body: JSON.stringify({
-            Email: store.Email,
-            Password: store.Password
+            Email: authStore.Email,
+            Password: authStore.Password
         })
     }
     fetch('/api/user/login', options).then((response) =>
         response.text().then(function(data) {
-            store.token = data
-            console.log(store.token)
-            store.loggedIn = true
-            if (store.stayLoggedIn) {
-                localStorage.setItem('token', store.token)
-                localStorage.setItem('Email', store.Email)
+            authStore.token = data.accessToken
+            partyStore.avatar = data.avatar
+            authStore.loggedIn = true
+            if (authStore.stayLoggedIn) {
+                localStorage.setItem('token', authStore.token)
+                localStorage.setItem('Email', authStore.Email)
             }
             else {
                 localStorage.removeItem('Email')
@@ -48,7 +48,7 @@ export async function requestLogin(store) {
     )
 }
 
-export async function requestRegis(store) {
+export async function requestRegis(authStore) {
     const options = {
         method: 'POST',
         headers: {
@@ -56,26 +56,27 @@ export async function requestRegis(store) {
         },
         credentials: 'include',
         body: JSON.stringify({
-            Email: store.Email,
-            Password: store.Password
+            Email: authStore.Email,
+            Password: authStore.Password
         })
     }
     await fetch("/api/user/register", options)
     .then((response) => {
-        store.authResponse = response
+        authStore.authResponse = response
     })
     
 }
 
-export function LogOut(store) {
-    store.token = ""
-    store.Email = ""
-    store.Password = ""
-    store.emailValid = false
-    store.pwdValid = false
-    store.repeatValid = false
+export function LogOut(authStore, partyStore) {
+    authStore.token = ""
+    authStore.Email = ""
+    authStore.Password = ""
+    authStore.emailValid = false
+    authStore.pwdValid = false
+    authStore.repeatValid = false
     localStorage.removeItem('token')
     localStorage.removeItem('Email')
-    store.loggedIn = false
-    store.dummyLogin = false
+    authStore.loggedIn = false
+    authStore.dummyLogin = false
+    partyStore.avatar = null
 }

@@ -27,12 +27,11 @@ import Authenticator from './components/authentication/Authenticator.vue'
     <div id="background">
         <Header/>
         <div class="content">
-            <!-- <img src="/border1.png" class="border" id="b4"> -->
             <Authenticator v-show="UIStore.showingAuthentication"/>
-            <AvatarCreator v-if="UIStore.showingAvatarCreator"/>
+            <AvatarCreator id="avatar_creator" v-if="UIStore.showingAvatarCreator"/>
             <canvas canvas id="adventure_map" v-show="UIStore.showingWorldmap"></canvas>
+            <Overlay id="overlay" v-if="UIStore.showingWorldmap"/>
             <Imprint v-if="UIStore.showingImprint"/>
-            <Overlay v-if="UIStore.showingWorldmap" id="overlay"/>
         </div>
         <Footer/>
     </div>
@@ -76,6 +75,12 @@ import Authenticator from './components/authentication/Authenticator.vue'
         position: absolute;
         height: 100%;
         z-index: 11;
+        pointer-events:none;
+    }
+
+    #avatar_creator {
+        position: absolute;
+        z-index: 12;
         pointer-events:none;
     }
 

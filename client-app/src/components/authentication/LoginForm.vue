@@ -1,13 +1,17 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '../../stores/AuthStore.js'
 import { useUIStore } from '../../stores/UIStore'
+import { useAuthStore } from '../../stores/AuthStore.js'
+import { usePartyStore } from '../../stores/PartyStore';
+import { useCreatorStore } from '../../stores/AvatarCreatorStore.js';
 import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestLogin } from '../../services/AuthService'
-import { Ambience } from '../../services/Ambience.js'
+import { Ambience } from '../../services/AmbienceService.js'
 
-const authStore = useAuthStore()
 const uiStore = useUIStore()
+const authStore = useAuthStore()
+const partyStore = usePartyStore()
+const creatorStore = useCreatorStore()
 const assetStore = useGameAssetStore()
 const ambience = new Ambience()
 
@@ -17,9 +21,14 @@ function switchToRegis() {
 }
 
 async function LogIn() {
-    requestLogin(authStore)
-    uiStore.showWorldmap()
-    ambience.music.play()
+    requestLogin(authStore, partyStore)
+    if (partyStore.avatar === null) {
+        uiStore.showAvatarCreator()
+    }
+    else {
+        uiStore.showWorldmap()
+        ambience.music.play()
+    }
 }
 
 
@@ -33,6 +42,7 @@ function playSoundPointerUp() {
 const button_login = ref(null)
 const login_form = ref(null)
 onMounted(() => {
+    creatorStore.getAvatarCreationChoices()
     button_login.value.addEventListener('pointerdown', playSoundPointerDown);
     button_login.value.addEventListener('pointerup', playSoundPointerUp);
 })        
