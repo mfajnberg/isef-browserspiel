@@ -46,7 +46,7 @@ export async function init(canvasDomId, vue) {
       worldStore.changedPreviewURL = false
     }
 
-    clockStore.getCurrentTime()
+    clockStore.updateClock()
     // try {
     //   worldStore.cursor.rotation.y += (0.01) 
     // } catch (e) { }

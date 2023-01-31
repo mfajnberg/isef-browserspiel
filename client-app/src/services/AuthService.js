@@ -1,3 +1,5 @@
+import { fetchGetChoices } from "./AvatarCreatorService"
+
 export async function requestTokenRefresh(authStore) {
     const options = {
         method: 'POST',
@@ -20,7 +22,7 @@ export async function requestTokenRefresh(authStore) {
         })
     )
 }
-export async function requestLogin(authStore, partyStore) {
+export async function requestLogin(authStore, partyStore, creatorStore) {
     const options = {
         method: 'POST',
         headers: {
@@ -32,17 +34,22 @@ export async function requestLogin(authStore, partyStore) {
             Password: authStore.Password
         })
     }
-    fetch('/api/user/login', options).then((response) =>
-        response.text().then(function(data) {
-            authStore.token = data.accessToken
-            partyStore.avatar = data.avatar
-            authStore.loggedIn = true
-            if (authStore.stayLoggedIn) {
-                localStorage.setItem('token', authStore.token)
-                localStorage.setItem('Email', authStore.Email)
-            }
-            else {
-                localStorage.removeItem('Email')
+    await fetch('/api/user/login', options).then((response) =>
+        response.text().then(data => {
+            authStore.authResponse = response
+            authStore.responseStatus = response.status
+            if (response.status === 200) {
+                authStore.loggedIn = true
+                authStore.token = data.AccessToken
+                authStore.userIsAdmin = data.IsAdmin
+                if (authStore.stayLoggedIn) {
+                    localStorage.setItem('token', authStore.token)
+                    localStorage.setItem('Email', authStore.Email)
+                }
+                else {
+                    localStorage.removeItem('Email')
+                }
+                partyStore.avatar = data.avatar
             }
         })
     )
@@ -62,7 +69,6 @@ export async function requestRegis(authStore) {
     }
     await fetch("/api/user/register", options)
     .then((response) => {
-        authStore.authResponse = response
     })
     
 }

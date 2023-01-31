@@ -1,21 +1,24 @@
 import { defineStore } from 'pinia' 
-import { requestAvatarChoices } from '../services/AvatarCreatorService'
+import { fetchGetChoices, fetchPostChoice } from '../services/AvatarCreatorService'
 
 export const useCreatorStore = defineStore('CreatorStore', {
     id: 'CreatorStore',
     state: () => ({
-        statBlocks: []
+        statBlocks: [],
+        creationResponse: null
 
     }),
     getters: {
+        getStatBlocks:(state)=>state.statBlocks,
+        getCreationResponse:(state)=>state.creationResponse
 
     },
     actions: {
-        async getAvatarCreationChoices() {
-            await requestAvatarChoices(this)
+        async fetchAvatarCreationChoices() {
+            await fetchGetChoices(this)
         },
-        async postAvatarChoice() {
-            //...
+        async makeAvatarCreationChoice(name) {
+            await fetchPostChoice(this, name)
         }
     },
 })

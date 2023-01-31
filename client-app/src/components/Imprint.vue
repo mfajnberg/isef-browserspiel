@@ -21,7 +21,14 @@ Impressum vom <a href="https://www.impressum-generator.de">Impressum Generator</
 
 <style scoped>
     .impressum {
+        padding: 5%;
+        max-height: 50%;
+        max-width: 50%;
         overflow: auto;
-        max-height: 100%;
+        color:white;
+        background-color: rgba(0, 0, 0, 0.852);
+        border-style: double;
+        border-color: rgb(133, 113, 86);
+        user-select: none;
     }
 </style>

@@ -83,12 +83,11 @@ const authStore = useAuthStore()
     background-color: rgba(0, 0, 0, 0.832);
 
     position: absolute;
-    z-index: 100000;
+    z-index: 100;
     border-style: double;
-    border-color: rgb(252, 205, 143);
-    border-width: 1px;
+    border-color: rgb(133, 113, 86);
+    border-width: 3px;
 
-    translate: 20px 20px;
     user-select: none;
 
 }
@@ -100,7 +99,6 @@ const authStore = useAuthStore()
         justify-content: center;
         flex-direction: column;
         padding: 3em;
-        background-color: rgba(0, 0, 0, 0.832);
         z-index: 19;
 
     }

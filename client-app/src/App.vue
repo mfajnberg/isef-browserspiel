@@ -8,16 +8,17 @@ import { requestTokenRefresh } from './services/AuthService.js'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import Imprint from './components/Imprint.vue'
-import Overlay from './components/ingame/Overlay.vue'
-import AvatarCreator from './components/ingame/AvatarCreator.vue'
 import Authenticator from './components/authentication/Authenticator.vue'
+import AdminPrompt from './components/authentication/AdminPrompt.vue'
+import AvatarCreator from './components/ingame/AvatarCreator.vue'
+import Overlay from './components/ingame/Overlay.vue'
 
-    const AuthStore = useAuthStore()
-    const UIStore = useUIStore()
+    const authStore = useAuthStore()
+    const uiStore = useUIStore()
     onMounted(() => {
         if (localStorage.token != null) {
-            AuthStore.Email = localStorage.Email
-            requestTokenRefresh(AuthStore)
+            authStore.Email = localStorage.Email
+            requestTokenRefresh(authStore)
         }
         Howler.debug = true 
     })
@@ -27,11 +28,12 @@ import Authenticator from './components/authentication/Authenticator.vue'
     <div id="background">
         <Header/>
         <div class="content">
-            <Authenticator v-show="UIStore.showingAuthentication"/>
-            <AvatarCreator id="avatar_creator" v-if="UIStore.showingAvatarCreator"/>
-            <canvas canvas id="adventure_map" v-show="UIStore.showingWorldmap"></canvas>
-            <Overlay id="overlay" v-if="UIStore.showingWorldmap"/>
-            <Imprint v-if="UIStore.showingImprint"/>
+            <Authenticator v-show="uiStore.getShowingAuthentication"/>
+            <AdminPrompt v-if="uiStore.getShowingAdminPrompt"/>
+            <AvatarCreator id="avatar_creator" v-if="uiStore.getShowingAvatarCreator"/>
+            <canvas canvas id="adventure_map" v-show="uiStore.getShowingWorldmap"></canvas>
+            <Overlay id="overlay" v-if="uiStore.getShowingWorldmap"/>
+            <Imprint v-if="uiStore.getShowingImprint"/>
         </div>
         <Footer/>
     </div>
@@ -79,8 +81,10 @@ import Authenticator from './components/authentication/Authenticator.vue'
     }
 
     #avatar_creator {
-        position: absolute;
-        z-index: 12;
+        position: fixed;
+        z-index: 21;
+        width: 100%;
+        height: 100%;
         pointer-events:none;
     }
 

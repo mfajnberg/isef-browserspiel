@@ -147,6 +147,7 @@ import { requestWorldSave } from '../../services/EditorService'
     bottom: 5vh;
     left: 0%;
     right: auto;
+    font-style: italic;
     background-image: url('leather_texture.jpg');
     border-style: groove;
     border-width: 1px;

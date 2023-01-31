@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Xml.Linq;
 
 namespace web_api.Controllers
 {
     [ApiController]
+    [Authorize]
+    [Route("api/asset")]
     public class AssetController : ControllerBase
     {
         private readonly IWebHostEnvironment _webHostEnvironment;

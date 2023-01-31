@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { Worldmap } from './Worldmap'
+import { Worldmap } from '../classes/Worldmap'
 
 export async function initActors(scene, loader, worldStore, assetStore) {
     // dummy data
@@ -16,7 +16,10 @@ export async function initActors(scene, loader, worldStore, assetStore) {
     }
 
     loadHexCursor(loader, scene, worldStore, null)
-    loadSitePreview(loader, scene, worldStore, null)
+    try {
+        loadSitePreview(loader, scene, worldStore, null)
+    }
+    catch { }
 }
 
 function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation) {
