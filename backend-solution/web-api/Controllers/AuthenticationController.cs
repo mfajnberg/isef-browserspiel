@@ -8,6 +8,7 @@ using web_api.Services.Authentication;
 namespace web_api.Controllers
 {
     [ApiController]
+    [Route("api/user")]
     public class AuthenticationController : ControllerBase
     {
         private readonly DataContext _context;
@@ -27,7 +28,7 @@ namespace web_api.Controllers
         /// <response code="409">if the Emailaddress is already stored in the database</response>
         /// <param name="request">UserDTO, with Email and Password</param>
         /// <returns></returns>
-        [HttpPost("api/user/register")]
+        [HttpPost("register")]
         public async Task<ActionResult<string>> Register([FromBody] UserDTO request)
         {
 
@@ -69,7 +70,7 @@ namespace web_api.Controllers
         /// <response code="400">when the user <b>not</b> exists in the database or the given password is unequal to the stored password</response>
         /// <param name="request">UserDTO, with Email and Password</param>
         /// <returns></returns>
-        [HttpPost("api/user/login")]
+        [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn([FromBody] UserDTO request)
         {
             var user = _context.Users.Where(u => u.Email.ToLower() == request.Email.ToLower()).FirstOrDefault();
@@ -77,7 +78,7 @@ namespace web_api.Controllers
                 return BadRequest("Wrong username or password");
 
             if (!user.IsActive)
-                return BadRequest("User isn't confirmed yet");
+                return UnprocessableEntity("User isn't confirmed yet");
 
             string accessToken = AuthenticationService.CreateAccessToken(user, _configuration);
             var newRefreshToken = AuthenticationService.GenerateRefreshToken(user);
@@ -89,6 +90,7 @@ namespace web_api.Controllers
             LoginResponse response = new LoginResponse();
             response.AccessToken = accessToken;
             response.Avatar = user.Avatar;
+            response.IsAdmin = user.IsAdmin;
 
             return Ok(response);
         }
@@ -99,7 +101,7 @@ namespace web_api.Controllers
         /// <response code="200"></response>
         /// <response code="401">when the user is unknown, or the refreshToken is expired</response>
         /// <returns></returns>
-        [HttpPost("api/user/token-refresh")]
+        [HttpPost("token-refresh")]
         public async Task<ActionResult<string>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];

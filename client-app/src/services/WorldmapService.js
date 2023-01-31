@@ -1,4 +1,4 @@
-export async function requestStuff(worldStore) {
+export async function fetchGetHexTiles(worldStore) {
     const options = {
         method: 'POST',
         headers: {
@@ -12,8 +12,11 @@ export async function requestStuff(worldStore) {
     console.log(localStorage.getItem("token"))
     console.log(options.body)
 
-    await fetch("/api/world/init", options)
+    await fetch("/api/party/vision", options)
         .then(response => { response.json() })
-        .then(data => { console.log(data) })
+        .then(data => { 
+            worldStore.worldData = data 
+            console.log(data)
+        })
         .catch(error => { console.log(error) })
 }

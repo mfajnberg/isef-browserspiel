@@ -1,4 +1,4 @@
-import { HexVector } from '../classes/HexVector';
+import { HexVector } from './HexVector';
 
 export class Worldmap {
     constructor() {
@@ -6,10 +6,10 @@ export class Worldmap {
         this.sites = []
     }
 
-    findHex(axial) {
-        for (let hex of this.hexGrid) {
-            if (axial.Q == hex.axial.Q) {
-                if (axial.R == hex.axial.R) {
+    static findHex(axial, worldStore) {
+        for (let hex of worldStore.hexes3d) {
+            if (axial.Q == hex.userData.Q) {
+                if (axial.R == hex.userData.R) {
                     return hex
                 }
             }
@@ -28,12 +28,12 @@ export class Worldmap {
         while (currentRing <= radius) {
             directions.forEach(dir => {
                 let unit = new HexVector()
-                
+
                 unit.makeUnitVec(dir)
                 vecCurrent.Q = unit.Q * currentRing
                 vecCurrent.R = unit.R * currentRing
                 result.push(new HexVector(vecCurrent.Q, vecCurrent.R))
-                
+
                 let dirTurned = HexVector.turnDirectionClockwise(dir, 2)
                 unit.makeUnitVec(dirTurned)
                 let vecTurned = new HexVector()
@@ -47,4 +47,10 @@ export class Worldmap {
         }
         return result
     }
+
+    static aStar(start, end, worldStore) {
+        
+
+    }
+        
 }

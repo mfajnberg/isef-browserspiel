@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore';
 import { requestRegis } from '../../services/AuthService';
@@ -15,11 +15,16 @@ import { Ambience } from '../../services/AmbienceService.js'
     function switchToLogin() {
         authStore.hideRegisForm()
         authStore.showLoginForm()
+        authStore.updateValidation()
     }
     
     async function clickRegis() {
         if (authStore.emailValid && authStore.pwdValid && authStore.repeatValid) {
             await requestRegis(authStore)
+
+            // // DEBUG
+            // authStore.authResponse = { status: 200 }
+
             if (authStore.authResponse.status == 200) {
                 mailNotifSent.value = true
                 ambience.music.play()
@@ -27,14 +32,26 @@ import { Ambience } from '../../services/AmbienceService.js'
             }
             else {
                 regisFailed.value = true
+                authStore.updateValidation()
             }
         }
         else {
             console.log("invalid form input")
         }
-        assetStore.pointerDownSound.play()
     }
 
+function playSoundPointerDown() {
+    assetStore.pointerDownSound.play()
+}
+function playSoundPointerUp() {
+    assetStore.pointerUpSound.play()
+}
+
+const button_regis = ref(null)
+onMounted(() => {
+    button_regis.value.addEventListener('pointerdown', playSoundPointerDown);
+    button_regis.value.addEventListener('pointerup', playSoundPointerUp);
+})    
 </script>
 
 <template>
@@ -54,7 +71,7 @@ import { Ambience } from '../../services/AmbienceService.js'
             <span v-if="!authStore.pwdValid && pwdFocused" class="invalid_input"> 6-20 Zeichen, mind. 1x Zahl, Groß- & Kleinbuchstabe </span>
         </div>
         
-        <div class="item repeat" v-if="authStore.showingRegisForm">
+        <div class="item repeat" v-if="authStore.getShowingRegisForm">
             <label> Passwort wiederholen </label>
             <input @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password"/>
             <span class="valid_input">⠀</span>
@@ -72,7 +89,7 @@ import { Ambience } from '../../services/AmbienceService.js'
         <br/>
         oder kontaktiere den Kundensupport.
     </div>
-    <button @click="clickRegis()" v-if="!mailNotifSent && !regisFailed">
+    <button ref="button_regis" @click="clickRegis()" v-if="!mailNotifSent && !regisFailed">
         jetzt registrieren
     </button>
     <div v-if="!mailNotifSent">

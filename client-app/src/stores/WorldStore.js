@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia' 
+import { HexVector } from '../classes/HexVector'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
@@ -6,19 +7,16 @@ export const useWorldStore = defineStore('WorldStore', {
         hexes3d: [],
 
         cursor: null,
-
-        previewUrl: "",
-        changedPreviewURL: false,
         preview: null,
 
         hoveredItem: null,
 
         objectSnapped: false,
-
         sitesBuffer: [],
+
+        worldData: null
     }),
     getters: {
-        loadHexData: (state) => JSON.parse(JSON.stringify(state.visibleHexData)),
         getIntersectables: (state) => state.hexes3d,
         getHoveredName: (state) => {
             if (state.hoveredItem != null) {
@@ -27,21 +25,8 @@ export const useWorldStore = defineStore('WorldStore', {
             return ""
             },
 
-
     },
     actions: {
-        async loadVisibleTiles() {
-            // dummy data:
-            const response = await (await fetch("VisibleHexes_example.json")).json()
-            this.visibleHexData = response          
-        },
-
-            
-        getHexTile(axialQ, axialR) {
-
-        },
-        // EDITOR MODE...
-
         saveLayout() {
             // post request
         },

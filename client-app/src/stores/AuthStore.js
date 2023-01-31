@@ -3,8 +3,6 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('AuthStore', {
     id: 'AuthStore',
     state: () => ({
-        dummyLogin: false,
-        
         showingRegisForm: false,
         showingLoginForm: false,
         
@@ -27,8 +25,13 @@ export const useAuthStore = defineStore('AuthStore', {
         validPwdPattern:  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/,
         validEmailPattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
 
-        authResponse: ""
+        authResponse: null,
+        userIsAdmin: false
     }),
+    getters: {
+        getShowingRegisForm:(state) => state.showingRegisForm,
+        getShowingLoginForm:(state) => state.showingLoginForm,
+    },
     actions: {
 
         showRegisForm() {

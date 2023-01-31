@@ -1,11 +1,12 @@
 import { Creature } from "../classes/Creature"
 
-export async function requestAvatarChoices(creatorStore) {
+export async function fetchGetChoices(creatorStore) {
     const options = {
         method: 'GET',
         headers: {
             'Content-Type': 'text/plain',
-            'Authorization': `Bearer ${localStorage.getItem("token")}`
+            'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            credentials: 'include'
         },
         credentials: 'include',
     }
@@ -16,7 +17,7 @@ export async function requestAvatarChoices(creatorStore) {
         for (let choice of avatarChoices) {
             let avatar = new Creature(
                 choice.name,
-                choice.portrait,
+                choice.description,
                 choice.intellect,
                 choice.discipline,
                 choice.power,
@@ -29,5 +30,23 @@ export async function requestAvatarChoices(creatorStore) {
             )
             creatorStore.statBlocks.push(avatar)
         }
+    })
+}
+
+export async function fetchPostChoice(creatorStore, name) {
+    const options = {
+        method: 'Post',
+        headers: {
+            'Content-Type': 'text/plain',
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        },
+        credentials: 'include',
+        body: {
+            name: name
+        }
+    }
+    await fetch(`api/avatar/select`, options)
+    .then(response => {
+        creatorStore.creationResponse = response
     })
 }

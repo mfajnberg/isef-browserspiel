@@ -9,6 +9,7 @@ using web_api.GameModel.Worldmap;
 namespace web_api.Controllers
 {
     [ApiController]
+    [Route("api/admin")]
     public class AdminController : ControllerBase
     {
         DataContext _context;
@@ -22,7 +23,7 @@ namespace web_api.Controllers
 
         [Authorize]
         [HttpPost]
-        [Route("api/admin/world/init")]
+        [Route("world/init")]
         public async Task<ActionResult> InitWorld(List<HexTileDTO> worldGenData)
         {
             if (!isAuthorized())
@@ -38,7 +39,7 @@ namespace web_api.Controllers
 
         [Authorize]
         [HttpPost]
-        [Route("api/admin/world/get")]
+        [Route("world/get")]
         public async Task<ActionResult> GetSliceToEdit(HexTileDTO RelativeZero)
         {
             if (!isAuthorized())
@@ -50,7 +51,7 @@ namespace web_api.Controllers
 
         [Authorize]
         [HttpDelete]
-        [Route("api/admin/user/delete")]
+        [Route("user/delete")]
         public async Task<ActionResult> DeleteUser()
         {
             if (!isAuthorized())

@@ -15,7 +15,7 @@ import { ref, onMounted } from 'vue'
     const ambience = new Ambience()
 
 
-    function playGame() {
+    function clickPlay() {
         if (!authStore.loggedIn) {
             uiStore.showAuthentication()
             authStore.showLoginForm()
@@ -44,8 +44,10 @@ import { ref, onMounted } from 'vue'
     function playSoundPointerDown() {
         assetStore.pointerDownSound.play()
     }
-    function playSoundPointerUp() {
-        assetStore.pointerUpSound.play()
+    function playSoundPointerUp(event) {
+        if (event.button === 0) {
+            assetStore.pointerUpSound.play()
+        }
     }
 
     const button_play = ref(null);
@@ -71,13 +73,16 @@ import { ref, onMounted } from 'vue'
         </h3>
         
         <button id="button_play" 
-            @click="playGame" 
+            @click="clickPlay" 
             ref="button_play"
             v-show="!uiStore.showingAuthentication && !uiStore.showingWorldmap && !uiStore.showingAvatarCreator">
             jetzt spielen
         </button>
 
-        <button id="button_home" @click="clickHome()" ref="button_home">
+        <button id="button_home" 
+            @click="clickHome()"
+            ref="button_home"
+            v-show="!uiStore.showingHome">
             home
         </button>
 
