@@ -38,6 +38,7 @@ import { ref, onMounted } from 'vue'
         uiStore.showHome()
         authStore.hideRegisForm()
         authStore.hideLoginForm()
+        authStore.updateValidation()
         ambience.music.mute(true)
     }
 
@@ -57,9 +58,9 @@ import { ref, onMounted } from 'vue'
         button_play.value.addEventListener('pointerdown', playSoundPointerDown);
         button_play.value.addEventListener('pointerup', playSoundPointerUp);
         button_home.value.addEventListener('pointerdown', playSoundPointerDown);
-        button_home.value.addEventListener('pointerup', playSoundPointerUp);
+        // button_home.value.addEventListener('pointerup', playSoundPointerUp);
         button_logout.value.addEventListener('pointerdown', playSoundPointerDown);
-        button_logout.value.addEventListener('pointerup', playSoundPointerUp);
+        // button_logout.value.addEventListener('pointerup', playSoundPointerUp);
     })        
 
 

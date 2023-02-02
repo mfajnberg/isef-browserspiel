@@ -7,13 +7,15 @@ import { useCreatorStore } from '../../stores/AvatarCreatorStore.js';
 import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestLogin } from '../../services/AuthService'
 import { Ambience } from '../../services/AmbienceService.js'
-import { fetchGetChoices } from '../../services/AvatarCreatorService';
+import { useWorldStore } from '../../stores/WorldStore';
+import { requestGetHexTiles } from '../../services/WorldmapService';
 
 const uiStore = useUIStore()
 const authStore = useAuthStore()
 const partyStore = usePartyStore()
 const creatorStore = useCreatorStore()
 const assetStore = useGameAssetStore()
+const worldStore = useWorldStore()
 const ambience = new Ambience()
 
 function switchToRegis() {
@@ -23,32 +25,42 @@ function switchToRegis() {
 
 async function LogIn() {
     await requestLogin(authStore, partyStore, creatorStore)
+    let responseStatus = authStore.response.status
 
-    // DEBUG
-    authStore.responseStatus = 200
-    authStore.userIsAdmin = false
-    partyStore.avatar = null
+    // // DEBUG------------------------//
+    // responseStatus = 200            //
+    // authStore.userIsAdmin = true    //  
+    // partyStore.avatar = "null"      //
+    // // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
-    if (authStore.responseStatus === 200) {
+    if (responseStatus === 200) {
         if (partyStore.avatar === null && !authStore.userIsAdmin) {
             console.log("login successful, no avatar and no admin status...")
+
             await creatorStore.fetchAvatarCreationChoices()
+            
             uiStore.showAvatarCreator()
         }
 
         else if (authStore.userIsAdmin == true) {
             console.log("login successful, admin status detected...")
+
             uiStore.showAdminPrompt()
         }
         
         else  {
             console.log("login successful, loading worldmap...")
+            
+            worldStore.ACTION(assetStore)
+
+            await requestGetHexTiles(authStore, worldStore)
+
             uiStore.showWorldmap()
+
             ambience.music.play()
         }
     }
 }
-
 
 function playSoundPointerDown() {
     assetStore.pointerDownSound.play()

@@ -33,20 +33,23 @@ export async function fetchGetChoices(creatorStore) {
     })
 }
 
-export async function fetchPostChoice(creatorStore, name) {
+export async function requestPostChoice(authStore, creatorStore, name) {
     const options = {
         method: 'Post',
         headers: {
-            'Content-Type': 'text/plain',
-            'Authorization': `Bearer ${localStorage.getItem("token")}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authStore.token}`
         },
         credentials: 'include',
-        body: {
+        body: JSON.stringify({
             name: name
-        }
+        })
     }
     await fetch(`api/avatar/select`, options)
     .then(response => {
         creatorStore.creationResponse = response
+        return response.text()
+    }).then(text => {
+        console.log(text)
     })
 }

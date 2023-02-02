@@ -6,11 +6,7 @@ export async function requestTokenRefresh(authStore) {
         headers: {
             "Content-Type": "application/json",
         },
-        credentials: 'include',
-        body: JSON.stringify({
-            Email: authStore.Email,
-            Password: authStore.Password
-        })
+        credentials: 'include'
     }
     fetch('/api/user/token-refresh', options).then((response) =>
         response.text().then(function(data) {
@@ -18,11 +14,15 @@ export async function requestTokenRefresh(authStore) {
                 authStore.token = data
                 authStore.loggedIn = true
                 localStorage.setItem('token', authStore.token)
+                // make sure that gameplay data is delivered at some point as well (probably)
+            }
+            else {
+                console.log(response)
             }
         })
     )
 }
-export async function requestLogin(authStore, partyStore, creatorStore) {
+export async function requestLogin(authStore, partyStore) {
     const options = {
         method: 'POST',
         headers: {
@@ -34,14 +34,19 @@ export async function requestLogin(authStore, partyStore, creatorStore) {
             Password: authStore.Password
         })
     }
-    await fetch('/api/user/login', options).then((response) =>
-        response.text().then(data => {
-            authStore.authResponse = response
-            authStore.responseStatus = response.status
-            if (response.status === 200) {
+    await fetch('/api/user/login', options).then(response => {       
+        authStore.setResponse(response)
+        if (response.status !== 200) {
+            console.log(response.text())
+            // DISPLAY ERROR MSG IN UI
+        }
+        else {
+            response.json().then(LoginResponseDTO => {
+                console.log(LoginResponseDTO)
                 authStore.loggedIn = true
-                authStore.token = data.AccessToken
-                authStore.userIsAdmin = data.IsAdmin
+                authStore.token = LoginResponseDTO.accessToken
+                authStore.userIsAdmin = LoginResponseDTO.isAdmin
+                partyStore.avatar = LoginResponseDTO.avatar
                 if (authStore.stayLoggedIn) {
                     localStorage.setItem('token', authStore.token)
                     localStorage.setItem('Email', authStore.Email)
@@ -49,10 +54,9 @@ export async function requestLogin(authStore, partyStore, creatorStore) {
                 else {
                     localStorage.removeItem('Email')
                 }
-                partyStore.avatar = data.avatar
-            }
-        })
-    )
+            })
+        }
+    })
 }
 
 export async function requestRegis(authStore) {

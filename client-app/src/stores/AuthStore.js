@@ -25,7 +25,7 @@ export const useAuthStore = defineStore('AuthStore', {
         validPwdPattern:  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/,
         validEmailPattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
 
-        authResponse: null,
+        response: null,
         userIsAdmin: false
     }),
     getters: {
@@ -34,6 +34,9 @@ export const useAuthStore = defineStore('AuthStore', {
     },
     actions: {
 
+        setResponse(response) {
+            this.response = response
+        },
         showRegisForm() {
             this.showingRegisForm = true
             this.showingLoginForm = false

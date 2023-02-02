@@ -1,0 +1,35 @@
+[
+    {
+      "Q": 0,
+      "R": 0,
+      "site": null,
+      "isBlocked": false
+    },
+    {
+      "Q": 1,
+      "R": 0,
+      "site": {
+        "id": 3,
+        "type": 100
+      },
+      "isBlocked": false
+    },
+    {
+      "Q": 0,
+      "R": 1,
+      "site": {
+        "id": 2,
+        "type": 100
+      },
+      "isBlocked": false
+    },
+    {
+      "Q": -1,
+      "R": 0,
+      "site": {
+        "id": 4,
+        "type": 100
+      },
+      "isBlocked": false
+    }
+  ]

@@ -17,8 +17,5 @@ export const useCreatorStore = defineStore('CreatorStore', {
         async fetchAvatarCreationChoices() {
             await fetchGetChoices(this)
         },
-        async makeAvatarCreationChoice(name) {
-            await fetchPostChoice(this, name)
-        }
     },
 })

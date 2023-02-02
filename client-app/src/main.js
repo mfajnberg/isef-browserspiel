@@ -5,7 +5,7 @@ import PrimeVue from 'primevue/config'
 import './style.css'
 
 import App from './App.vue'
-import { init } from './threejs/init'
+import { init } from './threejs/3dScript'
 
 
 const app = createApp(App)

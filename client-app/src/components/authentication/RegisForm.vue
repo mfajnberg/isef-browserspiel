@@ -25,7 +25,7 @@ import { Ambience } from '../../services/AmbienceService.js'
             // // DEBUG
             // authStore.authResponse = { status: 200 }
 
-            if (authStore.authResponse.status == 200) {
+            if (authStore.response.status == 200) {
                 mailNotifSent.value = true
                 ambience.music.play()
                 ambience.music.mute(false)

@@ -1,18 +1,16 @@
 import * as THREE from 'three'
 import { useWorldStore } from '../stores/WorldStore'
-import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
 import { initCameraPawn } from './Crew'
 import { initActors, loadSitePreview } from './ActorManager'
 import { GUI } from 'dat.gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
-export async function init(canvasDomId, vue) {
+export async function init(canvasDomId) {
 
   /* setup */
   var worldStore = useWorldStore()
-  var assetStore = useGameAssetStore()
-  var clockStore = useUIStore()
+  var uiStore = useUIStore()
   var crew, canvas, renderer, scene, lights
   const gltfLoader = new GLTFLoader()
   canvas = document.getElementById(canvasDomId)
@@ -22,8 +20,10 @@ export async function init(canvasDomId, vue) {
   lights = crew.lights
   scene.add(lights[0]) // directional
   scene.add(lights[1]) // ambient
-  
-  initActors(scene, gltfLoader, worldStore, assetStore) 
+
+  worldStore.setScene(scene)
+
+  // initActors(scene, worldStore, assetStore)
 
   /* dev help */
   // const AH = new THREE.AxesHelper(100000)
@@ -39,18 +39,13 @@ export async function init(canvasDomId, vue) {
 
   function run() {
     requestAnimationFrame(run)
+    uiStore.updateClock()
 
-    if (worldStore.changedPreviewURL === true) {
-      
+    if (worldStore.changedPreviewURL) {
       loadSitePreview(gltfLoader, scene, worldStore)
       worldStore.changedPreviewURL = false
     }
-
-    clockStore.updateClock()
-    // try {
-    //   worldStore.cursor.rotation.y += (0.01) 
-    // } catch (e) { }
-
+    
     renderer.render(scene, crew.camera)
   }
   run()
