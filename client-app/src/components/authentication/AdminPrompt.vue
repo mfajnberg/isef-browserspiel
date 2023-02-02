@@ -3,10 +3,34 @@ import { ref, onMounted } from 'vue';
 import { useUIStore } from '../../stores/UIStore'
 import { usePartyStore } from '../../stores/PartyStore'
 import { useGameAssetStore } from '../../stores/GameAssetStore';
+import { useWorldStore } from '../../stores/WorldStore';
+import { requestGetWorldSliceAdmin } from '../../services/EditorService'
+import { useAuthStore } from '../../stores/AuthStore';
 
 const uiStore = useUIStore()
+const authStore = useAuthStore()
+const worldStore = useWorldStore()
 const partyStore = usePartyStore()
 const assetStore = useGameAssetStore()
+
+
+async function clickEdit() {
+    worldStore.ACTION(assetStore)
+    await requestGetWorldSliceAdmin(authStore, worldStore)
+    let responseStatus = worldStore.response.status
+    
+    // // DEBUG------------------------//
+    // responseStatus = 200            //
+    // // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+    if (responseStatus === 200) {
+        console.log("loading slice for editing...")
+
+        uiStore.showWorldmap()
+        ambience.music.play()
+    }
+}
+
 
 function playSoundPointerDown() {
     assetStore.pointerDownSound.play()
@@ -30,7 +54,7 @@ onMounted(() => {
         Bitte gib die gewünschten Koordinaten zum editieren ein. <br/><br/>
         <span>Q: <input v-model="partyStore.coordinates.Q"/> <br/></span>
         <span>R: <input v-model="partyStore.coordinates.R"/></span> <br/>
-        <button ref="button_edit">Welt editieren</button>
+        <button ref="button_edit" @click="clickEdit()">Welt editieren</button>
     </div>
 </template>
 

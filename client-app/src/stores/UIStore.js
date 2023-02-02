@@ -14,8 +14,9 @@ export const useUIStore = defineStore('UIStore', {
         showingAvatarCreator: false,
         showingWorldmap: false,
         showingImprint: false,
-        showingHome: true
+        showingHome: true,
 
+        nextUpdate: null // time object, compared in init loop
     }),
     getters: {
         getShowingAuthentication: (state) => state.showingAuthentication,

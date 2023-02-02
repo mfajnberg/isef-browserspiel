@@ -36,11 +36,17 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
     }),
     getters: {
         getHexModel: (state) => state.hexModel,
+        getForestModel: (state) => state.forestModel,
+        getCliffsModel: (state) => state.cliffsModel,
+        getHouseModel: (state) => state.houseModel,
+        getTentModel: (state) => state.tentModel,
+        getChestModel: (state) => state.chestModel,
+        getCrystalModel: (state) => state.crystalModel,
         getHexCursor: (state) => state.hexCursor,
     },
     actions: {
+        // factor out the name of the model to get
         async loadHex() {
-            // await fetch("/model")
             await fetch("HexBase.glb", {
             // await fetch("api/asset/?name=hex.glb", {
                 headers: {
@@ -55,6 +61,19 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             })
         },
         async loadForest() {
+            await fetch("api/asset/?name=forest.glb", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(token)}`,
+                    credentials: 'include',
+                    "Content-Type": "application/octet-stream"
+                }
+            })
+            .then((response) => response.arrayBuffer())
+            .then(arrayBuffer => {
+                this.forestModel = arrayBuffer
+            })
+        },
+        async loadCliffs() {
             await fetch("api/asset/?name=forest.glb", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(token)}`,

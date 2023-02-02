@@ -1,10 +1,34 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { Ambience } from '../../services/AmbienceService';
+import { requestPostChoice } from '../../services/AvatarCreatorService';
+import { requestGetHexTiles } from '../../services/WorldmapService';
+import { useAuthStore } from '../../stores/AuthStore';
 import { useCreatorStore } from '../../stores/AvatarCreatorStore.js';
 import { useGameAssetStore } from '../../stores/GameAssetStore';
+import { useUIStore } from '../../stores/UIStore';
+import { useWorldStore } from '../../stores/WorldStore';
 
+const uiStore = useUIStore()
 const creatorStore = useCreatorStore()
+const authStore = useAuthStore()
 const assetStore = useGameAssetStore()
+const worldStore = useWorldStore()
+const ambience = new Ambience()
+
+async function clickSelectAvatar(name) {
+    // check response
+    requestPostChoice(authStore, creatorStore, name)
+
+    worldStore.ACTION(assetStore)
+
+    await requestGetHexTiles(authStore, worldStore)
+
+    uiStore.showWorldmap()
+
+    ambience.music.play()
+}
+
 
 function playSoundPointerDown() {
     assetStore.pointerDownSound.play()
@@ -54,7 +78,7 @@ onMounted(() => {
             <div class="description">
                 {{ creatorStore.statBlocks[0].Description }}
             </div>
-            <button class="button_select" ref="select_first" @click="creatorStore.makeAvatarCreationChoice('Eliana Dawnbreak')">
+            <button class="button_select" ref="select_first" @click="clickSelectAvatar('Eliana Dawnbreak')">
                 ✓
             </button>
         </div> 
@@ -80,7 +104,7 @@ onMounted(() => {
             <div class="description">
                 {{ creatorStore.statBlocks[1].Description }}
             </div>
-            <button class="button_select" ref="select_second" @click="creatorStore.makeAvatarCreationChoice('Leito Froste')">
+            <button class="button_select" ref="select_second" @click="clickSelectAvatar('Leito Froste')">
                 ✓
             </button>
         </div>
@@ -106,7 +130,7 @@ onMounted(() => {
             <div class="description">
                 {{ creatorStore.statBlocks[2].Description }}
             </div>
-            <button class="button_select" ref="select_third" @click="creatorStore.makeAvatarCreationChoice('Marsilio Mirandola')">
+            <button class="button_select" ref="select_third" @click="clickSelectAvatar('Marsilio Mirandola')">
                 ✓
             </button>
         </div>

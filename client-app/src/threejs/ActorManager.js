@@ -1,15 +1,23 @@
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 import { Worldmap } from '../classes/Worldmap'
 
-export async function initActors(scene, loader, worldStore, assetStore) {
+export async function initActors(scene, worldStore, assetStore) {
     // dummy data
     // await worldStore.loadVisibleHexTiles()
-    
+    const loader = new GLTFLoader()
     worldStore.worldmap = new Worldmap()
-    const visible = Worldmap.makeHexGridVectors(5)
+    const visible = Worldmap.makeHexGridVectors(2)
     
+    // // replace with proper asset interface
     await assetStore.loadHex()
+    // await assetStore.loadForest()
+    // await assetStore.loadCliffs()
+    // await assetStore.loadHouse()
+    // await assetStore.loadTent()
+    // await assetStore.loadChest()
+    // await assetStore.loadCrystal()
 
     for (let i = 0; i < visible.length; i++) {
         initHex(loader, scene, worldStore, assetStore, visible[i], i%3)
@@ -44,6 +52,13 @@ function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation)
         loadedObject.scene.name = `${hexData.Q}|${hexData.R}`
         scene.add(loadedObject.scene)
         worldStore.hexes3d.push(loadedObject.scene)
+        worldStore.sitesBuffer.push({
+            AxialCoordinates: {
+                Q: hexData.Q,
+                R: hexData.R
+            },
+            SiteType: 0
+        })
     })
 
 }
@@ -80,7 +95,7 @@ export function loadSitePreview(loader, scene, worldStore) {
     }))
 }
 
-export function spawnActor(loader, scene, worldStore, hexVector, modelUrl) {
+export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
     loader.load(modelUrl, (loadedObject => {
         loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
@@ -93,6 +108,7 @@ export function spawnActor(loader, scene, worldStore, hexVector, modelUrl) {
         loadedObject.scene.translateZ(hexVector.getWorldZFromAxialR())
         loadedObject.scene.userData.hexVector = hexVector
 
+        // factor out into helper method
         let hexTile
         for (let hex of worldStore.hexes3d) {
             if (hex.userData.Q === hexVector.Q && hex.userData.R === hexVector.R) {
@@ -101,5 +117,15 @@ export function spawnActor(loader, scene, worldStore, hexVector, modelUrl) {
         }
 
         hexTile.userData.free = false
+        
+        worldStore.sitesBuffer.push({
+            Q: hexVector.Q,
+            R: hexVector.R,
+            site: {
+                type: 100
+            }
+        })
+
+        worldStore.sites3d.push(loadedObject.scene)
     }))
 }

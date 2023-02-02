@@ -92,6 +92,9 @@ import { requestWorldSave } from '../../services/EditorService'
         }
     })
 
+    function debug2() {
+        console.log(worldStore.sitesBuffer)
+    }
 </script>
 
 
@@ -102,19 +105,47 @@ import { requestWorldSave } from '../../services/EditorService'
         <!--top_right_info-->
         <div id="slot_panel">
             <div id="portrait" src="Portrait_Eliana.jpg"></div>
-            <div class="slot" ref="slot_1">slot 1</div>
-            <div class="slot" ref="slot_2">slot 2</div>
-            <div class="slot" ref="slot_3">slot 3</div>
-            <div class="slot" ref="slot_4">slot 4</div>
-            <div class="slot" ref="slot_5">slot 5</div>
-            <div class="slot" ref="slot_6">slot 6</div>
-            <div class="slot" ref="slot_7">slot 7</div>
+            <div class="slot" ref="slot_1">
+                <span class="slot_text">
+                    {{1}}
+                </span>
+            </div>
+            <div class="slot" ref="slot_2">
+                <span class="slot_text">
+                    {{2}}
+                </span>
+            </div>
+            <div class="slot" ref="slot_3">
+                <span class="slot_text">
+                    {{3}}
+                </span>
+            </div>
+            <div class="slot" ref="slot_4">
+                <span class="slot_text">
+                    {{4}}
+                </span>
+            </div>
+            <div class="slot" ref="slot_5">
+                <span class="slot_text">
+                    {{5}}
+                </span>
+            </div>
+            <div class="slot" ref="slot_6">
+                <span class="slot_text">
+                    {{6}}
+                </span>
+            </div>
+            <div class="slot" ref="slot_7">
+                <span class="slot_text">
+                    {{7}}
+                </span>
+            </div>
         </div>
         <div id="action_panel">
-            <button class="action" ref="action_1" @click="requestWorldSave(worldStore)">action 1</button>
-            <button class="action" ref="action_2">action 2</button>
-            <button class="action" ref="action_3">action 3</button>
-            <button class="action" ref="action_4">action 4</button>
+            <button class="action" ref="action_1" @click="requestWorldSave(worldStore)">Post Layout</button>
+            <button class="action" ref="action_2" @click="debug2">(action 2)</button>
+            <button class="action" ref="action_3">(action 3)</button>
+            <button class="action" ref="action_4">(action 4)</button>
         </div>
         <div id="info_hex">{{worldStore.getHoveredName}}</div>
     </div>
@@ -167,6 +198,7 @@ import { requestWorldSave } from '../../services/EditorService'
     pointer-events: all;
     cursor: pointer;
 } .slot {
+    display:flex;
     align-self: center;
     /* margin: -.5px; */
     width: 100px;
@@ -189,6 +221,15 @@ import { requestWorldSave } from '../../services/EditorService'
     border-style: inset;
     /* box-shadow: 10px 14px 16px -4px black inset; */
     margin-top: 2px;
+}.slot_text{
+    display: flex;
+    margin: auto;
+    margin-right: 0;
+    margin-bottom: 0;
+    padding: 3px;
+    padding-right: 6px;
+    align-self: flex-end;
+    /* color: white; */
 }
 #action_panel {
     grid-row: 3 / 5;

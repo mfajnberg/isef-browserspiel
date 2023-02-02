@@ -3,12 +3,11 @@ import _ from 'lodash';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
-import { spawnActor } from './ActorManager';
+import { spawnSite } from './ActorManager';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { HexVector } from '../classes/HexVector';
 
 export function initCameraPawn(canvas, scene, worldStore) {
-
     const assetStore = useGameAssetStore()
     const uiStore = useUIStore()
 
@@ -39,6 +38,8 @@ export function initCameraPawn(canvas, scene, worldStore) {
     const _pointer = new THREE.Vector2()
     const _raycaster = new THREE.Raycaster()
 
+    const glbLoader = new GLTFLoader()
+
     var intersects
 
     let placeActor = _.debounce((event) => {
@@ -50,14 +51,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
             return
         }
         assetStore.placeObjectSound.play()
-        worldStore.sitesBuffer.push({
-            AxialCoordinates: {
-                Q: qHov,
-                R: rHov
-            },
-            SiteType: 100
-        })
-        spawnActor(new GLTFLoader(), scene, worldStore, new HexVector(qHov, rHov), worldStore.previewUrl)
+        spawnSite(glbLoader, scene, worldStore, new HexVector(qHov, rHov), worldStore.previewUrl)
     })
 
     window.addEventListener('pointerdown', (e) => {
@@ -73,7 +67,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
         _pointer.y = - (event.offsetY / _renderer.domElement.height) * 2 + 1
 
         _raycaster.setFromCamera(_pointer, _camera)
-        intersects = _raycaster.intersectObjects(worldStore.hexes3d)
+        intersects = _raycaster.intersectObjects(worldStore.getHexes3d)
 
         if (uiStore.showingWorldmap && intersects.length > 0) {
             let hex = intersects[0].object.parent
@@ -109,8 +103,8 @@ export function initCameraPawn(canvas, scene, worldStore) {
         }
     }, .01)
 
-    function getHalfwayPoints(origin) {}
-    function getCornerVectors(origin) {}
+    // function getHalfwayPoints(origin) {}
+    // function getCornerVectors(origin) {}
 
     window.addEventListener('mousemove', updateWorldCursor)
 
