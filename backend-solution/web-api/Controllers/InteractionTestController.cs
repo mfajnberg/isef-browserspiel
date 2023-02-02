@@ -14,22 +14,22 @@ namespace web_api.Controllers
         {
             _context= context;  
         }
-        //[HttpPost]   
-        //public async Task<ActionResult> ScheduleTestInteraction([FromBody]OGIDTO input)
-        //{
-        //    TravelOGI interaction = new TravelOGI();
-        //    interaction.ScheduledFor = input.ScheduledFor;
-        //    interaction.ScheduledAt = DateTime.Now;
+        [HttpPost]
+        public async Task<ActionResult> ScheduleTestInteraction([FromBody] OGIDTO input)
+        {
+            TravelOGI interaction = new TravelOGI();
+            interaction.ScheduledFor = input.ScheduledFor;
+            interaction.ScheduledAt = DateTime.Now;
 
-        //    if (interaction.ValidateRule(_context))
-        //    {
-        //        _context.TravelOGIs.Add(interaction);
-        //        await _context.SaveChangesAsync();
+            if (interaction.ValidateRule(_context))
+            {
+                _context.TravelOGIs.Add(interaction);
+                await _context.SaveChangesAsync();
 
-        //        return Ok(interaction);
-        //    }
-        //    else
-        //        return BadRequest();
-        //}
+                return Ok(interaction);
+            }
+            else
+                return BadRequest();
+        }
     }
 }

@@ -7,9 +7,7 @@ namespace web_api.GameModel.Worldmap
 {
     public class WorldManager
     {
-        private List<SiteBase> _sites { get; set; } = new List<SiteBase>();
-
-        public async Task<bool> InitWorld(DataContext context, List<HexTileDTO> worldGenData)
+        public async Task<bool> updateSliceLayout(DataContext context, List<HexTileDTO> worldGenData)
         {
             foreach (var item in worldGenData)
             {
@@ -21,7 +19,7 @@ namespace web_api.GameModel.Worldmap
                     AxialQ = item.AxialCoordinates.Q,
                     AxialR = item.AxialCoordinates.R,
                     Site = CreateSite(item.SiteType)
-                        
+                    
                 };
                 if ((int)item.SiteType > 100 && (int)item.SiteType < 200)
                     hexTile.isBlocked = true;
@@ -53,31 +51,37 @@ namespace web_api.GameModel.Worldmap
             throw new NotImplementedException();
         }
 
-        public static async Task<List<HexTile>> GetSliceAsync(DataContext context, HexTileDTO RelativeZero, int radius = 5)
+        public static async Task<List<HexTile>> GetSliceAsync(DataContext context, HexTileDTO RelativeZero, int radius = 2)
         {
             List<HexTile> result = new List<HexTile>();
             List<HexVector> gridVectors = HexVector.makeGridVectors(radius);
-            bool createdHex = false;
+            //bool createdHex = false;
 
             foreach (var vec in gridVectors)
             {
                 vec.Q += RelativeZero.AxialCoordinates.Q;
                 vec.R += RelativeZero.AxialCoordinates.R;
-                HexTile? hex = context.HexTiles.Where(h => h.AxialQ == vec.Q && h.AxialR == vec.R).FirstOrDefault();
+                HexTile? hex = context.HexTiles.Include(h => h.Site).Where(h => h.AxialQ == vec.Q && h.AxialR == vec.R).FirstOrDefault();
 
-                // to be replaced with ProcGen
+                /*  // The following is to be replaced with more sophisticated procedural "on the fly" generation.
+                    // It's also broken due to race conditions. Instantiate a seperate context for the write operations.
                 if (hex == null)
                 {
                     hex = new HexTile() { AxialQ = vec.Q, AxialR = vec.R };
                     context.HexTiles.Add(hex);
                     createdHex = true;
                 }
-                result.Add(hex);
+                */
+
+                if (hex != null)
+                    result.Add(hex);
             }
-            if (createdHex)
-                await context.SaveChangesAsync();
+            //if (createdHex)
+            //    await context.SaveChangesAsync();
 
             return result;
         }
+
+
     }
 }

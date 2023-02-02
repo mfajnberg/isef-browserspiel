@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using web_api.DTOs;
 using web_api.Services.Authentication;
@@ -73,7 +74,9 @@ namespace web_api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn([FromBody] UserDTO request)
         {
-            var user = _context.Users.Where(u => u.Email.ToLower() == request.Email.ToLower()).FirstOrDefault();
+            var user = _context.Users.Where(u => u.Email.ToLower() == request.Email.ToLower())
+                .Include(u => u.Avatar) //.ThenInclude(a => a.Party) // etc.
+                    .FirstOrDefault();
             if (user == null || !AuthenticationService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest("Wrong username or password");
 
@@ -87,7 +90,7 @@ namespace web_api.Controllers
 
             SetRefreshTokenToCookieData(newRefreshToken);
 
-            LoginResponse response = new LoginResponse();
+            LoginResponseDTO response = new LoginResponseDTO();
             response.AccessToken = accessToken;
             response.Avatar = user.Avatar;
             response.IsAdmin = user.IsAdmin;

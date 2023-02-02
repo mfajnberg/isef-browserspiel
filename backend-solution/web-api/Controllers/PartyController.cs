@@ -41,14 +41,19 @@ namespace web_api.Controllers
         public async Task<ActionResult> GetVisibleHexTiles()
         {
             var user = GetUserFromClaim();
-            if (user == null)
-                return BadRequest();
+            var response = user == null ? UnprocessableEntity("User")
+                : user?.Avatar == null ? UnprocessableEntity("Avatar")
+                : user?.Avatar?.Party == null ? UnprocessableEntity("Party")
+                : null;
+            if (response != null)
+                return response;
 
             Avatar avatar = user.Avatar;
-            HexVector dtoVec = new HexVector(avatar.Party.Location.AxialQ, avatar.Party.Location.AxialR);
-            HexTileDTO dto = new HexTileDTO() { AxialCoordinates = dtoVec };
 
-            List<HexTile> result = await WorldManager.GetSliceAsync(_context, dto);
+            List<HexTile> result = await WorldManager.GetSliceAsync(_context, 
+                new HexTileDTO() { 
+                    AxialCoordinates = new HexVector(avatar.Party.Location.AxialQ, avatar.Party.Location.AxialR) 
+                });
 
             return Ok(result);
         }

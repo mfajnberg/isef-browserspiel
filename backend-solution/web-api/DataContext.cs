@@ -19,19 +19,23 @@ namespace web_api
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<HexTile>()
-                .HasKey(h => new { h.AxialQ, h.AxialR });
+                .HasKey(hex => new { hex.AxialQ, hex.AxialR });
+            modelBuilder.Entity<HexTile>().HasOne(hex => hex.Site);
 
-            modelBuilder.Entity<Creature>().HasOne(c => c.Party).WithMany(p => p.Members);
-            modelBuilder.Entity<Party>().HasOne(p => p.Leader);
+            modelBuilder.Entity<SiteBase>().HasDiscriminator<SiteType>("Type")
+                .HasValue<SiteBase>(SiteType.Empty)
+                .HasValue<SiteObstacle>(SiteType.Obstacle)
+                .HasValue<SiteInteractive>(SiteType.Interactive);
+            //modelBuilder.Entity<SiteBase>().Property(site => site.Type)
+            //    .HasConversion(enumValue => enumValue.ToString(), stringRep => (SiteType)Enum.Parse(typeof(SiteType), stringRep));
 
-            modelBuilder.Entity<OngoingGameplayInteraction>()
-               .HasDiscriminator<InteractionType>("Type")
-               .HasValue<TravelOGI>(InteractionType.Travel);
+            modelBuilder.Entity<Creature>().HasOne(creature => creature.Party).WithMany(party => party.Members);
 
-            modelBuilder.Entity<OngoingGameplayInteraction>()
-                .Property(ogi => ogi.Type).HasConversion(
-                    enumValue => enumValue.ToString(),
-                    stringRep => (InteractionType)Enum.Parse(typeof(InteractionType), stringRep));
+            modelBuilder.Entity<Party>().HasOne(party => party.Leader);
+
+            modelBuilder.Entity<OngoingGameplayInteraction>().HasDiscriminator<InteractionType>("Type").HasValue<TravelOGI>(InteractionType.Travel);
+            //modelBuilder.Entity<OngoingGameplayInteraction>().Property(ogi => ogi.Type)
+            //    .HasConversion(enumValue => enumValue.ToString(), stringRep => (InteractionType)Enum.Parse(typeof(InteractionType), stringRep));
         }
 
         public DbSet <User> Users { get; set; }

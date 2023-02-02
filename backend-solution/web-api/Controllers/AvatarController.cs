@@ -39,7 +39,7 @@ namespace web_api.Controllers
         /// <param name="name">name of the premade character</param>
         /// <returns></returns>
         [HttpPost("select")]
-        public async Task<ActionResult> SelectAvatar(string? name)
+        public async Task<ActionResult> SelectAvatar([FromBody] string name)
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
             var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();
@@ -59,9 +59,11 @@ namespace web_api.Controllers
 
                     user.Avatar = avatarChoice;
                     _context.Avatars.Add(avatarChoice);
+                    _context.SaveChanges();
+                    avatarChoice.Party.Leader = avatarChoice;
                     await _context.SaveChangesAsync();
 
-                    return Ok();
+                    return Ok("Avatar selected successfully");
                 }
                 return BadRequest("You already have an avatar");
             }
