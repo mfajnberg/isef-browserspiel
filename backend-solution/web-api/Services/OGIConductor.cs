@@ -26,7 +26,7 @@ namespace web_api.Services
             while (!stoppingToken.IsCancellationRequested)
             {
 
-                ConsoleLogger.LogInfo("Read Database");
+                ConsoleLogger.LogInfo("Read Database... " + DateTime.Now.ToString());
                 OngoingGameplayInteraction? interaction = await ExecuteNextOGI();
                 // ToDo: Execute OnGoingInteraction
 
@@ -43,7 +43,7 @@ namespace web_api.Services
             {
                 resultBase = await context.TravelOGIs
                     .OrderBy(i => i.ScheduledFor).FirstOrDefaultAsync();
-                if (resultBase == null) 
+                if (resultBase == null || resultBase.ScheduledFor > DateTime.Now) 
                     return null;
                 
                 ConsoleLogger.LogInfo(resultBase.ToString());

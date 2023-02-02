@@ -8,21 +8,6 @@ namespace web_api.Services
     {
         static List<Avatar> PremadeOptions = new List<Avatar>() {
             new Avatar() {
-                Name = "Leito Froste",
-
-                Intellect = 10,
-                Discipline = 8,
-                Power = 10,
-                Agility = 15,
-                Lucidity = 14,
-                Charisma = 20,
-
-                Alignment = 0,
-                Temperament = 5,
-                Morale = 10,
-                Party = new Party(),
-            },
-            new Avatar() {
                 Name = "Eliana Dawnbreak",
 
                 Intellect = 13,
@@ -35,6 +20,21 @@ namespace web_api.Services
                 Alignment = 5,
                 Temperament = 5,
                 Morale = 0,
+                Party = new Party(),
+            },
+            new Avatar() {
+                Name = "Leito Froste",
+
+                Intellect = 10,
+                Discipline = 8,
+                Power = 10,
+                Agility = 15,
+                Lucidity = 14,
+                Charisma = 20,
+
+                Alignment = 0,
+                Temperament = 5,
+                Morale = 10,
                 Party = new Party(),
             },
             new Avatar() {

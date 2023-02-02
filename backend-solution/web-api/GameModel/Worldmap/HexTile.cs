@@ -7,9 +7,6 @@ namespace web_api.GameModel.Worldmap
 {
     public class HexTile
     {
-        [JsonIgnore]
-        public int Id { get; set; }
-
         public HexVector GetAxialCoordinates() { return new HexVector(AxialQ, AxialR); }
         [Key]
         [JsonPropertyName("Q")]
@@ -18,7 +15,7 @@ namespace web_api.GameModel.Worldmap
         [JsonPropertyName("R")]
         public int AxialR { get; set; }
 
-        public SiteBase? Site { get; set; }
+        public virtual SiteBase? Site { get; set; }
         public bool isBlocked { get; set; } = false;
 
         [JsonIgnore]

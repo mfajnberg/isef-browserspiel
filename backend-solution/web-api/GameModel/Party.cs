@@ -13,7 +13,7 @@ namespace web_api.GameModel
         public int Id { get; set; }
         public HexTile Location { get; set; }
         public HexTile? Destination { get; set; }  // possibly hidden
-        public Creature Leader { get; set; } // possibly hidden
+        public Creature? Leader { get; set; } // possibly hidden
         public List<Creature> Members {get ; set; } // possibly hidden
         public List<Item> Items { get; set; }  // possibly hidden
 

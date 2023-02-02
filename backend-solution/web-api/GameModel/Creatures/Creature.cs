@@ -9,7 +9,7 @@ namespace web_api.GameModel.Creatures
         public int Id { get; set; }
 
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public int Intellect { get; set; }
         public int Discipline { get; set; }
@@ -22,7 +22,7 @@ namespace web_api.GameModel.Creatures
         public int Temperament { get; set; }
         public int Morale { get; set; }
 
-        public Party Party { get; set; }
+        public Party? Party { get; set; }
         public List<Item>? Backpack { get; set; }
 
         public Creature() 

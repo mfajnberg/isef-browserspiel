@@ -23,13 +23,13 @@ namespace web_api.Controllers
 
         [Authorize]
         [HttpPost]
-        [Route("world/init")]
-        public async Task<ActionResult> InitWorld(List<HexTileDTO> worldGenData)
+        [Route("world/save")]
+        public async Task<ActionResult> SaveSliceLayout(List<HexTileDTO> worldGenData)
         {
             if (!isAuthorized())
                 return Unauthorized();
             
-            bool success = await _worldManager.InitWorld(_context, worldGenData);
+            bool success = await _worldManager.updateSliceLayout(_context, worldGenData);
             if (!success)
             {
                 return BadRequest("no");
@@ -57,7 +57,6 @@ namespace web_api.Controllers
             if (!isAuthorized())
                 return Unauthorized();
 
-
             return Ok();
         }
 
@@ -71,7 +70,6 @@ namespace web_api.Controllers
                 if (user.IsAdmin)
                     return true;
             }
-
             return false;
         }
 

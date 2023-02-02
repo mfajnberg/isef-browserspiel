@@ -2,7 +2,7 @@
 
 namespace web_api.DTOs
 {
-    public class LoginResponse
+    public class LoginResponseDTO
     {
         public string AccessToken { get; set; }
         public Avatar? Avatar { get; set; }
