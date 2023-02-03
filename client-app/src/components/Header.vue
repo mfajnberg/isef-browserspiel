@@ -1,37 +1,36 @@
 <script setup>
-import { Ambience } from '../services/AmbienceService.js'
+import { ref, onMounted } from 'vue'
+import { LogOut } from '../services/AuthService.js'
 import { useAuthStore } from '../stores/AuthStore.js'
 import { usePartyStore } from '../stores/PartyStore';
 import { useUIStore } from '../stores/UIStore.js'
 import { useGameAssetStore } from '../stores/GameAssetStore'
-import { LogOut } from '../services/AuthService.js'
-import { ref, onMounted } from 'vue'
+import { useWorldStore } from '../stores/WorldStore';
+import { useCreatorStore } from '../stores/AvatarCreatorStore';
+import { Ambience } from '../stores/000Singletons.js'
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
     const partyStore = usePartyStore()
     const assetStore = useGameAssetStore()
-
+    const worldStore = useWorldStore()
+    const creatorStore = useCreatorStore()
     const ambience = new Ambience()
 
-
-    function clickPlay() {
-        if (!authStore.loggedIn) {
+    async function clickPlay() {
+        if (authStore.loggedIn === false) {
             uiStore.showAuthentication()
             authStore.showLoginForm()
         }
         else {
-            uiStore.showWorldmap()
-            if (!ambience.music.playing()) {
-                ambience.music.play()
-            } ambience.music.mute(false)
+            await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) 
         }
     }
 
     function clickLogout() {
         LogOut(authStore, partyStore)
         uiStore.showHome()
-        ambience.music.pause()
+        ambience.music.stop()
     }
     
     function clickHome() {

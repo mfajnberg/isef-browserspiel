@@ -16,7 +16,10 @@ namespace web_api.GameModel.Worldmap
         public int AxialR { get; set; }
 
         public virtual SiteBase? Site { get; set; }
-        public bool isBlocked { get; set; } = false;
+        public bool IsBlocked { get; set; } = false;
+
+
+        // The following properties help with pathfinding and are thus not persisted
 
         [JsonIgnore]
         [NotMapped]
@@ -30,6 +33,7 @@ namespace web_api.GameModel.Worldmap
         [JsonIgnore]
         [NotMapped]
         public HexTile Previous { get; internal set; }
+
 
         internal IEnumerable<HexTile> GetNeighbors()
         {

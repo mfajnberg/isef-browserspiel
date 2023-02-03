@@ -4,10 +4,14 @@ import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestWorldSave } from '../../services/EditorService'
+import { Sites } from '../../stores/000Singletons'
+import { useAuthStore } from '../../stores/AuthStore'
 
     const uiStore = useUIStore()
+    const authStore = useAuthStore()
     const worldStore = useWorldStore()
     const assetStore = useGameAssetStore()
+    const sites = new Sites()
 
     const previewModelUrls = 
         ['forest_1.glb', 'cliffs.glb', 'house.glb', 
@@ -93,7 +97,7 @@ import { requestWorldSave } from '../../services/EditorService'
     })
 
     function debug2() {
-        console.log(worldStore.sitesBuffer)
+        console.log(sites.buffer)
     }
 </script>
 
@@ -141,8 +145,8 @@ import { requestWorldSave } from '../../services/EditorService'
                 </span>
             </div>
         </div>
-        <div id="action_panel">
-            <button class="action" ref="action_1" @click="requestWorldSave(worldStore)">Post Layout</button>
+        <div id="action_panel" v-if="uiStore.editorMode">
+            <button class="action" ref="action_1" @click="requestWorldSave(authStore)">Post Layout</button>
             <button class="action" ref="action_2" @click="debug2">(action 2)</button>
             <button class="action" ref="action_3">(action 3)</button>
             <button class="action" ref="action_4">(action 4)</button>

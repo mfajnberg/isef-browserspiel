@@ -1,34 +1,25 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Ambience } from '../../services/AmbienceService';
 import { requestPostChoice } from '../../services/AvatarCreatorService';
-import { requestGetHexTiles } from '../../services/WorldmapService';
 import { useAuthStore } from '../../stores/AuthStore';
 import { useCreatorStore } from '../../stores/AvatarCreatorStore.js';
 import { useGameAssetStore } from '../../stores/GameAssetStore';
 import { useUIStore } from '../../stores/UIStore';
 import { useWorldStore } from '../../stores/WorldStore';
+import { usePartyStore } from '../../stores/PartyStore';
 
 const uiStore = useUIStore()
-const creatorStore = useCreatorStore()
 const authStore = useAuthStore()
 const assetStore = useGameAssetStore()
+const partyStore = usePartyStore()
 const worldStore = useWorldStore()
-const ambience = new Ambience()
+const creatorStore = useCreatorStore()
 
 async function clickSelectAvatar(name) {
     // check response
-    requestPostChoice(authStore, creatorStore, name)
-
-    worldStore.ACTION(assetStore)
-
-    await requestGetHexTiles(authStore, worldStore)
-
-    uiStore.showWorldmap()
-
-    ambience.music.play()
+    requestPostChoice(authStore, creatorStore, partyStore, name)
+    uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
 }
-
 
 function playSoundPointerDown() {
     assetStore.pointerDownSound.play()

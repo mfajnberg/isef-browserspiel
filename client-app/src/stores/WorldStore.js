@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia' 
-import { HexVector } from '../classes/HexVector'
 import { requestGetHexTiles } from '../services/WorldmapService'
 import { initActors } from '../threejs/ActorManager'
-import { useGameAssetStore } from './GameAssetStore'
-import { toRaw } from 'vue'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
     state: () => ({
         initialized: false,
 
-        relativeZero: {Q: 0, R: 0},
+        absoluteZeroOffset: {
+            Q: 0, 
+            R: 0
+        },
         
         hexes3d: [],
         scene: null,
@@ -21,7 +21,6 @@ export const useWorldStore = defineStore('WorldStore', {
         hoveredItem: null,
         objectSnapped: false,
         
-        sitesBuffer: [],
         response: null
     }),
     getters: {
@@ -35,14 +34,14 @@ export const useWorldStore = defineStore('WorldStore', {
             }
             return ""
             },
-        getRelativeZero: (state) => state.relativeZero
+        getAbsoluteZeroOffset: (state) => state.absoluteZeroOffset
     },
     actions: {
-        setRelativeZeroQ(val) {
-            this.relativeZero.Q = val
+        setAbsoluteZeroOffset(val) {
+            this.absoluteZeroOffset.Q = val
         },
-        setRelativeZeroR(val) {
-            this.relativeZero.R = val
+        setAbsoluteZeroOffset(val) {
+            this.absoluteZeroOffset.R = val
         },
 
         async fetchWorldData() {

@@ -14,7 +14,7 @@ namespace web_api.GameModel.Worldmap
             this.R = R;
         }
 
-        public static List<HexVector> makeGridVectors(int radius)
+        public static List<HexVector> MakeGridVectors(int radius)
         {
             List<HexVector> result = new List<HexVector>{new HexVector(0, 0)};
             for (int currentRing = 1; currentRing <= radius; currentRing++) 

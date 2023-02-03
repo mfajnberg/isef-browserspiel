@@ -29,12 +29,14 @@ namespace web_api.Controllers
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
                 : user?.Avatar == null ? UnprocessableEntity("Avatar")
-                : user?.Avatar?.Party == null ? UnprocessableEntity("Party")
+                : user?.Avatar?.PartyId == null ? UnprocessableEntity("Party")
                 : null;
             if (response != null)
                 return response;
 
-            return Ok(user.Avatar.Party);
+            var party = _context.Parties.Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+
+            return Ok(party);
         }
 
         [HttpGet("vision")]
@@ -43,16 +45,16 @@ namespace web_api.Controllers
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
                 : user?.Avatar == null ? UnprocessableEntity("Avatar")
-                : user?.Avatar?.Party == null ? UnprocessableEntity("Party")
+                : user?.Avatar?.PartyId == null ? UnprocessableEntity("Party")
                 : null;
             if (response != null)
                 return response;
 
-            Avatar avatar = user.Avatar;
+            var party = _context.Parties.Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
 
             List<HexTile> result = await WorldManager.GetSliceAsync(_context, 
                 new HexTileDTO() { 
-                    AxialCoordinates = new HexVector(avatar.Party.Location.AxialQ, avatar.Party.Location.AxialR) 
+                    AxialCoordinates = new HexVector(party.Location.AxialQ, party.Location.AxialR) 
                 });
 
             return Ok(result);
@@ -64,7 +66,7 @@ namespace web_api.Controllers
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
                 : user?.Avatar == null ? UnprocessableEntity("Avatar")
-                : user?.Avatar?.Party == null ? UnprocessableEntity("Party")
+                : user?.Avatar?.PartyId == null ? UnprocessableEntity("Party")
                 : null;
             if (response != null) 
                 return response;
@@ -74,7 +76,9 @@ namespace web_api.Controllers
             if (destinationHex == null)
                 return UnprocessableEntity("Destination");
 
-            await user.Avatar.Party.StartTravelingAsync(destinationHex, _context);
+            var party = _context.Parties.Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+
+            await party.StartTravelingAsync(destinationHex, _context);
 
             TravelOGI travel = new TravelOGI();
             travel.ScheduledAt = DateTime.Now;
@@ -85,7 +89,7 @@ namespace web_api.Controllers
             return Ok();
         }
 
-
+        // also write a "GetPartyFromUser" or maybe "GetPartyFromClaim" method?
         private User? GetUserFromClaim()
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();

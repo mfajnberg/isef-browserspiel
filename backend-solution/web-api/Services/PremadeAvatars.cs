@@ -19,8 +19,7 @@ namespace web_api.Services
 
                 Alignment = 5,
                 Temperament = 5,
-                Morale = 0,
-                Party = new Party(),
+                Morale = 0
             },
             new Avatar() {
                 Name = "Leito Froste",
@@ -34,8 +33,7 @@ namespace web_api.Services
 
                 Alignment = 0,
                 Temperament = 5,
-                Morale = 10,
-                Party = new Party(),
+                Morale = 10
             },
             new Avatar() {
                 Name = "Marsilio Mirandola",
@@ -49,8 +47,7 @@ namespace web_api.Services
 
                 Alignment = -5,
                 Temperament = -10,
-                Morale = 5,
-                Party = new Party(),
+                Morale = 5
             }
         };
 

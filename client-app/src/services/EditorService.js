@@ -1,28 +1,29 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { HexVector } from "../classes/HexVector";
+import { Sites } from "../stores/000Singletons";
 import { spawnSite } from "../threejs/ActorManager";
 
-export async function requestGetWorldSliceAdmin(auhtStore, worldStore) {
+export async function requestGetWorldSliceAdmin(authStore, worldStore) {
     const options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${auhtStore.token}`,
+            'Authorization': `Bearer ${authStore.token}`,
         },
         credentials: 'include',
         body: JSON.stringify({
             axialCoordinates: {
-                Q: worldStore.getRelativeZero.R,
-                R: worldStore.getRelativeZero.Q
+                Q: worldStore.getAbsoluteZeroOffset.R,
+                R: worldStore.getAbsoluteZeroOffset.Q
             },
             siteType: 0
         })
     }
     await fetch("/api/admin/world/get", options)
     // await fetch("/api/admin/world/get.json")
-        .then(response => { 
+        .then(async response => { 
             worldStore.response = response
-            return response.json()
+            await response.json()
         })
         .then(data => {
             const loader = new GLTFLoader()
@@ -37,15 +38,16 @@ export async function requestGetWorldSliceAdmin(auhtStore, worldStore) {
         }).catch(error => { console.log(error) })
 }
 
-export async function requestWorldSave(authStore, worldStore) {
+export async function requestWorldSave(authStore) {
+    const sites = new Sites()
     const options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authStore.token}`
+            'Authorization': `Bearer ${authStore.token}`,
         },
         credentials: 'include',
-        body: JSON.stringify(worldStore.sitesBuffer)
+        body: JSON.stringify(sites.buffer)
     }
     await fetch("/api/admin/world/save", options)
         .then(response => { return response.text() })

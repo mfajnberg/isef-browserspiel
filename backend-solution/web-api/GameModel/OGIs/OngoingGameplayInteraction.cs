@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using web_api.GameModel.Creatures;
 
 namespace web_api.GameModel.OGIs
 {
     [Table("OGIs")]
     public abstract class OngoingGameplayInteraction
     {
+        [Key]
         public int Id { get; set; }
+
         public InteractionType Type { get; set; }
         public DateTime ScheduledAt { get; set; }
 

@@ -8,6 +8,7 @@ using web_api.GameModel.Worldmap;
 
 namespace web_api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/admin")]
     public class AdminController : ControllerBase
@@ -21,13 +22,12 @@ namespace web_api.Controllers
             _worldManager = new WorldManager();
         }
 
-        [Authorize]
         [HttpPost]
         [Route("world/save")]
         public async Task<ActionResult> SaveSliceLayout(List<HexTileDTO> worldGenData)
         {
-            if (!isAuthorized())
-                return Unauthorized();
+            if (!isAdminFromClaim())
+                return Forbid();
             
             bool success = await _worldManager.updateSliceLayout(_context, worldGenData);
             if (!success)
@@ -37,31 +37,29 @@ namespace web_api.Controllers
             return Ok("yes");
         }
 
-        [Authorize]
         [HttpPost]
         [Route("world/get")]
         public async Task<ActionResult> GetSliceToEdit(HexTileDTO RelativeZero)
         {
-            if (!isAuthorized())
+            if (!isAdminFromClaim())
                 return Unauthorized();
 
             List<HexTile> result = await WorldManager.GetSliceAsync(_context, RelativeZero);
             return Ok(result);
         }
 
-        [Authorize]
         [HttpDelete]
         [Route("user/delete")]
         public async Task<ActionResult> DeleteUser()
         {
-            if (!isAuthorized())
+            if (!isAdminFromClaim())
                 return Unauthorized();
 
             return Ok();
         }
 
 
-        private bool isAuthorized()
+        private bool isAdminFromClaim()
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
             var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();

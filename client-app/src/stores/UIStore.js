@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia' 
 import { DateTime } from 'luxon'
-import { Howl } from 'howler'
+import { Ambience } from './000Singletons.js'
+import { requestGetChoices } from '../services/AvatarCreatorService'
+import { requestGetHexTiles } from '../services/WorldmapService'
 
 export const useUIStore = defineStore('UIStore', {
     id: 'UIStore',
     state: () => ({
-        editorMode: true,
+        editorMode: false,
         
         currentTime: "",
 
@@ -64,15 +66,24 @@ export const useUIStore = defineStore('UIStore', {
             this.showingWorldmap = false
             this.showingImprint = false
         },
-        showWorldmap() {
+        showWorldmap(worldStore) {
+            if (!worldStore.initialized)
+                worldStore.ACTION(assetStore)
+
             this.showingHome = false
             this.showingAuthentication = false
             this.showingAdminPrompt = false
             this.showingAvatarCreator = false
             this.showingWorldmap = true
             this.showingImprint = false
+
             var header = document.getElementById("header")
             header.style.background = "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)"       
+            const ambience = new Ambience()
+            if (!ambience.music.playing()){
+                ambience.music.play()
+            }
+            ambience.music.mute(false)
         },
         showImprint() {
             this.showingHome = false
@@ -84,5 +95,33 @@ export const useUIStore = defineStore('UIStore', {
             var header = document.getElementById("header")
             header.style.background = "rgba(0,0,0,0)"
         },
+
+        async PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) {
+            let responseStatus = authStore.loginResponse.status
+            // // DEBUG--------------------------------//
+            // responseStatus = 200                    //
+            // authStore.loggedIn = true               //
+            // authStore.userIsAdmin = true   	       //
+            // partyStore.avatar = "some"              //
+            // //.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+            if (responseStatus === 200) {
+                if (authStore.userIsAdmin == true && !this.getShowingAdminPrompt) {
+                    console.log("Admin status detected...")
+                    this.showAdminPrompt()
+                }
+                else if (partyStore.avatar === null) {
+                    console.log("No avatar yet...")
+                    await requestGetChoices(authStore, creatorStore)
+                    this.showAvatarCreator()
+                }
+                else  {
+                    console.log("Loading worldmap...")
+                    if (!worldStore.initialized)
+                        worldStore.ACTION(assetStore)
+                    await requestGetHexTiles(authStore, worldStore)
+                    this.showWorldmap(worldStore)
+                }
+            }
+        }
     },
 })

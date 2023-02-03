@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using web_api.GameModel.Items;
 
 namespace web_api.GameModel.Creatures
@@ -22,7 +23,8 @@ namespace web_api.GameModel.Creatures
         public int Temperament { get; set; }
         public int Morale { get; set; }
 
-        public Party? Party { get; set; }
+        [ForeignKey("Party")]
+        public int? PartyId { get; set; }
         public List<Item>? Backpack { get; set; }
 
         public Creature() 

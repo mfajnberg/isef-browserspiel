@@ -26,7 +26,7 @@ namespace web_api.Services.Authentication
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public static RefreshToken GenerateRefreshToken(User user)
+        public static RefreshToken GenerateRefreshToken()
         {
             var refreshToken = new RefreshToken
             {

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia' 
-import { fetchGetChoices, fetchPostChoice } from '../services/AvatarCreatorService'
+import { requestGetChoices } from '../services/AvatarCreatorService'
 
 export const useCreatorStore = defineStore('CreatorStore', {
     id: 'CreatorStore',
@@ -15,7 +15,7 @@ export const useCreatorStore = defineStore('CreatorStore', {
     },
     actions: {
         async fetchAvatarCreationChoices() {
-            await fetchGetChoices(this)
+            await requestGetChoices(this)
         },
     },
 })

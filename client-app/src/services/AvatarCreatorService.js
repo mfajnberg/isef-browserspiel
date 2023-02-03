@@ -1,18 +1,15 @@
 import { Creature } from "../classes/Creature"
 
-export async function fetchGetChoices(creatorStore) {
+export async function requestGetChoices(authStore, creatorStore) {
     const options = {
         method: 'GET',
         headers: {
             'Content-Type': 'text/plain',
-            'Authorization': `Bearer ${localStorage.getItem("token")}`,
-            credentials: 'include'
-        },
-        credentials: 'include',
+            'Authorization': `Bearer ${authStore.token}`,
+        }
     }
-    
-    await fetch("api/avatar/choices.json", options)
-    .then((response) => response.json())
+    await fetch("api/avatar/choices", options)
+    .then(async (response) => await response.json())
     .then(avatarChoices => {
         for (let choice of avatarChoices) {
             let avatar = new Creature(
@@ -33,23 +30,22 @@ export async function fetchGetChoices(creatorStore) {
     })
 }
 
-export async function requestPostChoice(authStore, creatorStore, name) {
+export async function requestPostChoice(authStore, creatorStore, partyStore, name) {
     const options = {
         method: 'Post',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authStore.token}`
         },
-        credentials: 'include',
-        body: JSON.stringify({
-            name: name
-        })
+        body: JSON.stringify(name)
     }
     await fetch(`api/avatar/select`, options)
-    .then(response => {
+    .then(async response => { 
         creatorStore.creationResponse = response
-        return response.text()
-    }).then(text => {
-        console.log(text)
-    })
+        if (response.ok) {
+            partyStore.avatar = await response.json()
+        }
+     })
 }
+
+// async function requestPartyCreate()

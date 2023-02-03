@@ -22,7 +22,7 @@ namespace web_api.GameModel.Worldmap
                     
                 };
                 if ((int)item.SiteType > 100 && (int)item.SiteType < 200)
-                    hexTile.isBlocked = true;
+                    hexTile.IsBlocked = true;
 
                 context.HexTiles.Add(hexTile);
             }
@@ -54,7 +54,7 @@ namespace web_api.GameModel.Worldmap
         public static async Task<List<HexTile>> GetSliceAsync(DataContext context, HexTileDTO RelativeZero, int radius = 2)
         {
             List<HexTile> result = new List<HexTile>();
-            List<HexVector> gridVectors = HexVector.makeGridVectors(radius);
+            List<HexVector> gridVectors = HexVector.MakeGridVectors(radius);
             //bool createdHex = false;
 
             foreach (var vec in gridVectors)
