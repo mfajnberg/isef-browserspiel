@@ -24,10 +24,9 @@ async function clickEdit() {
     // // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
     if (responseStatus === 200) {
+        uiStore.editorMode = true
         console.log("loading slice for editing...")
-
-        uiStore.showWorldmap()
-        ambience.music.play()
+        uiStore.showWorldmap(worldStore)
     }
 }
 
@@ -52,8 +51,8 @@ onMounted(() => {
     <div class="admin">
         Herzlich willkommen im Bereich für Admins!<br/><br/>
         Bitte gib die gewünschten Koordinaten zum editieren ein. <br/><br/>
-        <span>Q: <input v-model="partyStore.coordinates.Q"/> <br/></span>
-        <span>R: <input v-model="partyStore.coordinates.R"/></span> <br/>
+        <span>Q: <input v-model="worldStore.absoluteZeroOffset.Q"/> <br/></span>
+        <span>R: <input v-model="worldStore.absoluteZeroOffset.R"/></span> <br/>
         <button ref="button_edit" @click="clickEdit()">Welt editieren</button>
     </div>
 </template>

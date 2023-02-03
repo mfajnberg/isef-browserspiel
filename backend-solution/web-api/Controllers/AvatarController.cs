@@ -41,29 +41,28 @@ namespace web_api.Controllers
         [HttpPost("select")]
         public async Task<ActionResult> SelectAvatar([FromBody] string name)
         {
-            var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
+            var mailFromClaim = User.Claims
+                .Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
             var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();
             if (user != null)
             {
                 if (user.Avatar == null)
                 {
-                    Avatar avatarChoice;
+                    Avatar newAvatar;
                     try
                     {
-                        avatarChoice = PremadeAvatars.SelectFromAvatarList(name);
+                        // replace with proper avatar generation...
+                        newAvatar = PremadeAvatars.SelectFromAvatarList(name);
                     }
                     catch (Exception ex)
                     {
                         return BadRequest(ex.Message);
                     }
-
-                    user.Avatar = avatarChoice;
-                    _context.Avatars.Add(avatarChoice);
+                    user.Avatar = newAvatar;
+                    _context.Avatars.Add(newAvatar);
                     _context.SaveChanges();
-                    avatarChoice.Party.Leader = avatarChoice;
-                    await _context.SaveChangesAsync();
 
-                    return Ok("Avatar selected successfully");
+                    return Ok(newAvatar);
                 }
                 return BadRequest("You already have an avatar");
             }

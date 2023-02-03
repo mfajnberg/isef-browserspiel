@@ -5,14 +5,11 @@ export async function requestGetHexTiles(authStore, worldStore) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authStore.token}`
         },
-        credentials: 'include'
     }
 
     await fetch("/api/party/vision", options)
     // await fetch("/api/admin/world/get.json")
-        .then(response => { 
-            return response.json() 
-        })
+        .then(async response => await response.json())
         .then(data => { 
             const loader = new GLTFLoader()
             data.forEach(element => {

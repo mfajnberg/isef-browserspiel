@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 import { Worldmap } from '../classes/Worldmap'
+import { Sites } from '../stores/000Singletons'
 
 export async function initActors(scene, worldStore, assetStore) {
     // dummy data
@@ -10,7 +11,7 @@ export async function initActors(scene, worldStore, assetStore) {
     worldStore.worldmap = new Worldmap()
     const visible = Worldmap.makeHexGridVectors(2)
     
-    // // replace with proper asset interface
+    // // replace with calls to proper asset loading service
     await assetStore.loadHex()
     // await assetStore.loadForest()
     // await assetStore.loadCliffs()
@@ -52,10 +53,11 @@ function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation)
         loadedObject.scene.name = `${hexData.Q}|${hexData.R}`
         scene.add(loadedObject.scene)
         worldStore.hexes3d.push(loadedObject.scene)
-        worldStore.sitesBuffer.push({
+        const sites = new Sites()
+        sites.buffer.push({
             AxialCoordinates: {
-                Q: hexData.Q,
-                R: hexData.R
+                Q: hexData.Q + worldStore.getAbsoluteZeroOffset.Q,
+                R: hexData.R + worldStore.getAbsoluteZeroOffset.R
             },
             SiteType: 0
         })
@@ -108,24 +110,25 @@ export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
         loadedObject.scene.translateZ(hexVector.getWorldZFromAxialR())
         loadedObject.scene.userData.hexVector = hexVector
 
-        // factor out into helper method
+        // occupy correct hex object3d
         let hexTile
         for (let hex of worldStore.hexes3d) {
             if (hex.userData.Q === hexVector.Q && hex.userData.R === hexVector.R) {
                 hexTile = hex
             }
         }
-
         hexTile.userData.free = false
-        
-        worldStore.sitesBuffer.push({
-            Q: hexVector.Q,
-            R: hexVector.R,
-            site: {
-                type: 100
-            }
-        })
 
+        // set type in sites.buffer
+        const sites = new Sites()
+        for (let hex of sites.buffer) {
+            if (hex.AxialCoordinates.Q === hexVector.Q + worldStore.getAbsoluteZeroOffset.Q && 
+                hex.AxialCoordinates.R === hexVector.R + worldStore.getAbsoluteZeroOffset.R) {
+                    hex.SiteType = 100 // programmatically decide the exact type
+            }
+        }
+
+        // save reference of new site to worldStore
         worldStore.sites3d.push(loadedObject.scene)
     }))
 }

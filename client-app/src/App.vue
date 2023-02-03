@@ -12,13 +12,15 @@ import Authenticator from './components/authentication/Authenticator.vue'
 import AdminPrompt from './components/authentication/AdminPrompt.vue'
 import AvatarCreator from './components/ingame/AvatarCreator.vue'
 import Overlay from './components/ingame/Overlay.vue'
+import { usePartyStore } from './stores/PartyStore'
 
     const authStore = useAuthStore()
     const uiStore = useUIStore()
+    const partyStore = usePartyStore()
     onMounted(() => {
         if (localStorage.token != null) {
             authStore.Email = localStorage.Email
-            requestTokenRefresh(authStore)
+            requestTokenRefresh(authStore, partyStore)
         }
         Howler.debug = true 
     })

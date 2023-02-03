@@ -1,25 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using web_api.GameModel.Creatures;
 using web_api.GameModel.Items;
+using web_api.GameModel.OGIs;
 using web_api.GameModel.Worldmap;
 
 namespace web_api.GameModel
 {
     public class Party 
     {
+        [Key]
         [JsonIgnore]
         public int Id { get; set; }
+
+        [ForeignKey("Creature")]
+        public int? LeaderId { get; set; }
+
+        public virtual List<Creature> Members {get ; set; } // possibly hidden
+        public virtual List<Item> Inventory {get ; set; } // possibly hidden
+
         public HexTile Location { get; set; }
         public HexTile? Destination { get; set; }  // possibly hidden
-        public Creature? Leader { get; set; } // possibly hidden
-        public List<Creature> Members {get ; set; } // possibly hidden
-        public List<Item> Items { get; set; }  // possibly hidden
 
+        public OngoingGameplayInteraction? Action { get; set; }
         public Party()
         {
-            Items = new List<Item>();
+            Inventory = new List<Item>();
             Members = new List<Creature>();
         }
 

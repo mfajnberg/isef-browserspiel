@@ -3,20 +3,17 @@ import { ref, onMounted } from 'vue'
 import { useUIStore } from '../../stores/UIStore'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { usePartyStore } from '../../stores/PartyStore';
-import { useCreatorStore } from '../../stores/AvatarCreatorStore.js';
 import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestLogin } from '../../services/AuthService'
-import { Ambience } from '../../services/AmbienceService.js'
 import { useWorldStore } from '../../stores/WorldStore';
-import { requestGetHexTiles } from '../../services/WorldmapService';
+import { useCreatorStore } from '../../stores/AvatarCreatorStore';
 
 const uiStore = useUIStore()
 const authStore = useAuthStore()
 const partyStore = usePartyStore()
-const creatorStore = useCreatorStore()
 const assetStore = useGameAssetStore()
 const worldStore = useWorldStore()
-const ambience = new Ambience()
+const creatorStore = useCreatorStore()
 
 function switchToRegis() {
     authStore.hideLoginForm()
@@ -24,42 +21,11 @@ function switchToRegis() {
 }
 
 async function LogIn() {
-    await requestLogin(authStore, partyStore, creatorStore)
-    let responseStatus = authStore.response.status
-
-    // // DEBUG------------------------//
-    // responseStatus = 200            //
-    // authStore.userIsAdmin = true    //  
-    // partyStore.avatar = "null"      //
-    // // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
-
-    if (responseStatus === 200) {
-        if (partyStore.avatar === null && !authStore.userIsAdmin) {
-            console.log("login successful, no avatar and no admin status...")
-
-            await creatorStore.fetchAvatarCreationChoices()
-            
-            uiStore.showAvatarCreator()
-        }
-
-        else if (authStore.userIsAdmin == true) {
-            console.log("login successful, admin status detected...")
-
-            uiStore.showAdminPrompt()
-        }
-        
-        else  {
-            console.log("login successful, loading worldmap...")
-            
-            worldStore.ACTION(assetStore)
-
-            await requestGetHexTiles(authStore, worldStore)
-
-            uiStore.showWorldmap()
-
-            ambience.music.play()
-        }
+    await requestLogin(authStore, partyStore)
+    if (authStore.loginResponse.ok) {
+        worldStore.ACTION(assetStore)
     }
+    await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
 }
 
 function playSoundPointerDown() {

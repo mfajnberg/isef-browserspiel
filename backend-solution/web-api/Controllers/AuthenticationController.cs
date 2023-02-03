@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using web_api.DTOs;
+using web_api.GameModel;
 using web_api.Services.Authentication;
 
 namespace web_api.Controllers
@@ -84,16 +85,11 @@ namespace web_api.Controllers
                 return UnprocessableEntity("User isn't confirmed yet");
 
             string accessToken = AuthenticationService.CreateAccessToken(user, _configuration);
-            var newRefreshToken = AuthenticationService.GenerateRefreshToken(user);
-
+            var newRefreshToken = AuthenticationService.GenerateRefreshToken();
             await UpdateRefreshTokenInDbAsync(newRefreshToken, user);
 
+            var response = AuthResponseDTO.CreateResponse(_context, user, accessToken);
             SetRefreshTokenToCookieData(newRefreshToken);
-
-            LoginResponseDTO response = new LoginResponseDTO();
-            response.AccessToken = accessToken;
-            response.Avatar = user.Avatar;
-            response.IsAdmin = user.IsAdmin;
 
             return Ok(response);
         }
@@ -113,13 +109,13 @@ namespace web_api.Controllers
                 return Unauthorized("Invalid Refresh Token.");
 
             string accessToken = AuthenticationService.CreateAccessToken(user, _configuration);
-            var newRefreshToken = AuthenticationService.GenerateRefreshToken(user);
-
+            var newRefreshToken = AuthenticationService.GenerateRefreshToken();
             await UpdateRefreshTokenInDbAsync(newRefreshToken, user);
 
+            var response = AuthResponseDTO.CreateResponse(_context, user, accessToken);
             SetRefreshTokenToCookieData(newRefreshToken);
 
-            return Ok(accessToken);
+            return Ok(response);
         }
 
         /// <summary>
