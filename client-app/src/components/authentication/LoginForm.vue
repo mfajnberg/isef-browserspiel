@@ -23,6 +23,7 @@ function switchToRegis() {
 async function LogIn() {
     await requestLogin(authStore, partyStore)
     if (authStore.loginResponse.ok) {
+        console.log("Loading scene & initial actors ...")
         worldStore.ACTION(assetStore)
     }
     await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)

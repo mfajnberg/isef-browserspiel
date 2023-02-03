@@ -6,11 +6,13 @@ import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestWorldSave } from '../../services/EditorService'
 import { Sites } from '../../stores/000Singletons'
 import { useAuthStore } from '../../stores/AuthStore'
+import { usePartyStore } from '../../stores/PartyStore'
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
     const worldStore = useWorldStore()
     const assetStore = useGameAssetStore()
+    const partyStore = usePartyStore()
     const sites = new Sites()
 
     const previewModelUrls = 
@@ -29,8 +31,6 @@ import { useAuthStore } from '../../stores/AuthStore'
     const action_2 = ref(null);
     const action_3 = ref(null);
     const action_4 = ref(null);
-
-
 
     const slots = [slot_1, slot_2, slot_3, slot_4, slot_5, slot_6, slot_7]
     const actions = [action_1, action_2, action_3, action_4]
@@ -64,6 +64,8 @@ import { useAuthStore } from '../../stores/AuthStore'
 
     let slotPressed, actionPressed
     onMounted(() => {
+        console.log("overlay mounted...")
+
         for (let slot of slots) {
             slot.value.addEventListener('pointerdown', (e) => {
                 if (e.button === 0) {
@@ -108,7 +110,7 @@ import { useAuthStore } from '../../stores/AuthStore'
         <div id="clock">{{uiStore.currentTime}}</div>
         <!--top_right_info-->
         <div id="slot_panel">
-            <div id="portrait" src="Portrait_Eliana.jpg"></div>
+            <div id="portrait" src="{{partyStore.getPortraitUri}}"></div>
             <div class="slot" ref="slot_1">
                 <span class="slot_text">
                     {{1}}
@@ -145,7 +147,7 @@ import { useAuthStore } from '../../stores/AuthStore'
                 </span>
             </div>
         </div>
-        <div id="action_panel" v-if="uiStore.editorMode">
+        <div id="action_panel" v-show="uiStore.editorMode">
             <button class="action" ref="action_1" @click="requestWorldSave(authStore)">Post Layout</button>
             <button class="action" ref="action_2" @click="debug2">(action 2)</button>
             <button class="action" ref="action_3">(action 3)</button>
