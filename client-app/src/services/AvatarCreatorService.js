@@ -43,7 +43,9 @@ export async function requestPostChoice(authStore, creatorStore, partyStore, nam
     .then(async response => { 
         creatorStore.creationResponse = response
         if (response.ok) {
-            partyStore.avatar = await response.json()
+            const data = await response.json()
+            partyStore.party = data.party
+            partyStore.avatar = data.avatar
         }
      })
 }

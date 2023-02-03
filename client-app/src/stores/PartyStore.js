@@ -8,11 +8,9 @@ export const usePartyStore = defineStore('PartyStore', {
             R: 0 
         },
         pawn3d: null,
-
-        avatar: null, // creature
-        members: [], // array of creatures; also used as an array of avatar options for new players
-        backpack: [] // array of items
-
+        
+        party: null,
+        avatar: null, // creature (player avatar)
     }),
     getters: {
         getCoordinates: (state) => state.coordinates,

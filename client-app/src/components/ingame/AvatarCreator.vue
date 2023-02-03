@@ -17,7 +17,7 @@ const creatorStore = useCreatorStore()
 
 async function clickSelectAvatar(name) {
     // check response
-    requestPostChoice(authStore, creatorStore, partyStore, name)
+    await requestPostChoice(authStore, creatorStore, partyStore, name)
     uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
 }
 
