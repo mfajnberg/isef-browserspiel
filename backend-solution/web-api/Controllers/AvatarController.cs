@@ -62,17 +62,21 @@ namespace web_api.Controllers
                     _context.Avatars.Add(newAvatar);
                     _context.SaveChanges();
 
-                    await createNewPartyAsync(user.Avatar);
+                    Party party = await createNewPartyAsync(user.Avatar);
 
+                    AuthResponseDTO responseDTO = new AuthResponseDTO();
+                    responseDTO.Avatar = newAvatar;
+                    responseDTO.Party = party;
+                    responseDTO.IsAdmin = user.IsAdmin;
 
-                    return Ok(newAvatar);
+                    return Ok(responseDTO);
                 }
                 return BadRequest("You already have an avatar");
             }
             return BadRequest("User not found");
         }
 
-        private async Task createNewPartyAsync(Avatar? avatar)
+        private async Task<Party> createNewPartyAsync(Avatar? avatar)
         {
             Party party = new Party();
             party.LeaderId = avatar.Id;
@@ -82,6 +86,8 @@ namespace web_api.Controllers
 
             avatar.PartyId = party.Id;
             await _context.SaveChangesAsync();
+
+            return party;
 
         }
     }
