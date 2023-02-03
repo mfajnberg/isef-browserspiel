@@ -1,3 +1,7 @@
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { HexVector } from '../classes/HexVector'
+import { spawnSite } from '../threejs/ActorManager'
+
 export async function requestGetHexTiles(authStore, worldStore) {
     const options = {
         method: 'GET',
@@ -9,10 +13,22 @@ export async function requestGetHexTiles(authStore, worldStore) {
     console.log(authStore.token)
 
     await fetch("/api/party/vision", options)
-    // await fetch("/api/admin/world/get.json")
-        .then(async response => await response.json())
-        .then(data => { 
+        .then(async response => {
+            return await response.json()
+        })
+        .then(data => {
+            console.log("Creating GLTFLoader...") 
             const loader = new GLTFLoader()
+            worldStore.sites3d.forEach(site => {
+                object3D.children.forEach(child => {
+                    disposeObject3D(child)
+                })
+                object3D.geometry && object3D.geometry.dispose()
+                object3D.material && object3D.material.dispose()
+                object3D.texture && object3D.texture.dispose()
+                object3D.parent.remove(object3D)
+                object3D.dispose()
+            })
             data.forEach(element => {
                 console.log(element)
                 if (element.site){

@@ -51,8 +51,10 @@ function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation)
         loadedObject.scene.userData.R = hexData.R
         loadedObject.scene.userData.free = true
         loadedObject.scene.name = `${hexData.Q}|${hexData.R}`
+
         scene.add(loadedObject.scene)
         worldStore.hexes3d.push(loadedObject.scene)
+        
         const sites = new Sites()
         sites.buffer.push({
             AxialCoordinates: {

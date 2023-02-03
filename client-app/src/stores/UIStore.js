@@ -26,7 +26,7 @@ export const useUIStore = defineStore('UIStore', {
         getShowingAvatarCreator:(state) => state.showingAvatarCreator,
         getShowingWorldmap:(state) => state.showingWorldmap,
         getShowingImprint:(state) => state.showingImprint,
-        getShowingHome:(state) => state.showingHome
+        getShowingHome:(state) => state.showingHome,
     },
     actions: {
         updateClock() {
@@ -119,6 +119,14 @@ export const useUIStore = defineStore('UIStore', {
                     if (!worldStore.initialized)
                         worldStore.ACTION(assetStore)
                     await requestGetHexTiles(authStore, worldStore)
+
+                    if (partyStore.avatar.name === "Eliana Dawnbreak")
+                        partyStore.portraitUri = "Portrait_Eliana.jpg"
+                    if (partyStore.avatar.name === "Leito Froste")
+                        partyStore.portraitUri = "Portrait_Leito.jpg"
+                    if (partyStore.avatar.name === "Marsilio Mirandola")
+                        partyStore.portraitUri = "Portrait_Marsilio.jpg"
+
                     this.showWorldmap(worldStore)
                 }
             }
