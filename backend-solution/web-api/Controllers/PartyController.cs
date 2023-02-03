@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using web_api.DTOs;
@@ -45,12 +46,16 @@ namespace web_api.Controllers
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
                 : user?.Avatar == null ? UnprocessableEntity("Avatar")
-                : user?.Avatar?.PartyId == null ? UnprocessableEntity("Party")
                 : null;
             if (response != null)
                 return response;
 
-            var party = _context.Parties.Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+            Party party = _context.Parties.Include(p => p.Location).Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+
+            if (party == null)
+            {
+                return UnprocessableEntity("Party");
+            }
 
             List<HexTile> result = await WorldManager.GetSliceAsync(_context, 
                 new HexTileDTO() { 
@@ -66,7 +71,6 @@ namespace web_api.Controllers
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
                 : user?.Avatar == null ? UnprocessableEntity("Avatar")
-                : user?.Avatar?.PartyId == null ? UnprocessableEntity("Party")
                 : null;
             if (response != null) 
                 return response;
@@ -93,8 +97,9 @@ namespace web_api.Controllers
         private User? GetUserFromClaim()
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
-            var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim);
-            return (User)user;
+            var user = _context.Users.Include(u => u.Avatar).Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();
+
+            return user;
         }
     } 
 }

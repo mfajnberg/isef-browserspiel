@@ -11,8 +11,8 @@ using web_api;
 namespace web_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230203182418_initial")]
-    partial class initial
+    [Migration("20230203195415_INIT")]
+    partial class INIT
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
