@@ -11,9 +11,6 @@ namespace web_api.GameModel.Worldmap
         {
             foreach (var item in worldGenData)
             {
-                // validate type-id
-                // validate validate coordinates
-                // validate placement
                 HexTile hexTile = new HexTile()
                 {
                     AxialQ = item.AxialCoordinates.Q,
@@ -24,7 +21,16 @@ namespace web_api.GameModel.Worldmap
                 if ((int)item.SiteType > 100 && (int)item.SiteType < 200)
                     hexTile.IsBlocked = true;
 
-                context.HexTiles.Add(hexTile);
+                var dbHexTile = context.HexTiles.Where(h => h.AxialQ == hexTile.AxialQ && h.AxialR == hexTile.AxialR).FirstOrDefault();
+                if (dbHexTile == null) 
+                {
+                    context.HexTiles.Add(hexTile);
+                }
+                else
+                {
+                    // Todo: replace empty hextiles
+                }
+ 
             }
 
             await context.SaveChangesAsync();

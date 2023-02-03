@@ -62,11 +62,27 @@ namespace web_api.Controllers
                     _context.Avatars.Add(newAvatar);
                     _context.SaveChanges();
 
+                    await createNewPartyAsync(user.Avatar);
+
+
                     return Ok(newAvatar);
                 }
                 return BadRequest("You already have an avatar");
             }
             return BadRequest("User not found");
+        }
+
+        private async Task createNewPartyAsync(Avatar? avatar)
+        {
+            Party party = new Party();
+            party.LeaderId = avatar.Id;
+            
+            _context.Parties.Add(party);
+            await _context.SaveChangesAsync();
+
+            avatar.PartyId = party.Id;
+            await _context.SaveChangesAsync();
+
         }
     }
 }
