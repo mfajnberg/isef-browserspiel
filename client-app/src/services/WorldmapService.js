@@ -11,32 +11,40 @@ export async function requestGetHexTiles(authStore, worldStore) {
         }
     }
     await fetch("/api/party/vision", options)
-        .then(async response => {
-            worldStore.response = response
-            return await response.json()
-        })
-        .then(data => {
-            console.log("Creating GLTFLoader for play...") 
-            const loader = new GLTFLoader()
+    .then(async response => { 
+        worldStore.response = response
+        return await response.json()
+    })
+    .then(data => {
+        console.log("Updating sites for editing...") 
+        if (worldStore.sites3d.length > 0) {
             worldStore.sites3d.forEach(object3D => {
-                object3D.children.forEach(child => {
-                    disposeObject3D(child)
-                })
-                object3D.geometry && object3D.geometry.dispose()
-                object3D.material && object3D.material.dispose()
-                object3D.texture && object3D.texture.dispose()
-                object3D.parent.remove(object3D)
-                object3D.dispose()
-            })
-            data.forEach(element => {
-                console.log(element)
-                if (element.site){
-                    if (element.site.type === 100) {
-                        spawnSite(loader, worldStore.scene, worldStore, 
-                            new HexVector(element.Q, element.R), 'forest_1.glb')
-                    }
+                disposeObject(object3D)
+                function disposeObject(obj3d) {
+                    obj3d.children.forEach(child => {
+                        disposeObject(child);
+                    });
+                    obj3d.geometry && obj3d.geometry.dispose()
+                    obj3d.material && obj3d.material.dispose()
+                    obj3d.texture && obj3d.texture.dispose()
+                    try {obj3d.parent.remove(obj3d)} catch(e) {}
+                    try {obj3d.dispose()} catch(e) {}
                 }
             })
+        }
+        worldStore.sites3d = []
+        const loader = new GLTFLoader()
+        data.forEach(element => {
+            console.log(element)
+            if (element.site){
+                if (element.site.type === 100) {
+                    spawnSite(loader, worldStore.scene, worldStore, 
+                        new HexVector(element.Q, element.R), 'forest_1.glb')
+                }
+            }
         })
-        .catch(error => { console.log(error) })
+    })
+    .catch(error => { 
+        // console.log(error) 
+    })
 }

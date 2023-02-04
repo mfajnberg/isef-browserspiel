@@ -1,69 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue';
 import { useAuthStore } from '../../stores/AuthStore.js'
-
 import RegistrationForm from './RegisForm.vue'
 import LoginForm from './LoginForm.vue'
 
 const authStore = useAuthStore()
-
-// const draggableElement = ref(null)
-// const regis = ref(null)
-// const login = ref(null)
-
-// var isDragging = false
-// var currentX = 0
-// var currentY = 0
-// var initialX = 0
-// var initialY = 0
-// var xOffset = 0
-// var yOffset = 0
-
-// function dragStart(e) {
-//     console.log(e.target)
-//     console.log(regis)
-//     if (
-//         e.target === draggableElement.value ||
-//         e.target === regis.value ||
-//         e.target === login.value
-//         ) {
-//             initialX = e.clientX - xOffset;
-//             initialY = e.clientY - yOffset;
-//             console.log(e.target)
-//             isDragging = true;
-//     }
-// }
-
-// function dragEnd(e) {
-//     initialX = currentX;
-//     initialY = currentY;
-
-//     isDragging = false;
-// }
-
-// function drag(e) {
-//     if (isDragging) {
-//         currentX = e.clientX - initialX;
-//         currentY = e.clientY - initialY;
-
-//         xOffset = currentX;
-//         yOffset = currentY;
-
-//         setTranslate(currentX, currentY, draggableElement);
-//     }
-// }
-
-// function setTranslate(xPos, yPos, el) {
-//     el.value.style.translate = `${xPos}px ${yPos}px`
-// }
-
-// onMounted(() => {
-//     document.addEventListener("mousedown", dragStart)
-//     document.addEventListener("mouseup", dragEnd)
-//     document.addEventListener("mousemove", drag)
-//     document.addEventListener("mouseleave", dragEnd)
-// })
-
 </script>
 
 <template>
