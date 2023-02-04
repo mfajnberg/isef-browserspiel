@@ -4,6 +4,9 @@ using web_api.GameModel.Creatures;
 
 namespace web_api.Services
 {
+    /// <summary>
+    /// contains a List of premade avatars
+    /// </summary>
     public static class PremadeAvatars
     {
         static List<Avatar> PremadeOptions = new List<Avatar>() {
@@ -51,11 +54,21 @@ namespace web_api.Services
             }
         };
 
+        /// <summary>
+        /// gets list of premade avatars
+        /// </summary>
+        /// <returns></returns>
         public static List<Avatar> GetAvatarList()
         {
             return PremadeOptions;
         }
 
+        /// <summary>
+        /// selects one avatar by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static Avatar SelectFromAvatarList(string name)
         {
             Avatar? result = PremadeOptions.Find(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
@@ -65,7 +78,7 @@ namespace web_api.Services
                 {
                     throw new Exception("Bad Request");
                 }
-                throw new Exception("Fehler im Server");
+                throw new Exception("Server Error");
             }
 
             return result;

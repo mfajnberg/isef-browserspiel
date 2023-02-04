@@ -13,17 +13,30 @@ using web_api.GameModel.Worldmap;
 
 namespace web_api.Controllers
 {
+    /// <summary>
+    /// Party Endpoint
+    /// </summary>
     [Authorize]
     [Route("api/party")]
     [ApiController]
     public class PartyController : ControllerBase
     {
         DataContext _context;
+        /// <summary>
+        /// Constructor for PartyController
+        /// </summary>
+        /// <param name="context">type of <c>DataContext</c> for Database interactions</param>
         public PartyController(DataContext context)
         {
             _context= context;
         }
 
+        /// <summary>
+        /// Gets the party from the current user
+        /// </summary>
+        /// <response code="200">when the party was found</response>
+        /// <response code="422">if any error occured while getting the users party</response>
+        /// <returns> the <c>Party</c>-object from the current user</returns>
         [HttpGet("get")]
         public async Task<ActionResult> GetParty()
         {
@@ -40,6 +53,12 @@ namespace web_api.Controllers
             return Ok(party);
         }
 
+        /// <summary>
+        /// Gets the vision of the party from the current user
+        /// </summary>
+        /// <response code="200">when the vision of party was found</response>
+        /// <response code="422">if any error occured while getting the current vision ot the users party</response>
+        /// <returns> List of <c>HexTiles</c> which should be displayed to the user</returns>
         [HttpGet("vision")]
         public async Task<ActionResult> GetVisibleHexTiles()
         {
@@ -65,6 +84,12 @@ namespace web_api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Sets an new destination the user wants to travel to
+        /// </summary>
+        /// <response code="200">when the <c>TravelOGI</c> has been successfully scheduled</response>
+        /// <response code="422">if any error occured while getting <c>Avatar</c>, <c>HexTile</c></response>
+        /// <param name="destination">the destionation of the current user travel</param>
         [HttpPost("travel")]
         public async Task<ActionResult> TravelTo([FromBody] HexTileDTO destination )
         {

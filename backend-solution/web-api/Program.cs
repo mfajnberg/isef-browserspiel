@@ -13,17 +13,6 @@ using web_api.Services.Authentication;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-//builder.Services.AddCors(options =>
-//{
-//options.AddPolicy(name: "sexy",
-//    policy => {
-//        policy.WithOrigins("http://127.0.0.1:5173") // Frontend Dev Server
-//        .AllowCredentials()
-//        .WithHeaders("Content-Type");
-//    });
-//});
-
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true
     );
@@ -32,7 +21,6 @@ builder.Services.AddControllers(
 builder.Services.AddDbContext<DataContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     options.UseMySql(connectionString,
         ServerVersion.AutoDetect(connectionString));
 
@@ -56,17 +44,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // add Notification Service
 builder.Services.AddScoped<INotification, MailNotification>();
 
-
-// set Logger 
-// Error: System.PlatformNotSupportedException: EventLog access is not supported on this platform.
-
-//builder.Host.ConfigureLogging(logging =>
-//{
-//    logging.ClearProviders();
-//    logging.AddConsole();
-//});
-//builder.Services.AddScoped<ILogger, ConsoleLogger>();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 // complete options => necassary for Swagger authorization
@@ -81,12 +58,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
-
     // jwt-token must be entered in authorize dialog as "bearer **key**"
 
     // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "API - Description"
+    });
 });
 
 builder.Services.AddHostedService<OGIConductor>();

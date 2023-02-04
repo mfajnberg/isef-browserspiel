@@ -7,43 +7,95 @@ using web_api.GameModel.Worldmap;
 
 namespace web_api
 {
+    /// <summary>
+    /// DataContext for the Database
+    /// </summary>
     public class DataContext : DbContext
     {
+        /// <summary>
+        /// Users Table
+        /// </summary>
         public DbSet<User> Users { get; set; }
+        /// <summary>
+        /// Confirmation Table
+        /// </summary>
         public DbSet<UserConfirmation> Confirmations { get; set; }
+        /// <summary>
+        /// HexTiles Table
+        /// </summary>
         public DbSet<HexTile> HexTiles { get; set; }
+
+        /// <summary>
+        /// Creatures Table
+        /// </summary>
         public DbSet<Creature> Creatures { get; set; }
+
+        /// <summary>
+        /// Avatars Table
+        /// </summary>
         public DbSet<Avatar> Avatars { get; set; }
+
+        /// <summary>
+        /// Parties Table
+        /// </summary>
         public DbSet<Party> Parties { get; set; }
+
+        /// <summary>
+        /// TravelOGI Table
+        /// </summary>
         public DbSet<TravelOGI> TravelOGIs { get; set; }
+
+        /// <summary>
+        /// interactive Sites Table
+        /// </summary>
         public DbSet<SiteInteractive> SitesInteractive { get; set; }
+
+        /// <summary>
+        /// abstacle sites tabel
+        /// </summary>
         public DbSet<SiteObstacle> SitesObstacle { get; set; }
 
+        /// <summary>
+        /// Contstructor of DataContext
+        /// </summary>
+        /// <param name="options">options</param>
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
         }
 
+        /// <summary>
+        /// overwritten method for custom attributes 
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // the user has one avatar
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Avatar);
 
+            // the HexTile needs Primiray key to Q and R coordinates
             modelBuilder.Entity<HexTile>()
                 .HasKey(h => new { h.AxialQ, h.AxialR });
             modelBuilder.Entity<HexTile>().HasOne(h => h.Site);
 
-            modelBuilder.Entity<SiteBase>().HasDiscriminator<SiteType>("Type")
+            // Sitebase has a reference to SiteType enum
+            modelBuilder.Entity<SiteBase>()
+                .HasDiscriminator<SiteType>("Type")
                 .HasValue<SiteBase>(SiteType.Empty)
                 .HasValue<SiteObstacle>(SiteType.Obstacle)
                 .HasValue<SiteInteractive>(SiteType.Interactive);
 
+            // one Party can own more memebers
             modelBuilder.Entity<Party>()
                 .HasMany(p => p.Members);
 
-            modelBuilder.Entity<OngoingGameplayInteraction>().HasDiscriminator<InteractionType>("Type").HasValue<TravelOGI>(InteractionType.Travel);
+            // OGI has a reference to InteractionType enum 
+            modelBuilder.Entity<OngoingGameplayInteraction>()
+                .HasDiscriminator<InteractionType>("Type")
+                .HasValue<TravelOGI>(InteractionType.Travel);
         }
     }
 }

@@ -5,8 +5,17 @@ using web_api.GameModel.Sites;
 
 namespace web_api.GameModel.Worldmap
 {
+    /// <summary>
+    /// auxiliery class to manage the world
+    /// </summary>
     public class WorldManager
     {
+        /// <summary>
+        /// saves a set of <c>HexTiles</c> to the database
+        /// </summary>
+        /// <param name="context"><c>DataContext</c> for Database interactions</param>
+        /// <param name="worldGenData">the <c>HexTile</c> elements </param>
+        /// <returns></returns>
         public async Task<bool> updateSliceLayout(DataContext context, List<HexTileDTO> worldGenData)
         {
             foreach (var item in worldGenData)
@@ -39,6 +48,12 @@ namespace web_api.GameModel.Worldmap
             return true;
         }
 
+        /// <summary>
+        /// creates a new <c>SiteBase</c> from the given <c>SiteType</c>
+        /// </summary>
+        /// <param name="siteType"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         private SiteBase? CreateSite(SiteType siteType)
         {
             switch (siteType)
@@ -57,6 +72,13 @@ namespace web_api.GameModel.Worldmap
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets a slice of the worldmap, at the given relativ zero, 
+        /// </summary>
+        /// <param name="context">DataContext for Database interactions</param>
+        /// <param name="RelativeZero">a <c>HexTileDTO</c> which represents the middle of the slice</param>
+        /// <param name="radius">amount of rings that should be calculated</param>
+        /// <returns></returns>
         public static async Task<List<HexTile>> GetSliceAsync(DataContext context, HexTileDTO RelativeZero, int radius = 2)
         {
             List<HexTile> result = new List<HexTile>();

@@ -9,6 +9,9 @@ using web_api.Services.Authentication;
 
 namespace web_api.Controllers
 {
+    /// <summary>
+    /// Authentication Endpoint
+    /// </summary>
     [ApiController]
     [Route("api/user")]
     public class AuthenticationController : ControllerBase
@@ -16,6 +19,12 @@ namespace web_api.Controllers
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
         private readonly INotification _notification;
+        /// <summary>
+        /// Constructor for AuthenticationController
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="configuration"></param>
+        /// <param name="notification"></param>
         public AuthenticationController(DataContext context, IConfiguration configuration, INotification notification)
         {
             _context = context;
@@ -28,8 +37,16 @@ namespace web_api.Controllers
         /// </summary>
         /// <response code="200">when the new user has been successfully stored in the database</response>
         /// <response code="409">if the Emailaddress is already stored in the database</response>
-        /// <param name="request">UserDTO, with Email and Password</param>
+        /// <param name="request"><c>UserDTO</c>, with Email and Password</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///  POST
+        ///  {
+        ///    "email": "name@example.com",
+        ///    "password" : "$uper$ecret"
+        ///  }
+        /// </remarks>
         [HttpPost("register")]
         public async Task<ActionResult<string>> Register([FromBody] UserDTO request)
         {
@@ -72,6 +89,14 @@ namespace web_api.Controllers
         /// <response code="400">when the user <b>not</b> exists in the database or the given password is unequal to the stored password</response>
         /// <param name="request">UserDTO, with Email and Password</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///  POST
+        ///  {
+        ///    "email": "name@example.com",
+        ///    "password" : "$uper$ecret"
+        ///  }
+        /// </remarks>
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn([FromBody] UserDTO request)
         {
@@ -95,7 +120,7 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// creates a new reftresh token item 
         /// </summary>
         /// <response code="200"></response>
         /// <response code="401">when the user is unknown, or the refreshToken is expired</response>

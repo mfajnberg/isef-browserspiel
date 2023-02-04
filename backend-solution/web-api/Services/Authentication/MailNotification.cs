@@ -5,6 +5,9 @@ using web_api.Controllers;
 
 namespace web_api.Services.Authentication
 {
+    /// <summary>
+    /// Email Notification
+    /// </summary>
     public class MailNotification : INotification
     {
         readonly string mailServer;
@@ -12,6 +15,10 @@ namespace web_api.Services.Authentication
         readonly string mailSender;
         readonly string mailSenderPassword;
 
+        /// <summary>
+        /// Constructor for MailNotification
+        /// </summary>
+        /// <param name="config">application settings</param>
         public MailNotification(IConfiguration config)
         {
             mailServer = config.GetSection("Mail:Server").Value;
@@ -21,7 +28,13 @@ namespace web_api.Services.Authentication
             mailSenderPassword = config.GetSection("Mail:Password").Value;
         }
 
-
+        /// <summary>
+        /// sends a email to the user 
+        /// </summary>
+        /// <param name="message">email body</param>
+        /// <param name="subject">email subject</param>
+        /// <param name="to">email recipient</param>
+        /// <returns></returns>
         public async Task<bool> SendToAsync(string message, string subject, string to)
         {
             bool result = false;
@@ -63,6 +76,10 @@ namespace web_api.Services.Authentication
             return result;
         }
 
+        /// <summary>
+        /// checks weather the email is configured
+        /// </summary>
+        /// <returns><b>true</b> if, and <b>false</b> if not</returns>
         private bool isConfigured()
         {
             bool result = true;
@@ -76,14 +93,14 @@ namespace web_api.Services.Authentication
             if (string.IsNullOrEmpty(mailServer))
                 result = false;
 
-            // Error: System.PlatformNotSupportedException: The system's ping utility could not be found.
-            //if (mailServer != null)
-            //    if (!isPingable(mailServer))
-            //        result = false;
-
             return result;
         }
 
+        /// <summary>
+        /// checks, if the mail server is pingable
+        /// </summary>
+        /// <param name="mailServer"></param>
+        /// <returns></returns>
         private bool isPingable(string mailServer)
         {
             Ping ping = new Ping();
