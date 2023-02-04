@@ -1,5 +1,8 @@
-﻿namespace web_api.DTOs
+﻿using System.Diagnostics;
+
+namespace web_api.DTOs
 {
+    [DebuggerDisplay("Name = {Name}")]
     public class CreatureDTO
     {
 

@@ -5,6 +5,8 @@ using web_api.Services.Authentication;
 
 namespace web_api.Controllers
 {
+    [ApiController]
+    [Route("api/confirmation/")]
     public class ConfirmationController : Controller
     {
         private readonly DataContext _context;
@@ -20,11 +22,14 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Confirms a new user
         /// </summary>
-        /// <param name="confirmationId"></param>
-        /// <returns></returns>
-        [HttpGet("api/confirmation/confirm/{confirmationId}")]
+        /// <response code="200">when the new user has been successfully confirmed</response>
+        /// <response code="400">when the user, who needs confirmtion was not found, or is already confirmed</response>
+        /// <response code="409">when the confirmation-id is not found in the database</response>
+        /// <param name="confirmationId">the confirmation id</param>
+        /// <returns>message to the user</returns>
+        [HttpGet("confirm/{confirmationId}")]
         public async Task<ActionResult<string>> Confirm([FromRoute] string confirmationId)
         {
             // check if the requested confimationId is known
@@ -46,7 +51,8 @@ namespace web_api.Controllers
             user.IsActive = true;
             await _context.SaveChangesAsync();
 
-            return Ok("Vielen Dank, jetzt kann's richtig los gehen!");
+            string homepage = $"{Request.Scheme}://{Request.Host.Value}";
+            return Ok($"Thank you, please follow '{homepage}' to beginn your journey!");
         }
     }
 }

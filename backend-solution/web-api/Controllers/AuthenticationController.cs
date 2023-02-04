@@ -28,7 +28,7 @@ namespace web_api.Controllers
         /// </summary>
         /// <response code="200">when the new user has been successfully stored in the database</response>
         /// <response code="409">if the Emailaddress is already stored in the database</response>
-        /// <param name="request">UserDTO, with Email and Password</param>
+        /// <param name="request"><c>UserDTO</c>, with Email and Password</param>
         /// <returns></returns>
         [HttpPost("register")]
         public async Task<ActionResult<string>> Register([FromBody] UserDTO request)

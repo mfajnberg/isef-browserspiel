@@ -76,6 +76,11 @@ namespace web_api.Controllers
             return BadRequest("User not found");
         }
 
+        /// <summary>
+        /// every avatar needs a party, 
+        /// </summary>
+        /// <param name="avatar">the newly created avatar</param>
+        /// <returns>the new <c>Party</c>-object</returns>
         private async Task<Party> createNewPartyAsync(Avatar? avatar)
         {
             Party party = new Party();

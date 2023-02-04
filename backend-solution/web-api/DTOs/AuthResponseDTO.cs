@@ -4,6 +4,7 @@ using web_api.GameModel.Creatures;
 
 namespace web_api.DTOs
 {
+    [System.Diagnostics.DebuggerDisplay("AvatarId={Avatar.Id}, PartyId={Party.Id}, isAdmin={IsAdmin}")]
     public class AuthResponseDTO
     {
         public string AccessToken { get; set; }

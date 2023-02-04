@@ -1,5 +1,11 @@
-﻿namespace web_api.DTOs
+﻿using System.Diagnostics;
+
+namespace web_api.DTOs
 {
+    /// <summary>
+    /// Data Transfer Object for Ongoing Gameplay Interactions
+    /// </summary>
+    [DebuggerDisplay("OGI: Schedule for={ScheduledFor.ToString()}, Interaction: {Interaction}")]
     public class OGIDTO
     {
 
