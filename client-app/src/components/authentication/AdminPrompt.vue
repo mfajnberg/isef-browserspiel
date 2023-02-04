@@ -13,6 +13,8 @@ const worldStore = useWorldStore()
 const partyStore = usePartyStore()
 const assetStore = useGameAssetStore()
 
+let qInput = 0
+let rInput = 0
 
 async function clickEdit() {
     worldStore.ACTION(assetStore)
@@ -30,6 +32,9 @@ async function clickEdit() {
     }
 }
 
+function setAbsOffsetQ(val) {
+    worldStore.setAbsoluteZeroOffsetQ(val)
+}
 
 function playSoundPointerDown() {
     assetStore.pointerDownSound.play()
@@ -51,8 +56,8 @@ onMounted(() => {
     <div class="admin">
         Herzlich willkommen im Bereich für Admins!<br/><br/>
         Bitte gib die gewünschten Koordinaten zum editieren ein. <br/><br/>
-        <span>Q: <input v-model="worldStore.absoluteZeroOffset.Q"/> <br/></span>
-        <span>R: <input v-model="worldStore.absoluteZeroOffset.R"/></span> <br/>
+        <span>Q: <input v-model="qInput" @input="worldStore.setAbsoluteZeroOffset(qInput, rInput)"/> </span><br/>
+        <span>R: <input v-model="rInput" @input="worldStore.setAbsoluteZeroOffset(qInput, rInput)"/> </span><br/>
         <button ref="button_edit" @click="clickEdit()">Welt editieren</button>
     </div>
 </template>

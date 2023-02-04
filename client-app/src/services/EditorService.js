@@ -20,22 +20,34 @@ export async function requestGetWorldSliceAdmin(authStore, worldStore) {
         })
     }
     await fetch("/api/admin/world/get", options)
-    // await fetch("/api/admin/world/get.json")
         .then(async response => { 
             worldStore.response = response
-            await response.json()
+            return await response.json()
         })
         .then(data => {
+            console.log("Creating GLTFLoader for Editor...") 
             const loader = new GLTFLoader()
+            worldStore.sites3d.forEach(object3D => {
+                object3D.children.forEach(child => {
+                    disposeObject3D(child)
+                })
+                object3D.geometry && object3D.geometry.dispose()
+                object3D.material && object3D.material.dispose()
+                object3D.texture && object3D.texture.dispose()
+                object3D.parent.remove(object3D)
+                object3D.dispose()
+            })
             data.forEach(element => {
                 console.log(element)
                 if (element.site){
                     if (element.site.type === 100) {
-                    spawnSite(loader, worldStore.scene, worldStore, new HexVector(element.Q, element.R), 'forest_1.glb')
+                        spawnSite(loader, worldStore.scene, worldStore, 
+                            new HexVector(element.Q, element.R), 'forest_1.glb')
+                    }
                 }
-                }
-            });
-        }).catch(error => { console.log(error) })
+            })
+        })
+        .catch(error => { console.log(error) })
 }
 
 export async function requestWorldSave(authStore) {
