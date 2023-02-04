@@ -1,8 +1,18 @@
 ﻿namespace web_api.GameModel.Worldmap
 {
+    /// <summary>
+    /// represents a slice of the worldmap
+    /// </summary>
     public class WorldmapSlice
     {
+        /// <summary>
+        /// gets or sets the max size of the worldmap
+        /// </summary>
         public int RootSize { get; set; }
+
+        /// <summary>
+        /// gets or sets the list of HexTiles which represents the slice
+        /// </summary>
         public List<HexTile> HexGrid { get; set; }
 
         internal void LoadTiles()
@@ -10,6 +20,12 @@
 
         }
 
+        /// <summary>
+        /// AStar algorythm for finding a path between to hextiles
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
         public List<HexTile> FindPathAStar(HexTile start, HexTile destination)
         {
             List<HexTile> toSearch = new List<HexTile>();
@@ -65,6 +81,13 @@
             return path; // reverse first
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="neighbor"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public int Distance(HexTile neighbor, HexTile destination)
         {
             throw new NotImplementedException();

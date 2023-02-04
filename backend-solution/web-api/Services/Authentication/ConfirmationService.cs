@@ -4,10 +4,21 @@ using web_api.Controllers;
 
 namespace web_api.Services.Authentication
 {
+    /// <summary>
+    /// Creats the confiramtion mail
+    /// </summary>
     public class ConfirmationService
     {
+        /// <summary>
+        /// gets or sets the Url from the service
+        /// </summary>
         public string Url { get; set; }
 
+        /// <summary>
+        /// creats the email body, which is sent to the user
+        /// </summary>
+        /// <param name="userConfirmation"></param>
+        /// <returns></returns>
         public string CreateNotificationMessage(UserConfirmation userConfirmation)
         {
             StringBuilder @string = new StringBuilder();
@@ -21,6 +32,11 @@ namespace web_api.Services.Authentication
             return @string.ToString();
         }
 
+        /// <summary>
+        /// creats the confirmation link
+        /// </summary>
+        /// <param name="userConfirmation"></param>
+        /// <returns></returns>
         private string? GetConfimationLink(UserConfirmation userConfirmation)
         {
             var methods = typeof(ConfirmationController).GetMethods(BindingFlags.Public | BindingFlags.Instance);

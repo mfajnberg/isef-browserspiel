@@ -40,21 +40,25 @@ namespace web_api.Controllers
         ///  [
         ///    {
         ///      "axialCoordinates": {
-        ///        "q": 0,
-        ///        "r": 0
+        ///        "q": -1,
+        ///        "r": 2
         ///      },
-        ///      "siteType": 0
+        ///      "siteType": 100
         ///   }
         ///  ]
         /// </remarks>
         /// <response code="200">when the hextiles has been successfully stored in the database</response>
         /// <response code="400">if the Emailaddress is already stored in the database</response>
+        /// <response code="401">if the user is not authorized</response>
+        /// <response code="403">if the user has no admin permissions</response>
         /// <param name="worldGenData">List of <c>HexTileDTO</c> which should be stored in the Database</param>
 
         [HttpPost]
         [Route("world/save")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Produces("text/plain")]
         public async Task<ActionResult> SaveSliceLayout(List<HexTileDTO> worldGenData)
         {

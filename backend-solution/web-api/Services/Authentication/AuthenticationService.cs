@@ -6,8 +6,17 @@ using System.Text;
 
 namespace web_api.Services.Authentication
 {
+    /// <summary>
+    /// Everyting about Authentication
+    /// </summary>
     public class AuthenticationService
     {
+        /// <summary>
+        /// creates a <c>JWT Secuity Token</c>
+        /// </summary>
+        /// <param name="user">user whos the autentication for</param>
+        /// <param name="config">application settings, for Jwt "encryption"</param>
+        /// <returns></returns>
         public static string CreateAccessToken(User user, IConfiguration config)
         {
             List<Claim> claims = new List<Claim>
@@ -26,6 +35,10 @@ namespace web_api.Services.Authentication
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// after each positiv login, a refresh token is generated
+        /// </summary>
+        /// <returns>the token</returns>
         public static RefreshToken GenerateRefreshToken()
         {
             var refreshToken = new RefreshToken
@@ -38,8 +51,13 @@ namespace web_api.Services.Authentication
             return refreshToken;
         }
 
-        public static void CreatePasswordHash(string password,
-             out byte[] passwordHash, out byte[] passwordSalt)
+        /// <summary>
+        /// Creates a SHA512 hash and salt from the given password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="passwordSalt"></param>
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
@@ -48,8 +66,14 @@ namespace web_api.Services.Authentication
             }
         }
 
-        public static bool VerifyPasswordHash(string password,
-             byte[] passwordHash, byte[] passwordSalt)
+        /// <summary>
+        /// Checks if the passwords are equal
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="passwordSalt"></param>
+        /// <returns></returns>
+        public static bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {

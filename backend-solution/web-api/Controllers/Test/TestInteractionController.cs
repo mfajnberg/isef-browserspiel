@@ -3,23 +3,23 @@ using Microsoft.AspNetCore.Mvc;
 using web_api.DTOs;
 using web_api.GameModel.OGIs;
 
-namespace web_api.Controllers
+namespace web_api.Controllers.Test
 {
     /// <summary>
     /// Endpoint for <c>OngoingGameplayInteraction</c>
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class InteractionTestController : ControllerBase
+    public class TestInteractionController : ControllerBase
     {
         DataContext _context;
         /// <summary>
         /// Constructor for <c>InteractionTestController</c>
         /// </summary>
         /// <param name="context"> TGype of <c>DataContext</c> for Database interactions</param>
-        public InteractionTestController(DataContext context)
+        public TestInteractionController(DataContext context)
         {
-            _context= context;  
+            _context = context;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace web_api.Controllers
         /// </summary>
         /// <response code="200">when the OGI has been successfully stored in the database</response>
         /// <response code="400">if the OGI violates the rules</response>
-        /// <param name="request"><c>UserDTO</c>, with Email and Password</param>
+        /// <param name="input"><c>UserDTO</c>, with Email and Password</param>
         /// <returns>the scheduled OGI</returns>
         [HttpPost]
         public async Task<ActionResult> ScheduleTestInteraction([FromBody] OGIDTO input)

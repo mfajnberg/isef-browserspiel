@@ -1,5 +1,8 @@
 ﻿namespace web_api.GameModel.Sites
 {
+    /// <summary>
+    /// Different Types of Sites
+    /// </summary>
     public enum SiteType
     {
         /// <summary>

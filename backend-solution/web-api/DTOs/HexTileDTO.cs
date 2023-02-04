@@ -12,8 +12,14 @@ namespace web_api.DTOs
     [DebuggerDisplay("HexTile: Q={AxialCoordinates.Q}, R={AxialCoordinates.R}, Site={SiteType}")]
     public class HexTileDTO
     {
+        /// <summary>
+        /// axial coordinates Q and R for the HexTile
+        /// </summary>
         public HexVector AxialCoordinates { get; set; }
 
+        /// <summary>
+        /// the <c>SiteType</c> of the HexTile
+        /// </summary>
         public SiteType SiteType { get; set; }
     }
 }

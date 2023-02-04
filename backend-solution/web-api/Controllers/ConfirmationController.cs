@@ -5,20 +5,22 @@ using web_api.Services.Authentication;
 
 namespace web_api.Controllers
 {
+    /// <summary>
+    /// Confirmation Endpoint
+    /// </summary>
     [ApiController]
     [Route("api/confirmation/")]
     public class ConfirmationController : Controller
     {
         private readonly DataContext _context;
-        private readonly IConfiguration _configuration;
-        private readonly INotification _notification;
 
-        public ConfirmationController(DataContext context, IConfiguration configuration, INotification notification)
+        /// <summary>
+        /// Constructor for <c>ConfirmationController</c>
+        /// </summary>
+        /// <param name="context"><c>DataContext</c> for Database interactions</param>
+        public ConfirmationController(DataContext context)
         {
             _context = context;
-            _configuration = configuration;
-            _notification = notification;
-
         }
 
         /// <summary>

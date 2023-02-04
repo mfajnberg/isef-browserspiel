@@ -85,9 +85,9 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// sets an new destination the user wants to travel to
+        /// Sets an new destination the user wants to travel to
         /// </summary>
-        /// <response code="200">when the <c>TravelOGI> has been successfully scheduled</response>
+        /// <response code="200">when the <c>TravelOGI</c> has been successfully scheduled</response>
         /// <response code="422">if any error occured while getting <c>Avatar</c>, <c>HexTile</c></response>
         /// <param name="destination">the destionation of the current user travel</param>
         [HttpPost("travel")]

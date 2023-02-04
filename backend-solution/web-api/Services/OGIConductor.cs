@@ -5,14 +5,25 @@ using web_api.GameModel.OGIs;
 
 namespace web_api.Services
 {
+    /// <summary>
+    /// a Conductor for Ongoing Gameplay Interactions
+    /// </summary>
     public class OGIConductor : BackgroundService
     {
         string connectionString;
+        /// <summary>
+        /// Constructor for Conductor
+        /// </summary>
+        /// <param name="configuration"></param>
         public OGIConductor(IConfiguration configuration)
         {
             connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+        /// <summary>
+        /// Creates a DataContext for Database interactions
+        /// </summary>
+        /// <returns></returns>
         private DataContext GetDataContext()
         {
             var option = new DbContextOptionsBuilder<DataContext>().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).Options;
@@ -21,21 +32,28 @@ namespace web_api.Services
             return dataContext;
         }
 
+        /// <summary>
+        /// starts the background task
+        /// </summary>
+        /// <param name="stoppingToken"></param>
+        /// <returns></returns>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-
                 ConsoleLogger.LogInfo("Read Database... " + DateTime.Now.ToString());
                 OngoingGameplayInteraction? interaction = await ExecuteNextOGI();
-                // ToDo: Execute OnGoingInteraction
 
                 // Todo: determine optimal delay time
                 await Task.Delay(1000);
             }
         }
 
-
+        /// <summary>
+        /// execute Ongoing Gameplay Interaction 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         private async Task<OngoingGameplayInteraction?> ExecuteNextOGI()
         {
             OngoingGameplayInteraction? resultBase = null;
@@ -56,7 +74,7 @@ namespace web_api.Services
                         await travelOGI.ExecuteSelf(context);
                         break;
 
-                    //...
+                    // todo: implement other OGI types
 
                     throw new NotImplementedException();
                 }

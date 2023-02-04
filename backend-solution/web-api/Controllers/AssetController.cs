@@ -4,18 +4,25 @@ using System.Xml.Linq;
 
 namespace web_api.Controllers
 {
+    /// <summary>
+    /// Asset Endpoint
+    /// </summary>
     [ApiController]
     [Authorize]
     [Route("api/asset")]
     public class AssetController : ControllerBase
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration;
         private readonly string _assetPath;
-        public AssetController(IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
+
+        /// <summary>
+        /// constructor of AssetController
+        /// </summary>
+        /// <param name="webHostEnvironment"></param>
+        /// <param name="configuration"></param>
+        public AssetController(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
-            _configuration = configuration;
             _assetPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Assets");
         }
 

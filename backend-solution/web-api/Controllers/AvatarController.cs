@@ -9,25 +9,30 @@ using web_api.Services;
 
 namespace web_api.Controllers
 {
+    /// <summary>
+    /// Avatar Endpoint
+    /// </summary>
     [Authorize]
     [Route("api/avatar")]
     [ApiController]
     public class AvatarController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly IConfiguration _configuration;
-        public AvatarController(DataContext context, IConfiguration configuration)
+        /// <summary>
+        /// Constructor for AvatarController
+        /// </summary>
+        /// <param name="context"></param>
+        public AvatarController(DataContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
 
         /// <summary>
         /// Gets a list of premade characters
         /// </summary>
-        /// <response code="200"></response>
         /// <returns></returns>
-        [HttpGet("choices")]
+        /// <response code="200">returns a list of premade avatars</response>
+         [HttpGet("choices")]
         public async Task<ActionResult> GetPremadeChoices()
         {
             return Ok(PremadeAvatars.GetAvatarList());
@@ -38,6 +43,15 @@ namespace web_api.Controllers
         /// </summary>
         /// <param name="name">name of the premade character</param>
         /// <returns></returns>
+        ///  <response code="200">when the avatar was set successfully to the user</response>
+        /// <response code="400">if the selected avatar was not found</response>
+        /// <remarks>
+        /// Sample request:
+        ///  POST
+        ///  {
+        ///    "Leito Froste"
+        ///  }
+        /// </remarks>
         [HttpPost("select")]
         public async Task<ActionResult> SelectAvatar([FromBody] string name)
         {
