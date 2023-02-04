@@ -98,12 +98,14 @@ export const useUIStore = defineStore('UIStore', {
 
         async PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) {
             let responseStatus = authStore.loginResponse.status
-            // // DEBUG--------------------------------//
-            // responseStatus = 200                    //
-            // authStore.loggedIn = true               //
-            // authStore.userIsAdmin = true   	       //
-            // partyStore.avatar = "some"              //
-            // //.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+            // // DEBUG-------------------------------***
+            // responseStatus = 200
+            // authStore.loggedIn = true
+            // authStore.userIsAdmin = true
+            // partyStore.avatar = {
+            //     name: "Marsilio Mirandola"
+            // }
+            // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
             if (responseStatus === 200) {
                 if (authStore.userIsAdmin == true && !this.getShowingAdminPrompt) {
                     console.log("Admin status detected...")
@@ -119,13 +121,6 @@ export const useUIStore = defineStore('UIStore', {
                     if (!worldStore.initialized)
                         worldStore.ACTION(assetStore)
                     await requestGetHexTiles(authStore, worldStore)
-
-                    if (partyStore.avatar.name === "Eliana Dawnbreak")
-                        partyStore.portraitUri = "Portrait_Eliana.jpg"
-                    if (partyStore.avatar.name === "Leito Froste")
-                        partyStore.portraitUri = "Portrait_Leito.jpg"
-                    if (partyStore.avatar.name === "Marsilio Mirandola")
-                        partyStore.portraitUri = "Portrait_Marsilio.jpg"
 
                     this.showWorldmap(worldStore)
                 }

@@ -14,6 +14,24 @@ import AvatarCreator from './components/ingame/AvatarCreator.vue'
 import Overlay from './components/ingame/Overlay.vue'
 import { usePartyStore } from './stores/PartyStore'
 
+    let image1 = new Image()
+    image1.src = "assets/Portrait_Eliana.jpg"
+    image1.onload = function() {
+        console.log("loading Eliana's portrait...")
+    }
+
+    let image2 = new Image()
+    image2.src = "assets/Portrait_Eliana.jpg"
+    image2.onload = function() {
+        console.log("loading Leito's portrait...")
+    }
+
+    let image3 = new Image()
+    image3.src = "assets/Portrait_Eliana.jpg"
+    image3.onload = function() {
+        console.log("loading Marsilio's portrait...")
+    }
+
     const authStore = useAuthStore()
     const uiStore = useUIStore()
     const partyStore = usePartyStore()
@@ -22,7 +40,6 @@ import { usePartyStore } from './stores/PartyStore'
             authStore.Email = localStorage.Email
             requestTokenRefresh(authStore, partyStore)
         }
-        Howler.debug = true 
     })
 </script>
 

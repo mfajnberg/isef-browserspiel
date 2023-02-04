@@ -20,6 +20,7 @@ import { usePartyStore } from '../../stores/PartyStore'
         'tent_field_camp.glb', 'crystals.glb', 
         'chest_lp.glb', 'crystals.glb']
     
+    const portrait = ref(null)
     const slot_1 = ref(null);
     const slot_2 = ref(null);
     const slot_3 = ref(null);
@@ -64,7 +65,14 @@ import { usePartyStore } from '../../stores/PartyStore'
 
     let slotPressed, actionPressed
     onMounted(() => {
-        console.log("overlay mounted...")
+        console.log("Mounting overlay...")
+
+        if (partyStore.avatar.name === "Eliana Dawnbreak")
+            portrait.value.style.backgroundImage = "url('assets/Portrait_Eliana.jpg')"
+        if (partyStore.avatar.name === "Leito Froste")
+            portrait.value.style.backgroundImage = "url('assets/Portrait_Leito.jpg')"
+        if (partyStore.avatar.name === "Marsilio Mirandola")
+            portrait.value.style.backgroundImage = "url('assets/Portrait_Marsilio.jpg')"
 
         for (let slot of slots) {
             slot.value.addEventListener('pointerdown', (e) => {
@@ -110,7 +118,7 @@ import { usePartyStore } from '../../stores/PartyStore'
         <div id="clock">{{uiStore.currentTime}}</div>
         <!--top_right_info-->
         <div id="slot_panel">
-            <div id="portrait" src="{{partyStore.getPortraitUri}}"></div>
+            <div id="portrait" ref="portrait"></div>
             <div class="slot" ref="slot_1">
                 <span class="slot_text">
                     {{1}}
@@ -191,7 +199,7 @@ import { usePartyStore } from '../../stores/PartyStore'
     /* border-top-right-radius: 5px; */
     border-color: rgb(133, 113, 86);
 } #portrait {
-    background-image: url('Portrait_Eliana.jpg');
+    /* background-image: url('Portrait_Eliana.jpg'); */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;

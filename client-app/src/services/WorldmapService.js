@@ -10,16 +10,15 @@ export async function requestGetHexTiles(authStore, worldStore) {
             'Authorization': `Bearer ${authStore.token}`
         }
     }
-    console.log(authStore.token)
-
     await fetch("/api/party/vision", options)
         .then(async response => {
+            worldStore.response = response
             return await response.json()
         })
         .then(data => {
-            console.log("Creating GLTFLoader...") 
+            console.log("Creating GLTFLoader for play...") 
             const loader = new GLTFLoader()
-            worldStore.sites3d.forEach(site => {
+            worldStore.sites3d.forEach(object3D => {
                 object3D.children.forEach(child => {
                     disposeObject3D(child)
                 })

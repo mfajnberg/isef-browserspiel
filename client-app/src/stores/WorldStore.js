@@ -37,11 +37,9 @@ export const useWorldStore = defineStore('WorldStore', {
         getAbsoluteZeroOffset: (state) => state.absoluteZeroOffset
     },
     actions: {
-        setAbsoluteZeroOffset(val) {
-            this.absoluteZeroOffset.Q = val
-        },
-        setAbsoluteZeroOffset(val) {
-            this.absoluteZeroOffset.R = val
+        setAbsoluteZeroOffset(q, r) {
+            this.absoluteZeroOffset.Q = q
+            this.absoluteZeroOffset.R = r
         },
 
         async fetchWorldData() {
