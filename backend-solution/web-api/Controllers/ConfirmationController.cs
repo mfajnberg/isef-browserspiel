@@ -9,8 +9,7 @@ namespace web_api.Controllers
     /// Confirmation Endpoint
     /// </summary>
     [ApiController]
-    [Route("api/confirmation/")]
-    public class ConfirmationController : Controller
+   public class ConfirmationController : Controller
     {
         private readonly DataContext _context;
 
@@ -31,7 +30,7 @@ namespace web_api.Controllers
         /// <response code="409">when the confirmation-id is not found in the database</response>
         /// <param name="confirmationId">the confirmation id</param>
         /// <returns>message to the user</returns>
-        [HttpGet("confirm/{confirmationId}")]
+        [HttpGet("api/confirmation/confirm/{confirmationId}")]
         public async Task<ActionResult<string>> Confirm([FromRoute] string confirmationId)
         {
             // check if the requested confimationId is known
