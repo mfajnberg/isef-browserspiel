@@ -27,6 +27,8 @@ export const useAuthStore = defineStore('AuthStore', {
 
         regisResponse: null,
         loginResponse: null,
+        loginFailed: false,
+
         userIsAdmin: false
     }),
     getters: {

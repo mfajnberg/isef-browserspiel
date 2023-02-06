@@ -97,16 +97,15 @@ export const useUIStore = defineStore('UIStore', {
         },
 
         async PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) {
-            let responseStatus = authStore.loginResponse.status
             // // DEBUG-------------------------------***
-            // responseStatus = 200
+            // authStore.loginResponse = { status: 200 }
             // authStore.loggedIn = true
             // authStore.userIsAdmin = true
             // partyStore.avatar = {
             //     name: "Marsilio Mirandola"
             // }
             // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
-            if (responseStatus === 200) {
+            if (authStore.loginResponse.status === 200) {
                 if (authStore.userIsAdmin == true && !this.getShowingAdminPrompt) {
                     console.log("Admin status detected...")
                     this.showAdminPrompt()
@@ -117,11 +116,11 @@ export const useUIStore = defineStore('UIStore', {
                     this.showAvatarCreator()
                 }
                 else  {
-                    console.log("Loading worldmap...")
                     if (!worldStore.initialized)
-                        worldStore.ACTION(assetStore)
-                    await requestGetHexTiles(authStore, worldStore)
-
+                        await worldStore.ACTION(assetStore)
+                    if (!this.editorMode)
+                        worldStore.preview = null
+                        await requestGetHexTiles(authStore, worldStore)
                     this.showWorldmap(worldStore)
                 }
             }

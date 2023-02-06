@@ -24,9 +24,9 @@ const authStore = useAuthStore()
 
     position: absolute;
     z-index: 100;
-    border-style: double;
-    border-color: rgb(133, 113, 86);
-    border-width: 3px;
+    border-style: none;
+    border-color: rgb(252, 205, 143);
+    border-width: 1px;
 
     user-select: none;
 

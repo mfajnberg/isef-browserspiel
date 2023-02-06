@@ -48,9 +48,9 @@ export const useWorldStore = defineStore('WorldStore', {
         setScene(scene) {
             this.scene = scene
         },
-        ACTION(assetStore) {
+        async ACTION(assetStore) {
             if (!this.initialized) {
-                initActors(this.scene, this, assetStore)
+                await initActors(this.scene, this, assetStore)
                 this.initialized = true
             }
         },

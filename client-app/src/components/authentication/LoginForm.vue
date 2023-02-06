@@ -22,11 +22,16 @@ function switchToRegis() {
 
 async function LogIn() {
     await requestLogin(authStore, partyStore)
+    // if (true) {
     if (authStore.loginResponse.ok) {
+        authStore.loginFailed = false
         console.log("Loading scene & initial actors ...")
-        worldStore.ACTION(assetStore)
+        await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
     }
-    await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
+    else {
+        authStore.loginFailed = true
+    }
+    authStore.Password = ""
 }
 
 function playSoundPointerDown() {
@@ -65,7 +70,9 @@ onMounted(() => {
             Noch kein Konto?
             <a @click="switchToRegis" style="cursor: pointer;">Jetzt registrieren!</a>
         </div>
-
+        <span class="invalid_input abs" v-if="authStore.loginFailed">
+            Zugangsdaten nicht erkannt . . .
+        </span>
     </div>
 </template>
 
@@ -84,5 +91,9 @@ onMounted(() => {
         color: red;
         font-size: x-small;
         user-select: none;
+    }.abs {
+        /* display: none; */
+        padding-top: 3px;
+        margin-bottom: -27px;
     }
 </style>

@@ -19,9 +19,8 @@ export async function requestTokenRefresh(authStore, partyStore) {
                 console.log(authStore.token)
                 authStore.userIsAdmin = authResponseDTO.isAdmin
                 partyStore.avatar = authResponseDTO.avatar
-                if (authStore.stayLoggedIn) {
+                if (authStore.stayLoggedIn)
                     localStorage.setItem('token', authStore.token)
-                }
                 authStore.loggedIn = true
             }
         })

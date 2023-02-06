@@ -62,13 +62,14 @@ export function initCameraPawn(canvas, scene, worldStore) {
         }
     })
 
+    console.log(window.innerHeight)
+    
     let updateWorldCursor = _.debounce((event) => {
         _pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-        _pointer.y = - (event.offsetY / _renderer.domElement.height) * 2 + 1
+        _pointer.y = - (event.layerY / _renderer.domElement.height) * 2 + 1
 
         _raycaster.setFromCamera(_pointer, _camera)
         intersects = _raycaster.intersectObjects(worldStore.getHexes3d)
-
         if (uiStore.showingWorldmap && intersects.length > 0) {
             let hex = intersects[0].object.parent
             let vec = new THREE.Vector3();
@@ -81,6 +82,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
             worldStore.cursor.visible = true
             worldStore.cursor.position.set(point.x, point.y, point.z)
             worldStore.hoveredItem = hex
+
             if (worldStore.preview 
                 && hex.userData.free
                 && vec.distanceTo(point) < .82) {
@@ -106,7 +108,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
     // function getHalfwayPoints(origin) {}
     // function getCornerVectors(origin) {}
 
-    window.addEventListener('mousemove', updateWorldCursor)
+        canvas.addEventListener('mousemove', updateWorldCursor)
 
     window.addEventListener('resize', () => {
         _camera.aspect = window.innerWidth / (window.innerHeight * .85)

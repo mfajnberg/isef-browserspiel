@@ -1,7 +1,7 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { HexVector } from "../classes/HexVector";
 import { Sites } from "../stores/000Singletons";
-import { spawnSite } from "../threejs/ActorManager";
+import { dispose, spawnSite } from "../threejs/ActorManager";
 
 export async function requestGetWorldSliceAdmin(authStore, worldStore) {
     const options = {
@@ -23,19 +23,10 @@ export async function requestGetWorldSliceAdmin(authStore, worldStore) {
         })
         .then(data => {
             console.log("Updating sites for editing...") 
+            // factor out
             if (worldStore.sites3d.length > 0) {
                 worldStore.sites3d.forEach(object3D => {
-                    disposeObject(object3D)
-                    function disposeObject(obj3d) {
-                        obj3d.children.forEach(child => {
-                            disposeObject(child);
-                        });
-                        obj3d.geometry && obj3d.geometry.dispose()
-                        obj3d.material && obj3d.material.dispose()
-                        obj3d.texture && obj3d.texture.dispose()
-                        try {obj3d.parent.remove(obj3d)} catch(e) {}
-                        try {obj3d.dispose()} catch(e) {}
-                    }
+                    dispose(object3D)
                 })
             }
             worldStore.sites3d = []

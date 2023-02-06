@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { useWorldStore } from '../stores/WorldStore'
 import { useUIStore } from '../stores/UIStore'
 import { initCameraPawn } from './Crew'
-import { initActors, loadSitePreview } from './ActorManager'
+import { loadSitePreview } from './ActorManager'
 import { GUI } from 'dat.gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 

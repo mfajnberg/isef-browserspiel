@@ -38,6 +38,7 @@ import { usePartyStore } from '../../stores/PartyStore'
 
     let selected = [];
     function clickSlot(num) {
+        // console.log(uiStore.editorMode)
         if (uiStore.editorMode) {
             if (selected.length != 0) {
                 selected[0].value.style.borderColor = "rgba(133, 113, 86, 100)"

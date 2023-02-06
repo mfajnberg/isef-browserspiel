@@ -55,7 +55,7 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
                     "Content-Type": "application/octet-stream"
                 }
             })
-            .then((response) => response.arrayBuffer())
+            .then(async (response) => await response.arrayBuffer())
             .then(arrayBuffer => {
                 this.hexModel = arrayBuffer
             })
@@ -68,81 +68,20 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
                     "Content-Type": "application/octet-stream"
                 }
             })
-            .then((response) => response.arrayBuffer())
+            .then(async (response) => await response.arrayBuffer())
             .then(arrayBuffer => {
                 this.forestModel = arrayBuffer
-            })
-        },
-        async loadCliffs() {
-            await fetch("api/asset/?name=forest.glb", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(token)}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })
-            .then((response) => response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.forestModel = arrayBuffer
-            })
-        },
-        async loadHouse() {
-            await fetch("api/asset/?name=house.glb", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(token)}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })            .then((response) => response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.houseModel = arrayBuffer
-            })
-        },
-        async loadTent() {
-            await fetch("api/asset/?name=tent.glb", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(token)}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })            .then((response) => response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.tentModel = arrayBuffer
-            })
-        },
-        async loadChest() {
-            await fetch("api/asset/?name=chest.glb", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(token)}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })            .then((response) => response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.chestModel = arrayBuffer
-            })
-        },
-        async loadCrystal() {
-            await fetch("api/asset/?name=crystal.glb", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(token)}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })            .then((response) => response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.crystalModel = arrayBuffer
             })
         },
         async loadHexCursor() {
-            await fetch("api/asset/?name=cursor.glb", {
+            await fetch("HexCursor.glb", {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem(token)}`,
+                    // Authorization: `Bearer ${localStorage.getItem(token)}`,
                     credentials: 'include',
                     "Content-Type": "application/octet-stream"
                 }
             })            
-            .then((response) => response.arrayBuffer())
+            .then(async (response) => await response.arrayBuffer())
             .then(arrayBuffer => {
                 this.hexCursor = arrayBuffer
             })

@@ -6,11 +6,14 @@ import { useGameAssetStore } from '../../stores/GameAssetStore';
 import { useWorldStore } from '../../stores/WorldStore';
 import { requestGetWorldSliceAdmin } from '../../services/EditorService'
 import { useAuthStore } from '../../stores/AuthStore';
+import { useCreatorStore } from '../../stores/AvatarCreatorStore';
 
 const uiStore = useUIStore()
 const authStore = useAuthStore()
 const worldStore = useWorldStore()
 const assetStore = useGameAssetStore()
+const partyStore = usePartyStore()
+const creatorStore = useCreatorStore()
 
 let qInput = 0
 let rInput = 0
@@ -19,14 +22,8 @@ async function clickEdit() {
     worldStore.ACTION(assetStore)
     worldStore.setAbsoluteZeroOffset(qInput, rInput)
     await requestGetWorldSliceAdmin(authStore, worldStore)
-    let responseStatus = worldStore.response.status
-    // // DEBUG------------------------//
-    // responseStatus = 200
-    // // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
-    if (responseStatus === 200) {
-        uiStore.editorMode = true
-        uiStore.showWorldmap(worldStore)
-    }
+    uiStore.editorMode = true
+    await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
 }
 
 function playSoundPointerDown() { assetStore.pointerDownSound.play() }
@@ -100,9 +97,9 @@ function setTranslate(xPos, yPos, el) {
 
     position: absolute;
     z-index: 100;
-    border-style: double;
+    border-style: none;
     border-color: rgb(133, 113, 86);
-    border-width: 3px;
+    border-width: 1px;
 
     user-select: none;
 }

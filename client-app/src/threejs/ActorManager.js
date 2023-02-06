@@ -134,3 +134,14 @@ export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
         worldStore.sites3d.push(loadedObject.scene)
     }))
 }
+
+export function dispose(object3d) {
+    object3d.children.forEach(child => {
+        disposeObject(child);
+    });
+    object3d.geometry && object3d.geometry.dispose()
+    object3d.material && object3d.material.dispose()
+    object3d.texture && object3d.texture.dispose()
+    try {object3d.parent.remove(object3d)} catch(e) {}
+    try {object3d.dispose()} catch(e) {}
+}
