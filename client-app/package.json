@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vue-youtube/core": "^0.0.4",
     "dat.gui": "^0.7.9",
     "howler": "^2.2.3",
     "lodash": "^4.17.21",

@@ -62,8 +62,6 @@ export function initCameraPawn(canvas, scene, worldStore) {
         }
     })
 
-    console.log(window.innerHeight)
-    
     let updateWorldCursor = _.debounce((event) => {
         _pointer.x = (event.clientX / window.innerWidth) * 2 - 1
         _pointer.y = - (event.layerY / _renderer.domElement.height) * 2 + 1

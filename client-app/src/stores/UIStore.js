@@ -27,6 +27,7 @@ export const useUIStore = defineStore('UIStore', {
         getShowingWorldmap:(state) => state.showingWorldmap,
         getShowingImprint:(state) => state.showingImprint,
         getShowingHome:(state) => state.showingHome,
+        getIsEditorMode:(state) => state.editorMode
     },
     actions: {
         updateClock() {
@@ -124,6 +125,7 @@ export const useUIStore = defineStore('UIStore', {
                     this.showWorldmap(worldStore)
                 }
             }
-        }
+        },
+        setEditorMode(bool) { this.editorMode = bool}
     },
 })

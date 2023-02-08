@@ -38,11 +38,11 @@ function clickShowImprint() {
         font-size: 14px;
 
         background-color: rgb(0, 0, 0);
-        border-top-style: solid;
+        border-top-style: outset;
         border-top-width: 1px;
         border-top-color: rgba(133, 113, 86, 0.551);
         user-select: none;
-        transition: border-color 0.25s;
+        transition: 0.25s;
     }.footer:hover {
     border-color: rgb(252, 205, 143);
     }

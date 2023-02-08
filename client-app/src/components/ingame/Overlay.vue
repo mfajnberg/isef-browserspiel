@@ -28,21 +28,15 @@ import { usePartyStore } from '../../stores/PartyStore'
     const slot_5 = ref(null);
     const slot_6 = ref(null);
     const slot_7 = ref(null);
-    const action_1 = ref(null);
-    const action_2 = ref(null);
-    const action_3 = ref(null);
-    const action_4 = ref(null);
 
     const slots = [slot_1, slot_2, slot_3, slot_4, slot_5, slot_6, slot_7]
-    const actions = [action_1, action_2, action_3, action_4]
 
     let selected = [];
     function clickSlot(num) {
-        // console.log(uiStore.editorMode)
         if (uiStore.editorMode) {
             if (selected.length != 0) {
-                selected[0].value.style.borderColor = "rgba(133, 113, 86, 100)"
-                selected[0].value.style.borderStyle = "groove"
+                selected[0].value.style.borderColor = "rgba(133, 113, 86, 0)"
+                // selected[0].value.style.borderStyle = "groove"
                 selected.pop()
             }
             selected.push(slots[num])
@@ -52,7 +46,8 @@ import { usePartyStore } from '../../stores/PartyStore'
         }
         else {
             if (selected.includes(num)) {
-                slots[num].value.style.borderColor = "rgba(133, 113, 86, 100)"
+                slots[num].value.style.borderColor = "rgba(133, 113, 86, 0)"
+                // selected[0].value.style.borderStyle = "groove"
                 for (var i = 0; i < selected.length; i++) {
                     if (selected[i] === num) {
                         selected.splice(i, 1)
@@ -64,7 +59,7 @@ import { usePartyStore } from '../../stores/PartyStore'
         }
     }
 
-    let slotPressed, actionPressed
+    let slotPressed
     onMounted(() => {
         console.log("Mounting overlay...")
 
@@ -92,32 +87,18 @@ import { usePartyStore } from '../../stores/PartyStore'
                 catch (e) {}
             }
         })
-        for (let action of actions) {
-            action.value.addEventListener('pointerdown', (e) => {
-                if (e.button === 0) {
-                    assetStore.pointerDownSound.play()
-                    actionPressed = action
-                }
-            })
-            action.value.addEventListener('pointerup', (e) => {
-                if (e.button === 0 && actionPressed === action) {
-                    assetStore.pointerUpSound.play()
-                }
-            })
-        }
     })
 
     function debug2() {
         console.log(sites.buffer)
     }
+
 </script>
 
 
 <template>
     <div id="overlay">
-        <!--top_left_info-->
         <div id="clock">{{uiStore.currentTime}}</div>
-        <!--top_right_info-->
         <div id="slot_panel">
             <div id="portrait" ref="portrait"></div>
             <div class="slot" ref="slot_1">
@@ -156,11 +137,11 @@ import { usePartyStore } from '../../stores/PartyStore'
                 </span>
             </div>
         </div>
-        <div id="action_panel" v-show="uiStore.editorMode">
-            <button class="action" ref="action_1" @click="requestWorldSave(authStore)">Post Layout</button>
-            <button class="action" ref="action_2" @click="debug2">(action 2)</button>
-            <button class="action" ref="action_3">(action 3)</button>
-            <button class="action" ref="action_4">(action 4)</button>
+        <div id="debug_panel" v-if="uiStore.editorMode === true && authStore.userIsAdmin === true">
+            <button class="debug" @click="requestWorldSave(authStore)">Post Layout</button>
+            <button class="debug" @click="debug2">(action 2)</button>
+            <button class="debug">(action 3)</button>
+            <button class="debug">(action 4)</button>
         </div>
         <div id="info_hex">{{worldStore.getHoveredName}}</div>
     </div>
@@ -191,11 +172,11 @@ import { usePartyStore } from '../../stores/PartyStore'
     height: 130px;
     position: fixed;
     bottom: 5vh;
-    left: 0%;
+    left: 2vw;
     right: auto;
     font-style: italic;
     background-image: url('leather_texture.jpg');
-    border-style: groove;
+    border-style: outset;
     border-width: 1px;
     /* border-top-right-radius: 5px; */
     border-color: rgb(133, 113, 86);
@@ -225,7 +206,7 @@ import { usePartyStore } from '../../stores/PartyStore'
 
     border-style: groove;
     border-width: 1px;
-    border-color: rgba(133, 113, 86, 100);
+    border-color: rgba(133, 113, 86, 0);
     /* border-top-right-radius: 6px; */
     
     box-shadow: 0px 0px 7px -3px rgba(133, 113, 86, 0.551) inset;
@@ -233,7 +214,7 @@ import { usePartyStore } from '../../stores/PartyStore'
     /* transition: border-color 0.15s; */
 
 } .slot:active {
-    border-style: inset;
+    /* border-style: inset; */
     /* box-shadow: 10px 14px 16px -4px black inset; */
     margin-top: 2px;
 }.slot_text{
@@ -246,21 +227,23 @@ import { usePartyStore } from '../../stores/PartyStore'
     align-self: flex-end;
     /* color: white; */
 }
-#action_panel {
+#debug_panel {
     grid-row: 3 / 5;
     grid-column: 8;
     display: flex;
     flex-direction: column;
-} .action {
+} .debug {
     display: flex; /* for now */
     align-self: center;
     margin: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
 
     pointer-events:all;
     cursor: pointer;
     user-select: none;
 } @media (max-width: 700px) {
-    #actions {
+    #debug_panel {
         display: none;
  }
 }

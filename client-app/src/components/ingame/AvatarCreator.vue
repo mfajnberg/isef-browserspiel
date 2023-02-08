@@ -135,7 +135,7 @@ onMounted(() => {
         grid-template-columns: 1fr 1fr 1fr ;
         grid-template-rows: 1fr;
         bottom: 0%;
-        align-items: center;
+        /* align-items: center; */
         justify-content: center;
         position: fixed;
         background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%);
@@ -199,7 +199,7 @@ onMounted(() => {
     }
     .button_select {
         grid-row: 4;
-        display: block;
+        width: 100%;
         pointer-events: all;
         user-select: none;
         color: rgb(0, 255, 0);

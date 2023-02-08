@@ -20,10 +20,17 @@ function switchToRegis() {
     authStore.showRegisForm()
 }
 
+// bind this to an Enter key event on the login widget
+async function LogInEnter() {
+    assetStore.pointerDownSound.play()
+    await LogIn()
+}
+
 async function LogIn() {
     await requestLogin(authStore, partyStore)
     // if (true) {
     if (authStore.loginResponse.ok) {
+        assetStore.pointerUpSound.play()
         authStore.loginFailed = false
         console.log("Loading scene & initial actors ...")
         await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
@@ -52,16 +59,18 @@ onMounted(() => {
 <template>
     <div id="login_form">
         <label>E-Mail Adresse</label>
-        <input v-model="authStore.Email" id="email_address" @keyup.enter.native="LogIn"/>
+        <input v-model="authStore.Email" id="email_address" @keyup.enter.native="LogInEnter"/>
         <label>Passwort</label>
-        <input v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogIn"/>
+        <input v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogInEnter"/>
         <span v-if="!authStore.responseStatus === 404" class="invalid_input"> 
             Die eingegebenen Daten stimmen mit keinem Nutzerkonto überein...
         </span>
         <span v-if="!authStore.responseStatus === 422" class="invalid_input"> 
             Bitte aktiviere deinen Account über den E-Mail Bestätigungslink.
         </span>
+        <br/>
         <button id="btn_login" ref="button_login" v-on:click="LogIn()">Einloggen</button>
+        <br/>
         <div>
             <label>Angemeldet bleiben</label>
             <input v-model="authStore.stayLoggedIn" type="checkbox" />

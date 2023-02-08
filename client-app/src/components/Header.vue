@@ -23,6 +23,7 @@ import { Ambience } from '../stores/000Singletons.js'
             authStore.showLoginForm()
         }
         else {
+            uiStore.setEditorMode(false)
             await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) 
         }
     }
@@ -57,9 +58,7 @@ import { Ambience } from '../stores/000Singletons.js'
         button_play.value.addEventListener('pointerdown', playSoundPointerDown);
         button_play.value.addEventListener('pointerup', playSoundPointerUp);
         button_home.value.addEventListener('pointerdown', playSoundPointerDown);
-        // button_home.value.addEventListener('pointerup', playSoundPointerUp);
         button_logout.value.addEventListener('pointerdown', playSoundPointerDown);
-        // button_logout.value.addEventListener('pointerup', playSoundPointerUp);
     })        
 
 
@@ -133,6 +132,7 @@ import { Ambience } from '../stores/000Singletons.js'
             0px 0px 10px black,
             0px 0px 10px black,
             0px 0px 10px black;
+        user-select: none;
     } 
     
     #button_logout {
