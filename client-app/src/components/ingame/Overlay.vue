@@ -4,7 +4,7 @@ import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestWorldSave } from '../../services/EditorService'
-import { Sites } from '../../stores/000Singletons'
+import { Sites, Sites3d } from '../../stores/000Singletons'
 import { useAuthStore } from '../../stores/AuthStore'
 import { usePartyStore } from '../../stores/PartyStore'
 
@@ -14,11 +14,16 @@ import { usePartyStore } from '../../stores/PartyStore'
     const assetStore = useGameAssetStore()
     const partyStore = usePartyStore()
     const sites = new Sites()
+    const sites3d = new Sites3d()
 
+    // const previewModelUrls = 
+    //     ['forest_1.glb', 'cliffs.glb', 'house.glb', 
+    //     'tent_field_camp.glb', 'crystals.glb', 
+    //     'chest_lp.glb', 'crystals.glb']
     const previewModelUrls = 
-        ['forest_1.glb', 'cliffs.glb', 'house.glb', 
-        'tent_field_camp.glb', 'crystals.glb', 
-        'chest_lp.glb', 'crystals.glb']
+        ['forest_1.glb', 'forest_1.glb', 'forest_1.glb', 
+        'forest_1.glb', 'forest_1.glb', 
+        'forest_1.glb', 'forest_1.glb']
     
     const portrait = ref(null)
     const slot_1 = ref(null);
@@ -63,12 +68,14 @@ import { usePartyStore } from '../../stores/PartyStore'
     onMounted(() => {
         console.log("Mounting overlay...")
 
-        if (partyStore.avatar.name === "Eliana Dawnbreak")
-            portrait.value.style.backgroundImage = "url('assets/Portrait_Eliana.jpg')"
-        if (partyStore.avatar.name === "Leito Froste")
-            portrait.value.style.backgroundImage = "url('assets/Portrait_Leito.jpg')"
-        if (partyStore.avatar.name === "Marsilio Mirandola")
-            portrait.value.style.backgroundImage = "url('assets/Portrait_Marsilio.jpg')"
+        try {
+            if (partyStore.avatar.name === "Eliana Dawnbreak")
+                portrait.value.style.backgroundImage = "url('assets/Portrait_Eliana.jpg')"
+            if (partyStore.avatar.name === "Leito Froste")
+                portrait.value.style.backgroundImage = "url('assets/Portrait_Leito.jpg')"
+            if (partyStore.avatar.name === "Marsilio Mirandola")
+                portrait.value.style.backgroundImage = "url('assets/Portrait_Marsilio.jpg')"
+        } catch (e) {}
 
         for (let slot of slots) {
             slot.value.addEventListener('pointerdown', (e) => {
@@ -91,6 +98,9 @@ import { usePartyStore } from '../../stores/PartyStore'
 
     function debug2() {
         console.log(sites.buffer)
+    }
+    function debug3() {
+        console.log(sites3d.buffer)
     }
 
 </script>
@@ -138,9 +148,10 @@ import { usePartyStore } from '../../stores/PartyStore'
             </div>
         </div>
         <div id="debug_panel" v-if="uiStore.editorMode === true && authStore.userIsAdmin === true">
-            <button class="debug" @click="requestWorldSave(authStore)">Post Layout</button>
+            <!-- <button class="debug" @click="requestWorldSave(authStore)">Post Layout</button> -->
+            <button class="debug inactive" @click="">Post Layout</button>
             <button class="debug" @click="debug2">(action 2)</button>
-            <button class="debug">(action 3)</button>
+            <button class="debug" @click="debug3">(action 3)</button>
             <button class="debug">(action 4)</button>
         </div>
         <div id="info_hex">{{worldStore.getHoveredName}}</div>
@@ -158,6 +169,7 @@ import { usePartyStore } from '../../stores/PartyStore'
 }
 
 #clock {
+    padding-top: 4vh;
     grid-row: 1;
     grid-column: 4 / 6;
     align-self:flex-start;
@@ -242,10 +254,8 @@ import { usePartyStore } from '../../stores/PartyStore'
     pointer-events:all;
     cursor: pointer;
     user-select: none;
-} @media (max-width: 700px) {
-    #debug_panel {
-        display: none;
- }
+} .inactive {
+    text-decoration: line-through;
 }
 
 

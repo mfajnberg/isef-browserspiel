@@ -67,6 +67,7 @@ namespace web_api.Controllers
                     {
                         // replace with proper avatar generation...
                         newAvatar = PremadeAvatars.SelectFromAvatarList(name);
+                        newAvatar.Id = 0;
                     }
                     catch (Exception ex)
                     {

@@ -12,13 +12,13 @@ export function initCameraPawn(canvas, scene, worldStore) {
     const uiStore = useUIStore()
 
     const _renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true })
-    _renderer.setSize(window.innerWidth, window.innerHeight*.85)
+    _renderer.setSize(window.innerWidth, window.innerHeight)
     _renderer.shadowMap.enabled = true
     _renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 
     const _camera = new THREE.PerspectiveCamera
-        (60, window.innerWidth / (window.innerHeight*.85), 0.1, 20000)
+        (60, window.innerWidth / (window.innerHeight), 0.1, 20000)
     _camera.position.x = 0
     _camera.position.y = 10
     _camera.position.z = 14
@@ -64,7 +64,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
 
     let updateWorldCursor = _.debounce((event) => {
         _pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-        _pointer.y = - (event.layerY / _renderer.domElement.height) * 2 + 1
+        _pointer.y = - (event.clientY / window.innerHeight) * 2 + 1
 
         _raycaster.setFromCamera(_pointer, _camera)
         intersects = _raycaster.intersectObjects(worldStore.getHexes3d)
@@ -109,9 +109,9 @@ export function initCameraPawn(canvas, scene, worldStore) {
         canvas.addEventListener('mousemove', updateWorldCursor)
 
     window.addEventListener('resize', () => {
-        _camera.aspect = window.innerWidth / (window.innerHeight * .85)
+        _camera.aspect = window.innerWidth / window.innerHeight
         _camera.updateProjectionMatrix()
-        _renderer.setSize(window.innerWidth, window.innerHeight * .85)
+        _renderer.setSize(window.innerWidth, window.innerHeight)
         _renderer.render(scene, _camera);
     }, false)
 

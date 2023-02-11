@@ -67,7 +67,7 @@ export const useUIStore = defineStore('UIStore', {
             this.showingWorldmap = false
             this.showingImprint = false
         },
-        showWorldmap(worldStore) {
+        showWorldmap(worldStore, assetStore) {
             if (!worldStore.initialized)
                 worldStore.ACTION(assetStore)
 
@@ -78,8 +78,8 @@ export const useUIStore = defineStore('UIStore', {
             this.showingWorldmap = true
             this.showingImprint = false
 
-            var header = document.getElementById("header")
-            header.style.background = "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)"       
+            // var header = document.getElementById("header")
+            // header.style.background = "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)"       
             const ambience = new Ambience()
             if (!ambience.music.playing()){
                 ambience.music.play()
@@ -122,7 +122,8 @@ export const useUIStore = defineStore('UIStore', {
                     if (!this.editorMode)
                         worldStore.preview = null
                         await requestGetHexTiles(authStore, worldStore)
-                    this.showWorldmap(worldStore)
+                    
+                    this.showWorldmap(worldStore, assetStore)
                 }
             }
         },

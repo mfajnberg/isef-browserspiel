@@ -67,9 +67,9 @@ onMounted(() => {
                 <span class="attribute">Charisma: </span> 
                 <span class="value">{{creatorStore.statBlocks[0].Charisma}} </span>
             </div>
-            <div class="description">
+            <p class="description">
                 {{ creatorStore.statBlocks[0].Description }}
-            </div>
+            </p>
             <button class="button_select" ref="select_first" @click="clickSelectAvatar('Eliana Dawnbreak')">
                 ✓
             </button>
@@ -93,9 +93,9 @@ onMounted(() => {
                 <span class="attribute">Charisma: </span>
                 <span class="value">{{creatorStore.statBlocks[1].Charisma}} </span>
             </div>
-            <div class="description">
+            <p class="description">
                 {{ creatorStore.statBlocks[1].Description }}
-            </div>
+            </p>
             <button class="button_select" ref="select_second" @click="clickSelectAvatar('Leito Froste')">
                 ✓
             </button>
@@ -119,9 +119,9 @@ onMounted(() => {
                 <span class="attribute">Charisma: </span>
                 <span class="value">{{creatorStore.statBlocks[2].Charisma}} </span>
             </div>
-            <div class="description">
+            <p class="description">
                 {{ creatorStore.statBlocks[2].Description }}
-            </div>
+            </p>
             <button class="button_select" ref="select_third" @click="clickSelectAvatar('Marsilio Mirandola')">
                 ✓
             </button>
@@ -143,8 +143,11 @@ onMounted(() => {
     }
     .option {
         display: grid;
+        padding-top: 5vh;
+        padding-bottom: 5vh;
         grid-template-columns: 1fr;
-        grid-template-rows: 2fr 2fr 3fr 1fr ;
+        grid-template-rows: 2fr 1.5fr 3fr .6fr ;
+        text-shadow: 0rem 0rem 1rem black;
         /* height: 100%; */
     } 
     .portrait {
@@ -154,8 +157,11 @@ onMounted(() => {
     align-self: center;
     justify-self: center;
     width: 100%;
-    height: 50%;
+    height: 100%;
     user-select: none;
+    /* border-style: outset;
+    border-width: 1px;
+    border-color: rgba(133, 113, 86, 0.5)  */
     }.portrait-first {
         background-image: url('Portrait_Eliana.jpg');
     }.portrait-second {
@@ -166,12 +172,13 @@ onMounted(() => {
     .statblock{
         grid-row: 2;
         display: grid;
-        grid-template-columns: 2;
+        grid-template-columns: 1fr 1fr .5fr .5fr 1fr;
         justify-self: center;
-        width: 75%;
-        max-width: 200px;
-        max-height: 20vh;
-        text-align: start;
+        width: 100%;
+        /* max-width: 200px; */
+        max-height: 10vh;
+        text-align: right;
+        font-size: .8rem;
     }.statblock-first{
 
     }.statblock-second{
@@ -179,23 +186,30 @@ onMounted(() => {
     }.statblock-third{
 
     }.name{
-        grid-column: 1/3;
+        grid-column: 2/5;
+        margin-top: 1rem;
         text-align: center;
+        font-size: 1rem;
         font-style: italic;
-    }.attribute{
-        grid-column: 1;
-    }.value{
-        grid-column: 2;
         color: white;
+    }.attribute{
+        grid-column: 2;
+    }.value{
+        grid-column: 3;
+        padding-right: 20%;
+        color: white;
+        text-align: right;
+        text-shadow: 0rem 0rem 1rem white;
     }
     .description{
         grid-row: 3;
-        max-height: 40vh;
-        padding: 5%;
+        margin-top: 10vh;
+        max-height: 30vh;
+        padding: 0% 5% 0% 5%;
         font-style: italic;
         overflow: auto;
         pointer-events: all;
-        color: rgb(133, 113, 86);
+        color: rgba(252, 205, 143, 0.5);
     }
     .button_select {
         grid-row: 4;

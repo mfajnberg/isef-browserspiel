@@ -66,66 +66,86 @@ import { Ambience } from '../stores/000Singletons.js'
 
 <template>
     <div id="header">
-        <div id="3js_gui"></div>
+    <div id="header_content">
+        <!-- <div id="3js_gui"></div>
         <h3 id="logged_in" v-if="authStore.loggedIn">
             Eingeloggt: {{authStore.Email}}
-        </h3>
+        </h3> -->
         
         <button id="button_play" 
             @click="clickPlay" 
             ref="button_play"
             v-show="!uiStore.showingAuthentication && !uiStore.showingWorldmap && !uiStore.showingAvatarCreator">
-            jetzt spielen
+            Jetzt spielen
         </button>
 
         <button id="button_home" 
             @click="clickHome()"
             ref="button_home"
             v-show="!uiStore.showingHome">
-            home
+            Home
         </button>
 
         <button id="button_logout" ref="button_logout" v-show="authStore.loggedIn" @click="clickLogout()">
-            ausloggen
+            Ausloggen
         </button>
-
     </div>
+    </div>
+
+
 </template>
 
 <style scoped>
     #header {
-        display: flex;
+        display: grid;
         align-items: center;
         justify-content: center;
+
         width: 100vw;
         height: 10vh;
         
         background: rgba(0,0,0,0);
 
         position: fixed;
-        left: 0%;
-        top: 0%;
+        left: auto;
+        right: auto;
         
         z-index: 20;
+    }
+    #header_content {
+        display: grid;
+        justify-self: center;
+        align-items: center;
+        justify-content: center;
+
+        width: 100vw;
+        max-width: 60rem;
+        height: 10vh;
+        
+        background: rgba(0,0,0,0);
+
+        position: fixed;
+        left: auto;
+        right: auto;
+        
+        z-index: 21;
     }
 
 
     #button_home {
         position: absolute;
-        left: 25vw;
-        top: 7vh;
-        color: white;
+        justify-self: left;
+        /* color: white; */
     }
 
     #button_play {
         position: absolute;
-        top: 7vh;
+        justify-self: center;
     }
 
     #logged_in {
         position: absolute;
-        right: 25vw;
-        /* top: 0%; */
+        justify-self: right;
 
         color: white;
         text-shadow: 
@@ -137,17 +157,16 @@ import { Ambience } from '../stores/000Singletons.js'
     
     #button_logout {
         position: absolute;
+        justify-self: right;
+
         color: red;
-        position: fixed;
-        top: 7vh;
-        right: 25vw;
     }    
-@media (max-width: 700px) {
+/* @media (max-width: 700px) {
     #button_logout, #logged_in {
         right: 0%;
     }
     #button_home {
         left: 0%;
     }
-}   
+}    */
 </style>

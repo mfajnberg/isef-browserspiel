@@ -17,7 +17,7 @@ function clickShowImprint() {
             <a class="item">About</a> <span class="separator">|</span>
             <a class="item">FAQs</a> <span class="separator">|</span>
             <a class="item">AGBs</a> <span class="separator">|</span>
-            <a class="item" @click="clickShowImprint"><strong>Impressum</strong></a>
+            <a class="item pointer" @click="clickShowImprint"><strong>Impressum</strong></a>
         </div>
     </div>
 </template>
@@ -48,10 +48,12 @@ function clickShowImprint() {
     }
     .item {
         color: rgb(53, 53, 53);
-        cursor: pointer;
+        /* cursor: pointer; */
     }.separator{
         color: rgb(133, 113, 86);
         padding-left: 8px;
         padding-right: 8px;
+    } .pointer{
+        cursor: pointer;
     }
 </style>

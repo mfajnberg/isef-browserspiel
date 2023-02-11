@@ -2,15 +2,21 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 import { Worldmap } from '../classes/Worldmap'
-import { Sites } from '../stores/000Singletons'
+import { Sites, Sites3d } from '../stores/000Singletons'
 
 export async function initActors(scene, worldStore, assetStore) {
     // dummy data
     // await worldStore.loadVisibleHexTiles()
-    const loader = new GLTFLoader()
-    worldStore.worldmap = new Worldmap()
     const visible = Worldmap.makeHexGridVectors(2)
+    worldStore.worldmap = new Worldmap()
     
+    const loader = new GLTFLoader()
+    const texLoader = new THREE.TextureLoader()
+    const tex1 = texLoader.load('grass_texture_1.jpg')
+    const tex2 = texLoader.load('grass_texture_2.jpg')
+    const tex3 = texLoader.load('grass_texture_3.jpg')
+    const hexTextures = [tex1, tex2, tex3]
+
     // // replace with calls to proper asset loading service
     await assetStore.loadHex()
     // await assetStore.loadForest()
@@ -21,7 +27,7 @@ export async function initActors(scene, worldStore, assetStore) {
     // await assetStore.loadCrystal()
 
     for (let i = 0; i < visible.length; i++) {
-        initHex(loader, scene, worldStore, assetStore, visible[i], i%3)
+        initHex(loader, scene, worldStore, assetStore, visible[i], i%3, hexTextures)
     }
 
     loadHexCursor(loader, scene, worldStore, null)
@@ -31,12 +37,12 @@ export async function initActors(scene, worldStore, assetStore) {
     catch { }
 }
 
-function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation) {
+function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation, hexTextures) {
     loader.parse(assetStore.getHexModel, '', (loadedObject) => {
-        loadedObject.scene.traverse((child) => {
+        loadedObject.scene.traverse(child => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
-                    map: assetStore.hexTextures[randomRotation],
+                    map: hexTextures[randomRotation]
                 })
                 child.material.map.wrapS = THREE.RepeatWrapping
                 child.material.map.wrapT = THREE.ClampToEdgeWrapping
@@ -131,13 +137,16 @@ export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
         }
 
         // save reference of new site to worldStore
-        worldStore.sites3d.push(loadedObject.scene)
+        const sites3d = new Sites3d()
+        sites3d.buffer.push(loadedObject.scene)
     }))
 }
 
 export function dispose(object3d) {
+    console.log("disposing...")
     object3d.children.forEach(child => {
-        disposeObject(child);
+        dispose(child);
+        console.log("disposing recursively...")
     });
     object3d.geometry && object3d.geometry.dispose()
     object3d.material && object3d.material.dispose()

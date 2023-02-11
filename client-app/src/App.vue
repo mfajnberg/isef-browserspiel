@@ -14,12 +14,8 @@ import AdminPrompt from './components/authentication/AdminPrompt.vue'
 import AvatarCreator from './components/ingame/AvatarCreator.vue'
 import Overlay from './components/ingame/Overlay.vue'
 
-    // let image1 = new Image()
-    // image1.src = "assets/Portrait_Eliana.jpg"
-    // let image2 = new Image()
-    // image2.src = "assets/Portrait_Leito.jpg"
-    // let image3 = new Image()
-    // image3.src = "assets/Portrait_Marsilio.jpg"
+    let image1 = new Image()
+    image1.src = "grass_texture_1.jpg"
 
     const authStore = useAuthStore()
     const uiStore = useUIStore()
@@ -54,36 +50,42 @@ import Overlay from './components/ingame/Overlay.vue'
     <div id="background">
         <Header/>
         <div class="content">
-            <div id="welcome" v-show="uiStore.showingHome">
-                <h2 class="grid_span_2">Willkommen</h2>
-                <div class="welcome_item">
-                    <h3 class="welcome_item_heading">in Averroes, ...</h3>
-                    <p>
-                        ... einer Welt voller Gefahren und Abenteuer. 
-                        <br/><br/>
-                        Dich erwartet ein beispielloses Spielerlebnis, 
-                        mit Elementen aus klassischen Strategie- und Rollenspielen.
-                        <br/><br/> 
-                        ✓ Erkunde legendäre Stätten.
-                        <br/>
-                        ✓ Sammle Einfluss und Berühmtheit.
-                        <br/>
-                        ✓ Kämpfe, wofür es sich für dich zu kämpfen lohnt.
-                    </p>
+            <div id="welcome" v-show="uiStore.getShowingHome || uiStore.getShowingAuthentication">
+                <h2 class="grid_span_2">Willkommen in Averroes,</h2>
+                <div class="welcome_sub_container grid_span_2">
+                    <div class="welcome_item" v-show="uiStore.getShowingHome">
+                        <!-- <h3 class="welcome_item_heading">in Averroes, ...</h3> -->
+                        <p>
+                            ... einer Welt voller Gefahren und Abenteuer. 
+                            <br/><br/>
+                            Dich erwartet ein beispielloses Spielerlebnis, 
+                            mit Elementen aus klassischen Strategie- und Rollenspielen.
+                            <br/><br/> 
+                            ✓ Erkunde legendäre Stätten.
+                            <br/><br/>
+                            ✓ Sammle Einfluss und Berühmtheit.
+                            <br/><br/>
+                            ✓ Kämpfe, wofür es sich für dich zu kämpfen lohnt.
+                        </p>
+                    </div>
+                    <div class="welcome_item vid" v-show="uiStore.getShowingHome">
+                        <div id="vid" ref="youtube"/>
+                    </div>
+    
+                    <div class="welcome_item grid_span_2" v-show="uiStore.getShowingAuthentication">
+                        <Authenticator/>
+                    </div>
                 </div>
-                <div class="welcome_item vid">
-                    <div id="vid" ref="youtube"/>
-                </div>
-                <div class="welcome_item grid_span_2">
-                    <h3 class="welcome_item_heading">Schon sehr bald ...</h3>
+
+                <div class="welcome_item grid_span_2" v-show="uiStore.getShowingHome || uiStore.getShowingAuthentication">
+                    <h3 class="welcome_item_heading">Roadmap</h3>
                     <p>
-                        ... ist diese App Teil einer integrierten Spielwelt – 
-                        bist du bereit frischen Wind in ein wachsendes Team zu bringen? <br/>
+                        Bald wird diese App Teil einer integrierten Spielwelt.
+                        Bist du bereit frischen Wind in ein wachsendes Team zu bringen? <br/>
                         Für die Arbeit am Schwesterprojekt sind nämlich noch diverse <a class="anchor_inline">Stellen</a> offen. 
                     </p>
                 </div>
             </div>
-            <Authenticator v-show="uiStore.getShowingAuthentication"/>
             <AdminPrompt v-if="uiStore.getShowingAdminPrompt"/>
             <AvatarCreator id="avatar_creator" v-if="uiStore.getShowingAvatarCreator"/>
             <canvas canvas id="adventure_map" v-show="uiStore.getShowingWorldmap"></canvas>
@@ -97,6 +99,8 @@ import Overlay from './components/ingame/Overlay.vue'
 <style scoped>
 
 #background {
+    display: flex;
+    justify-content: center;
     position: fixed;
     height: 100vh;
     width: 100vw;
@@ -113,20 +117,21 @@ import Overlay from './components/ingame/Overlay.vue'
     .content {
         display: flex;
         width: 100%;
-        height: 85vh;
+        /* height: 100vh;  */
 
-        position: relative;
-        left: 0%;
-        top: 10vh;
+        /* position: relative;
+        left: 0%; */
+        /* top: 10vh; */
 
         align-items: center;
         justify-content: center;
     }
     h2{
+        margin-top: 5vh;
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
-        height: 75%;
+        /* height: 75%; */
         color: white;
         text-shadow: 0rem 0rem 1rem black;
 
@@ -134,23 +139,25 @@ import Overlay from './components/ingame/Overlay.vue'
     #welcome {
         display: grid;
         height: 85%;
-        gap: 2rem;
-        grid-template-columns: 1fr 1fr ;
-        grid-template-rows: 1fr 6fr 3fr ;
+        grid-row-gap: 2rem;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 5fr 3fr ;
+        width: 100%;
         max-width: 60rem;
         text-align: left;
-        user-select: none;
+        /* user-select: none; */
         
     } .welcome_item {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: center;
         align-content: center;
         padding: 0rem 2rem 0rem 2rem;
         border-style: outset;
         border-width: 1px;
         border-color: rgba(133, 113, 86, 0.5) ;
         text-shadow: 0rem 0rem 1rem black;
+        background-color: rgba(0, 0, 0, 0.852);
         /* transition: .5s; */
         cursor: default;
     } .welcome_item:hover {
@@ -158,15 +165,25 @@ import Overlay from './components/ingame/Overlay.vue'
         /* border-style: inset; */
         /* color: white; */
     } .vid {
-        border-style: none;
+        /* border-style: none; */
         padding: 0;
     } .welcome_item_heading {
         color: white;
-    } .grid_span_2 {
+        height: 0rem;
+        text-align: center;
+    } .welcome_sub_container {
+        display: grid;
+        height: 100%;
+        width:100%;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
+        grid-column-gap: 2rem;
+    }.grid_span_2 {
         grid-column: span 2;
-        text-align: right;
+        /* text-align: justify; */
     } .anchor_inline {
         display: inline;
+        cursor: pointer;
     }
 
     #adventure_map {
@@ -188,5 +205,4 @@ import Overlay from './components/ingame/Overlay.vue'
         height: 100%;
         pointer-events:none;
     }
-
 </style>

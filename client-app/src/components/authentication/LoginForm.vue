@@ -11,8 +11,8 @@ import { useCreatorStore } from '../../stores/AvatarCreatorStore';
 const uiStore = useUIStore()
 const authStore = useAuthStore()
 const partyStore = usePartyStore()
-const assetStore = useGameAssetStore()
 const worldStore = useWorldStore()
+const assetStore = useGameAssetStore()
 const creatorStore = useCreatorStore()
 
 function switchToRegis() {
@@ -33,6 +33,7 @@ async function LogIn() {
         assetStore.pointerUpSound.play()
         authStore.loginFailed = false
         console.log("Loading scene & initial actors ...")
+
         await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
     }
     else {
@@ -58,19 +59,15 @@ onMounted(() => {
 
 <template>
     <div id="login_form">
-        <label>E-Mail Adresse</label>
-        <input v-model="authStore.Email" id="email_address" @keyup.enter.native="LogInEnter"/>
-        <label>Passwort</label>
-        <input v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogInEnter"/>
-        <span v-if="!authStore.responseStatus === 404" class="invalid_input"> 
-            Die eingegebenen Daten stimmen mit keinem Nutzerkonto überein...
-        </span>
-        <span v-if="!authStore.responseStatus === 422" class="invalid_input"> 
-            Bitte aktiviere deinen Account über den E-Mail Bestätigungslink.
-        </span>
-        <br/>
-        <button id="btn_login" ref="button_login" v-on:click="LogIn()">Einloggen</button>
-        <br/>
+        <div class="item">
+            <label>E-Mail Adresse</label>
+            <input v-model="authStore.Email" id="email_address" @keyup.enter.native="LogInEnter"/>
+        </div>
+        <div class="item">
+            <label>Passwort</label>
+            <input v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogInEnter"/>
+        </div>
+        <button id="btn_login" ref="button_login" v-on:click="LogIn(worldStore, assetStore)">Einloggen</button>
         <div>
             <label>Angemeldet bleiben</label>
             <input v-model="authStore.stayLoggedIn" type="checkbox" />
@@ -88,17 +85,24 @@ onMounted(() => {
 <style scoped>
 #login_form {
     display: flex;
-    height: 100%;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     z-index: 20;
+} .item {
+    display: flex;
+    flex-direction: column;
+    margin:.5rem;
 }
-
+#btn_login {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 .invalid_input {
         text-align: left;
         color: red;
         font-size: x-small;
+        font-size: 1vh;
         user-select: none;
     }.abs {
         /* display: none; */

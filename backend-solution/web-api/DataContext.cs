@@ -76,6 +76,9 @@ namespace web_api
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Avatar);
 
+            modelBuilder.Entity<Creature>()
+                .HasKey(c => c.Id);
+
             // the HexTile needs Primiray key to Q and R coordinates
             modelBuilder.Entity<HexTile>()
                 .HasKey(h => new { h.AxialQ, h.AxialR });

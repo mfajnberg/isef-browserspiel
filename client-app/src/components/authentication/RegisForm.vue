@@ -86,7 +86,7 @@ onMounted(() => {
         oder kontaktiere unseren Kundensupport.
     </div>
     <button ref="button_regis" @click="clickRegis()" v-if="!mailNotifSent && !regisFailed">
-        jetzt registrieren
+        Jetzt registrieren
     </button>
     <div>
         <br/>
@@ -97,8 +97,8 @@ onMounted(() => {
 
 <style scoped>
     #registration_form {
-        display: flex;
-        align-items:baseline;
+        /* display: flex; */
+        align-items: center;
         flex-direction: column;
         z-index: 20;
         width: 300px;
@@ -106,7 +106,7 @@ onMounted(() => {
     .item{
         text-align: left;
         display: flex;
-        align-items: baseline;
+        /* align-items: baseline; */
         flex-direction: column;
         padding-left: 15px;
         padding-right: 15px;
@@ -116,12 +116,14 @@ onMounted(() => {
         text-align: left;
         color: red;
         font-size: x-small;
+        font-size: 1vh;
         user-select: none;
     }
     .valid_input {
         text-align: left;
         color:rgb(0, 255, 0);
         font-size: x-small;
+        font-size: 1vh;
         user-select: none;
     }
 </style>

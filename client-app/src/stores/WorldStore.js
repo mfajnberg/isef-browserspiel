@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia' 
 import { requestGetHexTiles } from '../services/WorldmapService'
-import { initActors } from '../threejs/ActorManager'
+import { initActors, dispose } from '../threejs/ActorManager'
+import { Sites, Sites3d } from './000Singletons'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
@@ -54,5 +55,21 @@ export const useWorldStore = defineStore('WorldStore', {
                 this.initialized = true
             }
         },
+        disposeAll() {
+            const sites3d = new Sites3d()
+            console.log(sites3d.buffer)
+            for (let obj3d of sites3d.buffer) {
+                console.log(obj3d)
+                dispose(obj3d)
+            }
+            // sites3d.buffer.forEach(object3d => {
+            //     console.log(object3d)
+            //     console.log(object3d[0])
+            //     console.log("disposing: " + object3d)
+            //     dispose(object3d)
+            // })
+            console.log(sites3d.buffer)
+            sites3d.buffer = []
+        }
     },
 })

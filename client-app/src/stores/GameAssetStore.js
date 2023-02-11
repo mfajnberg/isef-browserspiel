@@ -15,9 +15,6 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
 
         hexCursor: null,
         
-        hexTextures: [new THREE.TextureLoader().load('grass_texture_1.jpg'), 
-                    new THREE.TextureLoader().load('grass_texture_2.jpg'), 
-                    new THREE.TextureLoader().load('grass_texture_3.jpg')],
         pointerDownSound: new Howl({
             src: 'isef_pointer_down.mp3',
             volume: .7

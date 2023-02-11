@@ -18,12 +18,8 @@ export async function requestGetHexTiles(authStore, worldStore) {
     .then(data => {
         console.log("Updating sites for editing...") 
         // factor out into world store method
-        if (worldStore.sites3d.length > 0) {
-            worldStore.sites3d.forEach(object3D => {
-                dispose(object3D)
-            })
-        }
-        worldStore.sites3d = []
+        worldStore.disposeAll()
+        
         const loader = new GLTFLoader()
         data.forEach(element => {
             console.log(element)

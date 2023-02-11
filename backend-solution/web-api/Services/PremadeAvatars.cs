@@ -12,7 +12,7 @@ namespace web_api.Services
         static List<Avatar> PremadeOptions = new List<Avatar>() {
             new Avatar() {
                 Name = "Eliana Dawnbreak",
-
+                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                 Intellect = 13,
                 Discipline = 17,
                 Power = 11,
@@ -26,7 +26,7 @@ namespace web_api.Services
             },
             new Avatar() {
                 Name = "Leito Froste",
-
+                Description = "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 Intellect = 10,
                 Discipline = 8,
                 Power = 10,
@@ -40,7 +40,7 @@ namespace web_api.Services
             },
             new Avatar() {
                 Name = "Marsilio Mirandola",
-
+                Description = "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
                 Intellect = 17,
                 Discipline = 12,
                 Power = 17,

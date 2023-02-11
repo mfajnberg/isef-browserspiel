@@ -19,14 +19,20 @@ const authStore = useAuthStore()
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 3em;
-    background-color: rgba(0, 0, 0, 0.832);
+    /* padding-top: 2rem;
+    padding-bottom: 2rem; */
+    /* background-color: rgba(0, 0, 0, 0.832); */
+    /* height: 100%; */
+    /* width: 100%; */
 
-    position: absolute;
+    /* position: absolute; */
     z-index: 100;
-    border-style: none;
-    border-color: rgb(252, 205, 143);
+    /* border-style: none;
+    border-color: rgb(252, 205, 143); */
+    /* border-style: outset;
     border-width: 1px;
+    border-color: rgba(133, 113, 86, 0.5) ; */
+    text-shadow: 0rem 0rem 1rem black;
 
     user-select: none;
 
@@ -40,6 +46,7 @@ const authStore = useAuthStore()
         flex-direction: column;
         padding: 3em;
         z-index: 19;
+        
 
     }
     @media (max-width: 700px) {

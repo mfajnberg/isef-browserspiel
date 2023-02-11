@@ -23,7 +23,8 @@ async function clickEdit() {
     worldStore.setAbsoluteZeroOffset(qInput, rInput)
     await requestGetWorldSliceAdmin(authStore, worldStore)
     uiStore.editorMode = true
-    await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
+    // await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
+    uiStore.showWorldmap(worldStore, assetStore)
 }
 
 function playSoundPointerDown() { assetStore.pointerDownSound.play() }
@@ -89,16 +90,20 @@ function setTranslate(xPos, yPos, el) {
 <style scoped>
 .admin {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    padding: 3em;
-    background-color: rgba(0, 0, 0, 0.832);
-
+    padding: 2em;
+    
     position: absolute;
     z-index: 100;
-    border-style: none;
-    border-color: rgb(133, 113, 86);
+    
+    text-shadow: 0rem 0rem 1rem black;
+    background-color: rgba(0, 0, 0, 0.832);
+
+    border-style: outset;
+    border-width: 1px;
+    border-color: rgba(133, 113, 86, 0.5) ;
     border-width: 1px;
 
     user-select: none;
