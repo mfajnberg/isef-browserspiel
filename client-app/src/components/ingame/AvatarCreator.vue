@@ -134,8 +134,7 @@ onMounted(() => {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr ;
         grid-template-rows: 1fr;
-        bottom: 0%;
-        /* align-items: center; */
+        align-items: center;
         justify-content: center;
         position: fixed;
         background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%);
@@ -143,10 +142,12 @@ onMounted(() => {
     }
     .option {
         display: grid;
-        padding-top: 5vh;
-        padding-bottom: 5vh;
+        padding-top: 15%;
+        padding-left: 5%;
+        padding-right: 5%;
+        padding-bottom: 10%;
         grid-template-columns: 1fr;
-        grid-template-rows: 2fr 1.5fr 3fr .6fr ;
+        grid-template-rows: 1fr 1.5fr 3fr .5fr ;
         text-shadow: 0rem 0rem 1rem black;
         /* height: 100%; */
     } 
@@ -176,7 +177,7 @@ onMounted(() => {
         justify-self: center;
         width: 100%;
         /* max-width: 200px; */
-        max-height: 10vh;
+        max-height: 10%;
         text-align: right;
         font-size: .8rem;
     }.statblock-first{
@@ -192,6 +193,8 @@ onMounted(() => {
         font-size: 1rem;
         font-style: italic;
         color: white;
+        flex-wrap: nowrap;
+        white-space: nowrap;
     }.attribute{
         grid-column: 2;
     }.value{
@@ -203,8 +206,8 @@ onMounted(() => {
     }
     .description{
         grid-row: 3;
-        margin-top: 10vh;
-        max-height: 30vh;
+        margin-top: 10%;
+        /* max-height: 30%; */
         padding: 0% 5% 0% 5%;
         font-style: italic;
         overflow: auto;
@@ -212,10 +215,15 @@ onMounted(() => {
         color: rgba(252, 205, 143, 0.5);
     }
     .button_select {
+        position: fixed;
+        justify-self: center;
+        bottom: 1%;
         grid-row: 4;
-        width: 100%;
+        width: 70%;
+        height: 7%;
         pointer-events: all;
         user-select: none;
         color: rgb(0, 255, 0);
+        transition: border-color .2s;
     }
 </style>

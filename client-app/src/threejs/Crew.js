@@ -46,7 +46,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
         let qHov = worldStore.hoveredItem.userData.Q
         let rHov = worldStore.hoveredItem.userData.R
 
-        if (!worldStore.hoveredItem.userData.free) {
+        if (worldStore.hoveredItem.userData.blocked) {
             console.log(`hex ${qHov}|${rHov} already occupied`)
             return
         }
@@ -82,7 +82,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
             worldStore.hoveredItem = hex
 
             if (worldStore.preview 
-                && hex.userData.free
+                && !hex.userData.blocked
                 && vec.distanceTo(point) < .82) {
                     worldStore.preview.position.set(vec.x, vec.y, vec.z)
                     worldStore.preview.visible = true

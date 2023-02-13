@@ -25,6 +25,9 @@ export const useAuthStore = defineStore('AuthStore', {
         validPwdPattern:  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/,
         validEmailPattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
 
+        mailNotifSent: false,
+        regisFailed: false,
+
         regisResponse: null,
         loginResponse: null,
         loginFailed: false,

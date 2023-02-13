@@ -10,8 +10,8 @@ function clickShowImprint() {
 </script>
 
 <template>
-    <div class="footer">
-        <div v-show="!uiStore.getShowingAvatarCreator">
+    <div class="footer" v-show="!uiStore.getShowingAvatarCreator">
+        <div>
         <!-- <div > -->
             <a class="item">v0.1a</a> <span class="separator">|</span>
             <a class="item">About</a> <span class="separator">|</span>
@@ -31,7 +31,7 @@ function clickShowImprint() {
         height: 5vh;
         width: 100vw;
 
-        position: absolute;
+        position: fixed;
         left: 0%;
         bottom: 0%;
         
@@ -44,7 +44,12 @@ function clickShowImprint() {
         user-select: none;
         transition: 0.25s;
     }.footer:hover {
-    border-color: rgb(252, 205, 143);
+    /* border-color: rgba(133, 113, 86, 1); */
+    }
+    @media (max-width: 800px) {
+        .footer{
+            /* bottom: -5%; */
+        }
     }
     .item {
         color: rgb(53, 53, 53);
@@ -54,6 +59,7 @@ function clickShowImprint() {
         padding-left: 8px;
         padding-right: 8px;
     } .pointer{
+        text-decoration: underline;
         cursor: pointer;
     }
 </style>

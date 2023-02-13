@@ -125,7 +125,7 @@ export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
                 hexTile = hex
             }
         }
-        hexTile.userData.free = false
+        hexTile.userData.blocked = true
 
         // set type in sites.buffer
         const sites = new Sites()
@@ -143,7 +143,6 @@ export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
 }
 
 export function dispose(object3d) {
-    console.log("disposing...")
     object3d.children.forEach(child => {
         dispose(child);
         console.log("disposing recursively...")

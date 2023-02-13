@@ -19,6 +19,8 @@ import { Ambience } from '../stores/000Singletons.js'
 
     async function clickPlay() {
         if (authStore.loggedIn === false) {
+            authStore.mailNotifSent = false
+            authStore.regisFailed = false
             uiStore.showAuthentication()
             authStore.showLoginForm()
         }
@@ -38,6 +40,8 @@ import { Ambience } from '../stores/000Singletons.js'
         uiStore.showHome()
         authStore.hideRegisForm()
         authStore.hideLoginForm()
+        authStore.mailNotifSent = false
+        authStore.regisFailed = false
         authStore.updateValidation()
         ambience.music.mute(true)
     }
@@ -110,7 +114,14 @@ import { Ambience } from '../stores/000Singletons.js'
         left: auto;
         right: auto;
         
-        z-index: 20;
+        z-index: 22;
+    }
+    @media (max-width: 800px) {
+        button {
+            top: 0%;
+            /* margin-top: 5vh; */
+        }
+
     }
     #header_content {
         display: grid;
@@ -128,7 +139,7 @@ import { Ambience } from '../stores/000Singletons.js'
         left: auto;
         right: auto;
         
-        z-index: 21;
+        z-index: 22;
     }
 
 
@@ -141,6 +152,12 @@ import { Ambience } from '../stores/000Singletons.js'
     #button_play {
         position: absolute;
         justify-self: center;
+        /* color: rgb(252, 205, 143); */
+    } #button_play:hover {
+        text-shadow: 0rem 0rem 1rem white;
+        color: rgb(0, 255, 0);
+    } #button_play:active {
+        color: white;
     }
 
     #logged_in {

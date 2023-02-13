@@ -20,11 +20,17 @@ import { requestRegis } from '../../services/AuthService';
         if (authStore.emailValid && authStore.pwdValid && authStore.repeatValid) {
             await requestRegis(authStore)
 
-            if (authStore.regisResponse.status == 200) 
-                mailNotifSent.value = true
+            if (authStore.regisResponse.status == 200) {
+                authStore.regisFailed = false
+                authStore.mailNotifSent = true
+                authStore.showingLoginForm = false
+                authStore.showingRegisForm = false
+            }
             else {
-                regisFailed.value = true
+                authStore.regisFailed = true
                 authStore.updateValidation()
+                authStore.showingLoginForm = false
+                authStore.showingRegisForm = false
             }
         }
         else {
@@ -48,82 +54,96 @@ onMounted(() => {
 
 <template>
     <div id="registration_form" v-if="!mailNotifSent && !regisFailed">
-        <div class="item email">
+        <div class="item_container">
             <label>E-Mail Adresse</label>
-            <input @input="authStore.updateValidation()" v-model="authStore.Email" type="text" id="email_address"/> 
-            <span v-if="authStore.emailValid" class="valid_input"> ✔ </span>
-            <span v-if="!authStore.emailValid" class="invalid_input">⠀</span>
+            <div class="form_item">
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Email" type="text" id="email_address"/> 
+                <span v-if="authStore.emailValid" class="validation valid_input"> 
+                    ✓
+                </span>
+            </div>
         </div>
-        
-        <div class="item password">     
+        <div class="item_container">
             <label> Passwort </label>
-            <input @focusin="pwdFocused = true" @focusout="pwdFocused = false" @input="authStore.updateValidation()" v-model="authStore.Password" type="password" id="password"/>
-            <span v-if="authStore.pwdValid" class="valid_input"> ✔ </span>
-            <span v-if="!authStore.pwdValid && !pwdFocused" class="valid_input"> ⠀ </span>
-            <span v-if="!authStore.pwdValid && pwdFocused" class="invalid_input"> 6-20 Zeichen, mind. 1x Zahl, Groß- & Kleinbuchstabe </span>
+            <div class="form_item">     
+                <input class="form_input" @focusin="pwdFocused = true" @focusout="pwdFocused = false" @input="authStore.updateValidation()" v-model="authStore.Password" type="password" id="password"/>
+                <span v-if="authStore.pwdValid" class="validation valid_input">✓</span>
+            </div>
         </div>
         
-        <div class="item repeat" v-if="authStore.getShowingRegisForm">
+        <div class="item_container">
             <label> Passwort wiederholen </label>
-            <input @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password"/>
-            <span class="valid_input">⠀</span>
+            <div class="form_item" v-if="authStore.getShowingRegisForm">
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password"/>
+                <span v-if="authStore.repeatValid" class="validation valid_input">
+                    ✓
+                </span>
+            </div>
         </div>
-    </div>
-    <div id="mail_notif_sent" v-if="mailNotifSent">
-        Aktiviere dein Konto über den Validierungs-Link in deinem E-Mail Postfach,
-        <br/>
-        um die Registrierung abzuschließen
-        <br/><br/>
-        (Es kann teilweise ein paar Minuten dauern, bis die E-Mail ankommt.)
-    </div>
-    <div id="regis_failed" v-if="regisFailed">
-        Registrierung fehlgeschlagen. 
-        <br/>
-        Womöglich existiert bereits ein Konto mit dieser E-Mail Adresse.
-        <br/><br/>
-        Probier es gerne zu einem späteren Zeitpunkt erneut
-        <br/>
-        oder kontaktiere unseren Kundensupport.
-    </div>
-    <button ref="button_regis" @click="clickRegis()" v-if="!mailNotifSent && !regisFailed">
+        <button class="button_regis" ref="button_regis" @click="clickRegis()" v-if="!mailNotifSent && !regisFailed">
         Jetzt registrieren
-    </button>
-    <div>
-        <br/>
-        Bereits registriert?
-        <a @click="switchToLogin" style="cursor: pointer;">Jetzt einloggen!</a>
+        </button>
+        <span class="center_stuff">
+            Bereits registriert? <br/>
+            <a @click="switchToLogin" style="cursor: pointer;">Jetzt einloggen!</a>
+        </span>
     </div>
 </template>
 
 <style scoped>
     #registration_form {
-        /* display: flex; */
-        align-items: center;
-        flex-direction: column;
-        z-index: 20;
-        width: 300px;
-    }
-    .item{
-        text-align: left;
         display: flex;
-        /* align-items: baseline; */
+        align-items: stretch;
         flex-direction: column;
-        padding-left: 15px;
-        padding-right: 15px;
-        position: relative;
+        padding: 5%;
+        z-index: 20;
     }
-    .invalid_input {
-        text-align: left;
-        color: red;
-        font-size: x-small;
-        font-size: 1vh;
-        user-select: none;
+    .item_container{
+        display: flex;
+        flex-direction: column;
+        margin-top: .8rem;
+    } .form_item {
+        display: flex;
+        align-items: center;
+        position: relative;
+    } .item_container {
+        align-self: center;
+    } .form_input {
+        display: flex;
+        width: 10rem;
+    }.validation {
+        width: 100%;
+        position: absolute;
+        right: -103%;
+    }
+    .button_regis {
+        font-size: 1rem;
+        display: block;
+        margin-right: auto;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: auto;
+
+    }
+    .center_stuff {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
     }
     .valid_input {
         text-align: left;
         color:rgb(0, 255, 0);
-        font-size: x-small;
-        font-size: 1vh;
         user-select: none;
+    }
+    .invalid_input {
+        text-align: left;
+        color: red;
+        user-select: none;
+    }
+
+    @media (max-width: 800px) {
+        button {
+            min-width: 50vw;
+        }
     }
 </style>

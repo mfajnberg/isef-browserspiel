@@ -63,6 +63,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.strong{
+  color: white;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -99,13 +103,17 @@ h2 {
   font-size: 1.8rem;
   margin: 0;
 }
+h3 {
+  font-size: 1.3rem;
+}
 button {
   /* display: flex; */
-  width: 10rem;
   border: 1px solid transparent;
   /* margin-top: 16px; */
   /* margin-bottom: 10px; */
   padding: 1rem 0rem 1rem 0rem;
+  width: 10rem;
+  max-width: 33vw;
   font-weight: 700;
   font-size: 1em;
   font-family: 'Fondamento';
@@ -131,6 +139,7 @@ button:focus-visible {
 button:active {
   border-style:inset;
   color: white;
+  text-shadow: 0rem 0rem 1rem white;
   transition:all 0s;
 }
 
@@ -144,17 +153,3 @@ button:active {
   padding: 2rem;
   text-align: center;
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-

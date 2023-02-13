@@ -59,50 +59,82 @@ onMounted(() => {
 
 <template>
     <div id="login_form">
+        <h3 class="strong">Log In</h3>
         <div class="item">
-            <label>E-Mail Adresse</label>
-            <input v-model="authStore.Email" id="email_address" @keyup.enter.native="LogInEnter"/>
+            <label class="item_label">E-Mail Adresse</label>
+            <input class="form_input" v-model="authStore.Email" id="email_address" @keyup.enter.native="LogInEnter"/>
         </div>
         <div class="item">
-            <label>Passwort</label>
-            <input v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogInEnter"/>
+            <label class="item_label">Passwort</label>
+            <input class="form_input" v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogInEnter"/>
         </div>
-        <button id="btn_login" ref="button_login" v-on:click="LogIn(worldStore, assetStore)">Einloggen</button>
-        <div>
-            <label>Angemeldet bleiben</label>
-            <input v-model="authStore.stayLoggedIn" type="checkbox" />
+        <div class="stay_logged_in">
+            <label class="item_label">Angemeldet bleiben?</label>
+            <input class="checkbox" v-model="authStore.stayLoggedIn" type="checkbox" />
         </div>
-        <div>
-            Noch kein Konto?
+        <button class="button_login" ref="button_login" v-on:click="LogIn(worldStore, assetStore)">Einloggen</button>
+        <div class="register_prompt">
+            Noch kein Konto? <br/>
             <a @click="switchToRegis" style="cursor: pointer;">Jetzt registrieren!</a>
         </div>
-        <span class="invalid_input abs" v-if="authStore.loginFailed">
-            Zugangsdaten nicht erkannt . . .
-        </span>
+
     </div>
 </template>
 
 <style scoped>
 #login_form {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     flex-direction: column;
+    padding: 5%;
     z-index: 20;
-} .item {
-    display: flex;
-    flex-direction: column;
-    margin:.5rem;
+} h3 {
+    text-align: center;
+    margin-bottom: 1rem;
 }
-#btn_login {
+.item {
+    display: flex;
+    margin-bottom: .8rem;
+    flex-direction: column;
+    align-self: center;
+    padding-left: 5%;
+    padding-right: 5%;
+    width: 10rem;
+} .item_label {
+} 
+.form_input {
+}
+.button_login {
+    display: flex;
+    justify-content: center;
+    justify-self: center;
     margin-top: 1rem;
     margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1rem;
+}
+.stay_logged_in {
+    display: flex;
+    align-self: center;
+    margin-top: 2%;
+    margin-right: auto;
+    margin-left: auto;
+} .checkbox {
+    margin-left: .7rem;
+    width: 1rem;
+    height: 1rem;
+}
+.register_prompt {
+    margin-left: auto;
+    margin-right: auto;
 }
 .invalid_input {
         text-align: left;
         color: red;
-        font-size: x-small;
-        font-size: 1vh;
+        /* font-size: .8rem; */
+        line-height: 150%;
         user-select: none;
     }.abs {
         /* display: none; */

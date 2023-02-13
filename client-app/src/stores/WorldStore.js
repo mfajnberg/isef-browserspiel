@@ -59,15 +59,23 @@ export const useWorldStore = defineStore('WorldStore', {
             const sites3d = new Sites3d()
             console.log(sites3d.buffer)
             for (let obj3d of sites3d.buffer) {
-                console.log(obj3d)
+                for (let hex of this.hexes3d) {
+                    if (hex.userData.Q === obj3d.userData.hexVector.Q &&
+                        hex.userData.R === obj3d.userData.hexVector.R) {
+                            hex.userData.blocked = false
+                        }
+                    }
+                obj3d.userData.hexVector = null
                 dispose(obj3d)
             }
+
             // sites3d.buffer.forEach(object3d => {
             //     console.log(object3d)
             //     console.log(object3d[0])
             //     console.log("disposing: " + object3d)
             //     dispose(object3d)
             // })
+
             console.log(sites3d.buffer)
             sites3d.buffer = []
         }

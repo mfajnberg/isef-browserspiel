@@ -1,7 +1,7 @@
 [
-    {
+  {
       "name": "Eliana Dawnbreak",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
       "intellect": 13,
       "discipline": 17,
       "power": 11,
@@ -11,39 +11,27 @@
       "alignment": 5,
       "temperament": 5,
       "morale": 0,
-      "party": {
-        "leader": null,
-        "members": [],
-        "location": null,
-        "destination": null,
-        "items": []
-      },
-      "backpack": null
-    },
-    {
-        "name": "Leito Froste",
-        "description": "  ",
-        "intellect": 10,
-        "discipline": 8,
-        "power": 10,
-        "agility": 15,
-        "lucidity": 14,
-        "charisma": 20,
-        "alignment": 0,
-        "temperament": 5,
-        "morale": 10,
-        "party": {
-          "leader": null,
-          "members": [],
-          "location": null,
-          "destination": null,
-          "items": []
-        },
-        "backpack": []
-    },
-    {
+      "partyId": null,
+      "backpack": []
+  },
+  {
+      "name": "Leito Froste",
+      "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "intellect": 10,
+      "discipline": 8,
+      "power": 10,
+      "agility": 15,
+      "lucidity": 14,
+      "charisma": 20,
+      "alignment": 0,
+      "temperament": 5,
+      "morale": 10,
+      "partyId": null,
+      "backpack": []
+  },
+  {
       "name": "Marsilio Mirandola",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "intellect": 17,
       "discipline": 12,
       "power": 17,
@@ -53,13 +41,7 @@
       "alignment": -5,
       "temperament": -10,
       "morale": 5,
-      "party": {
-        "leader": null,
-        "members": [],
-        "location": null,
-        "destination": null,
-        "items": []
-      },
+      "partyId": null,
       "backpack": []
-    }
-  ]
+  }
+]
