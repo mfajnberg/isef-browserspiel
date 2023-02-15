@@ -58,16 +58,16 @@ namespace web_api.Controllers
         /// <response code="404">when the asset could not be readed</response>
         /// <returns>binary data from asset file</returns>
         // authorize?
-        [HttpGet("glb")]
+        [HttpGet("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces("application/octet-stream")]
-        public async Task<IActionResult> GetGlbByName(string name)
+        public async Task<IActionResult> Get3dAssetByName(string name)
         {
             try
             {
-                var glb = System.IO.File.ReadAllBytes(Path.Combine(_assetPath, name));
-                return new FileContentResult(glb, "application/octet-stream");
+                var asset = System.IO.File.ReadAllBytes(Path.Combine(_assetPath, name));
+                return new FileContentResult(asset, "application/octet-stream");
             }
             catch (Exception ex) 
             {

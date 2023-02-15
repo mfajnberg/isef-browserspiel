@@ -52,7 +52,7 @@ import Overlay from './components/ingame/Overlay.vue'
             <div class="welcome" v-show="uiStore.getShowingHome || uiStore.getShowingAuthentication">
                 <h2 class="welcome_heading grid_span_2">Willkommen in Averroes,</h2>
                 <div class="welcome_sub_container grid_span_2">
-                    <div class="welcome_item" v-show="uiStore.getShowingHome">
+                    <div class="welcome_item" v-show="uiStore.getShowingHome && !uiStore.loadingAssets">
                         <p>
                             ... einer Welt voller Gefahren und Abenteuer. 
                             <br/><br/>
@@ -66,16 +66,20 @@ import Overlay from './components/ingame/Overlay.vue'
                             ✓ Kämpfe, wofür es sich für dich zu kämpfen lohnt.
                         </p>
                     </div>
-                    <div class="welcome_item vid" v-show="uiStore.getShowingHome">
+                    <div class="welcome_item vid" v-show="uiStore.getShowingHome && !uiStore.loadingAssets">
                         <div id="vid" ref="youtube"/>
                     </div>
     
-                    <div class="welcome_item grid_span_2" v-show="uiStore.getShowingAuthentication">
+                    <div class="welcome_item grid_span_2" v-show="uiStore.getShowingAuthentication && !uiStore.loadingAssets">
                         <Authenticator/>
+                    </div>
+                    <div class="loading welcome_item" v-if="(uiStore.getShowingHome || uiStore.getShowingAuthentication) && uiStore.loadingAssets">
+                        <h3 class="heading_loading">Inhalte werden geladen</h3>
+                        <span class="text_transparent">{{uiStore.loadingProgress}}</span>
                     </div>
                 </div>
 
-                <div class="welcome_item roadmap grid_span_2" v-show="uiStore.getShowingHome || uiStore.showingAuthentication">
+                <div class="roadmap welcome_item grid_span_2" v-show="uiStore.getShowingHome || uiStore.showingAuthentication">
                     <h3 class="welcome_item_heading">Roadmap</h3>
                     <p>
                         Bald wird diese App Teil einer integrierten Spielwelt.
@@ -176,7 +180,7 @@ import Overlay from './components/ingame/Overlay.vue'
     } .welcome_sub_container {
         display: grid;
         height: 100%;
-        width:100%;
+        width: 100%;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr;
         grid-column-gap: 2rem;
@@ -238,5 +242,28 @@ import Overlay from './components/ingame/Overlay.vue'
         width: 100%;
         height: 100%;
         pointer-events:none;
+    }
+
+    .loading {
+    display: grid;
+    grid-template-rows: 1fr .5fr .5fr 1fr;
+    width: 60rem;
+    height: 100%;
+    padding: 0%;
+    align-self: center;
+    justify-self: center;
+    align-items: center;
+    justify-items: center;
+} .heading_loading {
+    grid-row: 2;
+    display: flex;
+    align-self: flex-start;
+    justify-content: center;
+    font-family: 'Fondamento';
+    } .text_transparent {
+        grid-row: 3;
+        display: flex;
+        font-size: .8rem;
+        color: rgba(252, 205, 143, 0.5)
     }
 </style>

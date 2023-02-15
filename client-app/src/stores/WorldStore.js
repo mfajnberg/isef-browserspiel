@@ -21,10 +21,13 @@ export const useWorldStore = defineStore('WorldStore', {
         preview: null,
         previewModelURI: "",
         hoveredItem: null,
-
+        
         moveArrows: [],
         
-        response: null
+        response: null,
+
+        character: null,
+        animationMixer: null,
     }),
     getters: {
         getScene: (state) => state.scene,

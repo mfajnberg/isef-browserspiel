@@ -70,12 +70,7 @@ import { Ambience } from '../stores/000Singletons.js'
 
 <template>
     <div id="header">
-    <div id="header_content">
-        <!-- <div id="3js_gui"></div>
-        <h3 id="logged_in" v-if="authStore.loggedIn">
-            Eingeloggt: {{authStore.Email}}
-        </h3> -->
-        
+    <div id="header_content" v-show="!uiStore.loadingAssets">
         <button id="button_play" 
             @click="clickPlay" 
             ref="button_play"
@@ -119,7 +114,7 @@ import { Ambience } from '../stores/000Singletons.js'
     @media (max-width: 800px) {
         button {
             top: 0%;
-            /* margin-top: 5vh; */
+            background-color: black;
         }
 
     }

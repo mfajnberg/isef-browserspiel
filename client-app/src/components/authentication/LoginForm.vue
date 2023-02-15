@@ -30,11 +30,9 @@ async function LogIn() {
     await requestLogin(authStore, partyStore)
     // if (true) {
     if (authStore.loginResponse.ok) {
-        gameAssetStore.pointerUpSound.play()
         authStore.loginFailed = false
-        console.log("Loading scene & initial actors ...")
-
         await uiStore.PlayNow(authStore, partyStore, worldStore, gameAssetStore, creatorStore)
+        gameAssetStore.pointerUpSound.play()
     }
     else {
         authStore.loginFailed = true
@@ -81,9 +79,6 @@ onBeforeUnmount( () => {
             Noch kein Konto?
             <a @click="switchToRegis" style="cursor: pointer;">Jetzt registrieren!</a>
         </div>
-    </div>
-    <div v-if="uiStore.loadingAssets" class="loading">
-        <h3>Inhalte werden geladen...</h3>
     </div>
 </template>
 
@@ -152,8 +147,4 @@ onBeforeUnmount( () => {
         padding-top: 3px;
         margin-bottom: -27px;
     }
-.loading {
-    text-align: center;
-    /* font-family: 'Marcellus'; */
-}
 </style>

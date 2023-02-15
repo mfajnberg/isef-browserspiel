@@ -23,7 +23,7 @@ export async function requestGetHexTiles(authStore, worldStore) {
         data.forEach(element => {
             if (element.site){
                 if (element.site.type === 100) {
-                    worldStore.previewModelURI = 'forest_1'
+                    worldStore.previewModelURI = 'forest_1.glb'
                     spawnSite(loader, worldStore, useGameAssetStore(),
                         new HexVector(element.Q, element.R))
                 }

@@ -37,14 +37,10 @@ function playSoundPointerUp(event) { if (event.button === 0) assetStore.pointerU
 const button_edit = ref(null)
 const button_play = ref(null)
 onMounted(() => {
-    button_edit.value.addEventListener('pointerdown', playSoundPointerDown);
-    button_play.value.addEventListener('pointerdown', playSoundPointerDown);
-    button_edit.value.addEventListener('pointerup', playSoundPointerUp);  
-    button_play.value.addEventListener('pointerup', playSoundPointerUp);  
-    document.addEventListener("mousedown", dragStart)
-    document.addEventListener("mouseup", dragEnd)
-    document.addEventListener("mousemove", drag)
-    document.addEventListener("mouseleave", dragEnd)
+    button_edit.value.addEventListener('pointerdown', playSoundPointerDown)
+    button_play.value.addEventListener('pointerdown', playSoundPointerDown)
+    button_edit.value.addEventListener('pointerup', playSoundPointerUp)
+    button_play.value.addEventListener('pointerup', playSoundPointerUp)
 })        
 const draggableElement = ref(null)
 var isDragging = false
@@ -96,7 +92,7 @@ function setTranslate(xPos, yPos, el) {
                 </span>
             </div>
         </div>
-        <button ref="button_edit" @click="clickEdit()" class="button_edit">und die Welt editieren</button>
+        <button ref="button_edit" @click="clickEdit()" class="button_edit">und die Welt editieren.</button>
     </div>
 </template>
 

@@ -1,11 +1,13 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 import { Worldmap } from '../classes/Worldmap'
 import { Sites, Sites3d } from '../stores/000Singletons'
 import { useGameAssetStore } from '../stores/GameAssetStore'
+import { AnimationLoader } from 'three'
 
-export async function initActors(worldStore, assetStore) {
+export async function initActors(worldStore, gameAssetStore) {
     // dummy data
     // await worldStore.loadVisibleHexTiles()
     const visible = Worldmap.makeHexGridVectors(2)
@@ -18,21 +20,27 @@ export async function initActors(worldStore, assetStore) {
     const tex3 = texLoader.load('grass_texture_3.jpg')
     const hexTextures = [tex1, tex2, tex3]
     
-    if (worldStore.cursor == null)
-        loadHexCursor(loader, worldStore, null)
-
+    
     // // replace with calls to proper asset loading service
-    await assetStore.loadHex()
+    await gameAssetStore.loadHex()
+    await gameAssetStore.loadHexCursor()
+    worldStore.previewModelURI = "HexPreview.glb"
+    await gameAssetStore.loadHexPreview()
     // await assetStore.loadForest()
     // await assetStore.loadCliffs()
     // await assetStore.loadHouse()
     // await assetStore.loadTent()
     // await assetStore.loadChest()
     // await assetStore.loadCrystal()
+    
+    if (worldStore.cursor == null)
+        loadHexCursor(loader, worldStore, null)
 
     for (let i = 0; i < visible.length; i++) {
-        initHex(loader, worldStore, assetStore, visible[i], i%3, hexTextures)
+        initHex(loader, worldStore, gameAssetStore, visible[i], i%3, hexTextures)
     }
+
+    loadCharacter(worldStore, gameAssetStore)
 
     try {
         loadSitePreview(loader, worldStore, null)
@@ -41,8 +49,8 @@ export async function initActors(worldStore, assetStore) {
 
 }
 
-function initHex(loader, worldStore, assetStore, hexData, randomRotation, hexTextures) {
-    loader.parse(assetStore.getHexModel, '', (loadedObject) => {
+function initHex(loader, worldStore, gameAssetStore, hexData, randomRotation, hexTextures) {
+    loader.parse(gameAssetStore.getHexModel, '', (loadedObject) => {
         loadedObject.scene.traverse(child => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
@@ -81,13 +89,52 @@ function initHex(loader, worldStore, assetStore, hexData, randomRotation, hexTex
 
 }
 
+function loadCharacter(worldStore, gameAssetStore) {
+    for (let asset of gameAssetStore.assets3d) {
+        if (asset.name == "Arissa.fbx")
+            var model = asset.data
+    }
+    const modelBlob = new Blob([model], { type: 'application/octet-stream' })
+    const loader = new FBXLoader()
+    try {
+        loader.load(URL.createObjectURL(modelBlob), (loadedObject => {
+            loadedObject.scale.set(.01, .01, .01)
+    
+            loadedObject.traverse((child) => {
+                if (child.isMesh) {
+                child.castShadow = true
+                child.receiveShadow = true
+                }
+            })
+            loadedObject.rotateY(.5236)
+            worldStore.character = loadedObject
+            
+            playAnim(worldStore, gameAssetStore, 'Idle.fbx')
+
+            worldStore.scene.add(loadedObject)
+        }))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export function playAnim(worldStore, gameAssetStore, animationURL) {
+    for (let asset of gameAssetStore.assets3d) {
+        if (asset.name == animationURL) {
+            var anim = asset.data
+        }
+    }
+    const animBlob = new Blob([anim], { type: 'application/octet-stream' })
+    const loader = new FBXLoader()
+    loader.load(URL.createObjectURL(animBlob), (loadedAnim) => {
+        worldStore.animationMixer = new THREE.AnimationMixer(worldStore.character)
+        const action = worldStore.animationMixer.clipAction(loadedAnim.animations[0])
+        action.play()
+    })
+}
+
 function loadHexCursor(loader, worldStore) {
     loader.load('HexCursor.glb', (loadedObject => {
-        loadedObject.scene.traverse((child) => {
-            if (child.isMesh) {
-            child.castShadow = true
-            }
-        })
         worldStore.cursor = loadedObject.scene
         worldStore.scene.add(loadedObject.scene)
     }))
@@ -96,7 +143,7 @@ function loadHexCursor(loader, worldStore) {
 export function loadSitePreview(loader, worldStore, gameAssetStore) {
     for (let asset of gameAssetStore.assets3d) {
         if (asset.name == worldStore.previewModelURI) {
-            var model = asset.model
+            var model = asset.data
         }
     }
     loader.parse(model, '', (loadedObject => {
@@ -105,10 +152,10 @@ export function loadSitePreview(loader, worldStore, gameAssetStore) {
             child.castShadow = true
             }
         })
-        loadedObject.scene.visible = false
+        loadedObject.scene.visible = true
 
         if (worldStore.preview != null) {
-            worldStore.preview.removeFromParent()
+            dispose(worldStore.preview)
         }
         
         worldStore.preview = loadedObject.scene
@@ -119,7 +166,7 @@ export function loadSitePreview(loader, worldStore, gameAssetStore) {
 export function spawnSite(loader, worldStore, gameAssetStore, hexVector) {
     for (let asset of gameAssetStore.assets3d) {
         if (asset.name == worldStore.previewModelURI) {
-            var model = asset.model
+            var model = asset.data
         }
     }
     loader.parse(model, '', (loadedObject => {

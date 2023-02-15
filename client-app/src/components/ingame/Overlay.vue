@@ -18,6 +18,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
     const sites = new Sites()
     const sites3d = new Sites3d()
     const ambience = new Ambience()
+    const loader = new GLTFLoader()
 
     const portrait = ref(null)
     const slot_1 = ref(null);
@@ -27,11 +28,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
     const slot_5 = ref(null);
     const slot_6 = ref(null);
     const slot_7 = ref(null);
-
+    
     const slots = [slot_1, slot_2, slot_3, slot_4, slot_5, slot_6, slot_7]
-
-    const loader = new GLTFLoader()
-
+    let slotPressed
     let selected = [];
     function clickSlot(num) {
         if (uiStore.editorMode) {
@@ -60,7 +59,19 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
         }
     }
 
-    let slotPressed
+    function debug1() {
+        console.log(sites.buffer)
+    }
+    function debug2() {
+        console.log(sites3d.buffer)
+    }
+    function muteMusic() {
+        ambience.music.mute(true)
+    }
+    function unmuteMusic() {
+        ambience.music.mute(false)
+    }
+    
     onMounted(() => {
         console.log("Mounting overlay...")
 
@@ -90,26 +101,53 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
                 catch (e) {}
             }
         })
+        document.addEventListener("mousedown", dragStart)
+        document.addEventListener("mouseup", dragEnd)
+        document.addEventListener("mousemove", drag)
+        document.addEventListener("mouseleave", dragEnd)
     })
 
-    function debug1() {
-        console.log(sites.buffer)
+const draggableElement = ref(null)
+
+var isDragging = false
+var currentX = 0
+var currentY = 0
+var initialX = 0
+var initialY = 0
+var xOffset = 0
+var yOffset = 0
+
+    function dragStart(e) {
+        if (e.target === draggableElement.value) {
+                initialX = e.clientX - xOffset
+                initialY = e.clientY - yOffset
+                console.log(e.target)
+                isDragging = true
+        }
     }
-    function debug2() {
-        console.log(sites3d.buffer)
+    function dragEnd() {
+        initialX = currentX
+        initialY = currentY
+        isDragging = false
     }
-    function muteMusic() {
-        ambience.music.mute(true)
+    function drag(e) {
+        if (isDragging) {
+            currentX = e.clientX - initialX
+            currentY = e.clientY - initialY
+            xOffset = currentX
+            yOffset = currentY
+            setTranslate(currentX, currentY, draggableElement)
+        }
     }
-    function unmuteMusic() {
-        ambience.music.mute(false)
+    function setTranslate(xPos, yPos, el) {
+        el.value.style.translate = `${xPos}px ${yPos}px`
     }
 
 </script>
 
 
 <template>
-    <div id="overlay">
+    <div id="overlay"  @contextmenu.prevent="">
         <div id="clock">{{uiStore.currentTime}}</div>
         <div id="slot_panel">
             <div id="portrait" ref="portrait" v-if="!uiStore.editorMode"></div>
@@ -171,13 +209,14 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
             </div>
         </div>
         <p class="slot_panel_info" v-if="uiStore.editorMode">Slot klicken, um eine platzierbare Stätte zu wählen.</p>
-        <div id="debug_panel">
-            <!-- <button class="debug" @click="requestWorldSave(authStore)">Post Layout</button> -->
+        <div class="debug_panel" ref="draggableElement">
+            *debug panel*
             <button class="debug" @click="muteMusic">♪ Mute Music ♪</button>
             <button class="debug" @click="unmuteMusic">♪ Unmute ♪</button>
             <button class="debug" @click="debug1">debug sites</button>
             <button class="debug" @click="debug2">debug sites3d</button>
             <button class="debug inactive" @click="">Post Layout</button>
+            <!-- <button class="debug" @click="requestWorldSave(authStore)">Post Layout</button> -->
         </div>
         <div id="info_hex">
             <div class="axial" v-if="worldStore.hoveredItem">
@@ -291,22 +330,35 @@ p {
     align-self: flex-end;
     /* color: white; */
 }
-#debug_panel {
+.debug_panel {
     grid-row: 3 / 5;
     grid-column: 8;
     display: flex;
     flex-direction: column;
-} .debug {
-    display: flex; /* for now */
-    align-self: center;
-    /* margin: 15px; */
-    padding-left: 15px;
-    padding-right: 15px;
+    position: absolute;
 
-    justify-content: center;
-    pointer-events:all;
-    cursor: pointer;
+    font-size: .8rem;
+    color: rgba(252, 205, 143, .5);
+
+    pointer-events: all;
     user-select: none;
+    cursor: grab;
+
+    background-color: rgba(0, 0, 0, 0.852);
+    border-top-style: dotted;
+    border-width: 1px;
+    border-color: 1px;
+    border-color: rgb(252, 205, 143);
+} .debug_panel:active {
+    cursor: grabbing;
+}
+ .debug {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+
+    font-size: 1rem;
+    cursor: pointer;
 } .inactive {
     text-decoration: line-through;
 }
@@ -327,9 +379,12 @@ p {
     bottom: 5vh;
     font-size: 1rem;
     line-height: 1.2em;
-    width: 25%;
+    width: 50%;
     text-align: right;
-} .span_axial {
+} .label_axial {
+    /* padding-left: 3rem; */
+}
+.span_axial {
     font-family: monospace;
 }
 

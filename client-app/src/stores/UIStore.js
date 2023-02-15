@@ -3,6 +3,8 @@ import { DateTime } from 'luxon'
 import { Ambience } from './000Singletons.js'
 import { requestGetChoices } from '../services/AvatarCreatorService'
 import { requestGetHexTiles } from '../services/WorldmapService'
+import { loadSitePreview } from '../threejs/ActorManager.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export const useUIStore = defineStore('UIStore', {
     id: 'UIStore',
@@ -19,6 +21,7 @@ export const useUIStore = defineStore('UIStore', {
         showingHome: true,
 
         loadingAssets: false,
+        loadingProgress: "",
 
         nextUpdate: null // time object, compared in init loop
     }),
@@ -107,27 +110,42 @@ export const useUIStore = defineStore('UIStore', {
             // partyStore.avatar = {
             //     name: "Marsilio Mirandola"
             // }
-            // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
             if (authStore.loginResponse.status === 200) {
                 // fetch assets if not done already
                 if (!gameAssetStore.assetsLoaded) {
                     this.loadingAssets = true
                     for (let uri of gameAssetStore.modelURIs) {
-                        await gameAssetStore.loadAsset(uri, authStore)
+                        if (uri == "forest_1.glb")
+                        this.loadingProgress = "Wälder aufforsten..."
+                        else if (uri == "flag.glb")
+                        this.loadingProgress = "Wappen und Siegel beim Heroldsamt melden..."
+                        else if (uri == "house.glb")
+                        this.loadingProgress = "Siedlerhöfe möblieren..."
+                        else if (uri == "tent_field_camp.glb")
+                        this.loadingProgress = "Heringe für die Zelte besorgen..."
+                        else if (uri == "crystals.glb")
+                        this.loadingProgress = "Mineralien aus Erathia importieren..."
+                        else if (uri == "chest_lp.glb")
+                        this.loadingProgress = "Schatztruhen vergraben..."
+                        else if (uri == "tree_ancient.glb")
+                        this.loadingProgress = "Die alten Götter anbeten..."
+                        await gameAssetStore.fetchAsset(uri, authStore)
                     }
+                    await gameAssetStore.fetchAsset("Arissa.fbx", authStore)
+                    await gameAssetStore.fetchAsset("Idle.fbx", authStore)
+                    await gameAssetStore.fetchAsset("Walking.fbx", authStore)
+                    console.log(gameAssetStore.assets3d)
                     gameAssetStore.assetsLoaded = true
                     this.loadingAssets = false
                 }
 
                 // admin just logged in
                 if (authStore.userIsAdmin == true && !this.getShowingAdminPrompt) {
-                    console.log("Admin status detected...")
                     this.showAdminPrompt()
                 }
 
                 // new player just logged in || new admin wants to play
                 else if (partyStore.avatar === null) {
-                    console.log("No avatar yet...")
                     await requestGetChoices(authStore, creatorStore)
                     this.showAvatarCreator()
                 }
@@ -136,10 +154,11 @@ export const useUIStore = defineStore('UIStore', {
                 else  {
                     if (!worldStore.initialized)
                         await worldStore.ACTION(gameAssetStore)
-                    if (!this.editorMode)
-                        worldStore.preview = null
+                    if (!this.editorMode) {
                         await requestGetHexTiles(authStore, worldStore)
-                    
+                        worldStore.previewModelURI = "HexPreview.glb"
+                        // loadSitePreview(new GLTFLoader(), worldStore, gameAssetStore)
+                    }
                     this.showWorldmap(worldStore, gameAssetStore)
                 }
             }

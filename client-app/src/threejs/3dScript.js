@@ -34,11 +34,16 @@ export async function init(canvasDomId) {
   // cameraFolder.add(crew.camera.position, 'y', -400, 400)
   // cameraFolder.add(crew.camera.position, 'z', -400, 400)
   // document.getElementById("3js_gui").appendChild(_gui.domElement)
-  
+  const clock = new THREE.Clock()
   function run() {
-    requestAnimationFrame(run)
+    try {
+      worldStore.animationMixer.update(clock.getDelta())
+    } catch (e) {}
+    
     uiStore.updateClock()
     renderer.render(scene, crew.camera)
+
+    requestAnimationFrame(run)
   }
   run()
 }

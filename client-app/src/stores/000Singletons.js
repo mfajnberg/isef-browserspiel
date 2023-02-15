@@ -11,9 +11,9 @@ export class Ambience {
     }
     _instanceAmbience = this
     this.music = new Howler.Howl({
-        src: 'isef_ambience_1.mp3',
+        src: 'music.mp3',
         loop: true,
-        volume: .08,
+        volume: .12,
         mute: false,
         preload: true
     })

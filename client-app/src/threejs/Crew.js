@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
-import { spawnSite } from './ActorManager';
+import { playAnim, spawnSite } from './ActorManager';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { HexVector } from '../classes/HexVector';
 import { Worldmap } from '../classes/Worldmap';
@@ -60,11 +60,42 @@ export function initCameraPawn(canvas, scene, worldStore) {
             if (uiStore.editorMode && worldStore.preview && worldStore.objectSnapped) {
                 placeActor()
             }
-            else {
-                let path = Worldmap.findPathAStar(
-                    worldStore.hexes3d.find(hex => 
-                        hex.userData.Q === 0 && hex.userData.R === 0), worldStore.hoveredItem, worldStore)
-                console.log(path)
+            else if (!uiStore.editorMode) {
+
+                // let path = Worldmap.findPathAStar(
+                //     worldStore.hexes3d.find(hex => 
+                //         hex.userData.Q === 0 && hex.userData.R === 0), worldStore.hoveredItem, worldStore)
+                // console.log(path)
+
+                const q = worldStore.hoveredItem.userData.Q
+                const r = worldStore.hoveredItem.userData.R
+                if (q == 1 && r == 0) {
+                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 7 )
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                }
+                else if (q == 0 && r == 1) {
+                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 6 )
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                }
+                else if (q == -1 && r == 1) {
+                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 5 )
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                }
+                else if (q == -1 && r == 0) {
+                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 4 )
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                }
+                else if (q == 0 && r == -1) {
+                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 3 )
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                }
+                else if (q == 1 && r == -1) {
+                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 2 )
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                }
+                else {
+                    playAnim(worldStore, gameAssetStore, "Idle.fbx")
+                }
             }
         }
     })

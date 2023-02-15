@@ -43,7 +43,7 @@ function checkWebGL2() {
 
 </script>
 
-<template>
+<template> 
     <div class="authenticator" ref="draggableElement">
         <div class="disclaimer" v-show="!authStore.mailNotifSent && !authStore.regisFailed">
             <span class="strong">Achtung:</span> <br/>
@@ -120,6 +120,8 @@ function checkWebGL2() {
 .form {
     /* grid-column: 2; */
     display: inherit;
+    height: 100%;
+    width: 100%;
     /* padding-left: 15%;
     padding-right: 15%; */
 }
