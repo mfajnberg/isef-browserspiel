@@ -2,25 +2,45 @@
 import { useAuthStore } from '../../stores/AuthStore.js'
 import RegistrationForm from './RegisForm.vue'
 import LoginForm from './LoginForm.vue'
+import { ref } from 'vue';
 
 const authStore = useAuthStore()
 
+let check1Failed = ref(false)
+let check1FailedThenSucceeded = ref(false)
+
+let check2Failed = ref(false)
+let check2FailedThenSucceeded = ref(false)
+
 function checkWebGL1() {
-    try {
     const canvas = document.createElement( 'canvas' );
-    return !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) );
-    } catch ( e ) {
-    return false;
+    let enabled = !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) )
+    if (enabled) {
+        if (check1Failed.value === true) {
+            check1FailedThenSucceeded.value = true
+        }
+        return true
+    }
+    else {
+        check1Failed.value = true
+        return false
     }
 }
 function checkWebGL2() {
-    try {
     const canvas = document.createElement( 'canvas' );
-    return !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) );
-    } catch ( e ) {
-    return false;
+    let enabled = !! ( window.WebGL2RenderingContext && canvas.getContext( 'webgl2' ) );
+    if (enabled) {
+        if (check2Failed.value === true) {
+            check2FailedThenSucceeded.value = true
+        }
+        return true
+    }
+    else {
+        check2Failed.value = true
+        return false
     }
 }
+
 </script>
 
 <template>
@@ -42,11 +62,14 @@ function checkWebGL2() {
         </div>
 
         <div class="validation" v-show="!authStore.mailNotifSent && !authStore.regisFailed">
-            <div class="validation_success" v-show="authStore.showingLoginForm && (checkWebGL1() === true || checkWebGL2() === true)">
+            <div class="validation_success" v-show="authStore.showingLoginForm && (checkWebGL1() === true || checkWebGL2() === true) && !(check1FailedThenSucceeded || check2FailedThenSucceeded)">
                 WebGL ist aktiviert ✓  <br/>
             </div>
-            <div class="validation_fail" v-show="authStore.showingLoginForm && (checkWebGL1() === false && checkWebGL2() === false)">
+            <div class="validation_fail" v-show="authStore.showingLoginForm && (checkWebGL1() === false && checkWebGL2() === false) && !(check1FailedThenSucceeded || check2FailedThenSucceeded)">
                 WebGL ist deaktiviert !  <br/>
+            </div>
+            <div class="validation_restart" v-show="authStore.showingLoginForm && (checkWebGL1() === false && checkWebGL2() === false) && (check1FailedThenSucceeded || check2FailedThenSucceeded)">
+                WebGL aktiviert. Bitte Browser neu starten. <br/>
             </div>
             <span class="validation_fail" v-show="authStore.showingLoginForm && authStore.loginFailed">
                 Zugangsdaten nicht erkannt . . .  <br/>
@@ -96,8 +119,9 @@ function checkWebGL2() {
 
 .form {
     /* grid-column: 2; */
-    padding-left: 15%;
-    padding-right: 15%;
+    display: inherit;
+    /* padding-left: 15%;
+    padding-right: 15%; */
 }
 .validation {
     place-self: center;
@@ -111,6 +135,9 @@ function checkWebGL2() {
 }
 .validation_fail {
     color:rgb(255, 0, 0);
+}
+.validation_restart {
+    color:rgb(255, 255, 0);
 }
 
 .after_regis {

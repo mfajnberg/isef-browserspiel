@@ -1,5 +1,6 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { HexVector } from '../classes/HexVector'
+import { useGameAssetStore } from '../stores/GameAssetStore'
 import { dispose, spawnSite } from '../threejs/ActorManager'
 
 export async function requestGetHexTiles(authStore, worldStore) {
@@ -16,17 +17,15 @@ export async function requestGetHexTiles(authStore, worldStore) {
         return await response.json()
     })
     .then(data => {
-        console.log("Updating sites for editing...") 
-        // factor out into world store method
+        console.log("Placing adventure sites...") 
         worldStore.disposeAll()
-        
         const loader = new GLTFLoader()
         data.forEach(element => {
-            console.log(element)
             if (element.site){
                 if (element.site.type === 100) {
-                    spawnSite(loader, worldStore.scene, worldStore, 
-                        new HexVector(element.Q, element.R), 'forest_1.glb')
+                    worldStore.previewModelURI = 'forest_1'
+                    spawnSite(loader, worldStore, useGameAssetStore(),
+                        new HexVector(element.Q, element.R))
                 }
             }
         })

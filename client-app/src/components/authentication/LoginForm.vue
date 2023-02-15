@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useUIStore } from '../../stores/UIStore'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { usePartyStore } from '../../stores/PartyStore';
@@ -12,7 +12,7 @@ const uiStore = useUIStore()
 const authStore = useAuthStore()
 const partyStore = usePartyStore()
 const worldStore = useWorldStore()
-const assetStore = useGameAssetStore()
+const gameAssetStore = useGameAssetStore()
 const creatorStore = useCreatorStore()
 
 function switchToRegis() {
@@ -22,7 +22,7 @@ function switchToRegis() {
 
 // bind this to an Enter key event on the login widget
 async function LogInEnter() {
-    assetStore.pointerDownSound.play()
+    gameAssetStore.pointerDownSound.play()
     await LogIn()
 }
 
@@ -30,36 +30,40 @@ async function LogIn() {
     await requestLogin(authStore, partyStore)
     // if (true) {
     if (authStore.loginResponse.ok) {
-        assetStore.pointerUpSound.play()
+        gameAssetStore.pointerUpSound.play()
         authStore.loginFailed = false
         console.log("Loading scene & initial actors ...")
 
-        await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
+        await uiStore.PlayNow(authStore, partyStore, worldStore, gameAssetStore, creatorStore)
     }
     else {
         authStore.loginFailed = true
     }
-    authStore.Password = ""
 }
 
 function playSoundPointerDown() {
-    assetStore.pointerDownSound.play()
+    gameAssetStore.pointerDownSound.play()
 }
 function playSoundPointerUp() {
-    assetStore.pointerUpSound.play()
+    gameAssetStore.pointerUpSound.play()
 }
 
 const button_login = ref(null)
 onMounted(() => {
     button_login.value.addEventListener('pointerdown', playSoundPointerDown);
-    button_login.value.addEventListener('pointerup', playSoundPointerUp);
 })        
+
+
+onBeforeUnmount( () => {
+    authStore.Password = ""
+    authStore.loginFailed = false
+})
 
 </script>
 
 <template>
-    <div id="login_form">
-        <h3 class="strong">Log In</h3>
+    <div id="login_form" v-if="!uiStore.loadingAssets">
+        <h3 class="strong">Login</h3>
         <div class="item">
             <label class="item_label">E-Mail Adresse</label>
             <input class="form_input" v-model="authStore.Email" id="email_address" @keyup.enter.native="LogInEnter"/>
@@ -72,24 +76,27 @@ onMounted(() => {
             <label class="item_label">Angemeldet bleiben?</label>
             <input class="checkbox" v-model="authStore.stayLoggedIn" type="checkbox" />
         </div>
-        <button class="button_login" ref="button_login" v-on:click="LogIn(worldStore, assetStore)">Einloggen</button>
+        <button class="button_login" ref="button_login" v-on:click="LogIn(worldStore, gameAssetStore)">Einloggen</button>
         <div class="register_prompt">
-            Noch kein Konto? <br/>
+            Noch kein Konto?
             <a @click="switchToRegis" style="cursor: pointer;">Jetzt registrieren!</a>
         </div>
-
+    </div>
+    <div v-if="uiStore.loadingAssets" class="loading">
+        <h3>Inhalte werden geladen...</h3>
     </div>
 </template>
 
 <style scoped>
 #login_form {
-    display: flex;
+    display: grid;
     align-items: stretch;
     justify-content: center;
     flex-direction: column;
-    padding: 5%;
+    /* padding: 5%; */
     z-index: 20;
 } h3 {
+    font-family: 'fondamento';
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -98,19 +105,22 @@ onMounted(() => {
     margin-bottom: .8rem;
     flex-direction: column;
     align-self: center;
+    justify-self: center;
     padding-left: 5%;
     padding-right: 5%;
     width: 10rem;
 } .item_label {
 } 
 .form_input {
+
+    /* width: 10rem; */
 }
 .button_login {
     display: flex;
     justify-content: center;
     justify-self: center;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: .8rem;
+    margin-bottom: .8rem;
     margin-left: auto;
     margin-right: auto;
     font-size: 1rem;
@@ -118,13 +128,14 @@ onMounted(() => {
 .stay_logged_in {
     display: flex;
     align-self: center;
-    margin-top: 2%;
+    /* margin-top: 2%; */
     margin-right: auto;
     margin-left: auto;
 } .checkbox {
     margin-left: .7rem;
     width: 1rem;
     height: 1rem;
+    /* color: black; */
 }
 .register_prompt {
     margin-left: auto;
@@ -141,4 +152,8 @@ onMounted(() => {
         padding-top: 3px;
         margin-bottom: -27px;
     }
+.loading {
+    text-align: center;
+    /* font-family: 'Marcellus'; */
+}
 </style>

@@ -1,14 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore';
 import { requestRegis } from '../../services/AuthService';
 
     const authStore = useAuthStore()
     const assetStore = useGameAssetStore()
-    var pwdFocused = ref(false)
-    var mailNotifSent = ref(false)
-    var regisFailed = ref(false)
+    let invalidFormSubmit = ref(false)
 
     function switchToLogin() {
         authStore.hideRegisForm()
@@ -34,7 +32,7 @@ import { requestRegis } from '../../services/AuthService';
             }
         }
         else {
-            console.log("invalid form input")
+            invalidFormSubmit.value = true
         }
     }
 
@@ -48,12 +46,16 @@ function playSoundPointerUp() {
 const button_regis = ref(null)
 onMounted(() => {
     button_regis.value.addEventListener('pointerdown', playSoundPointerDown);
-    button_regis.value.addEventListener('pointerup', playSoundPointerUp);
-})    
+    })
+
+onBeforeUnmount(() => {
+    authStore.Password = ""
+    authStore.repeatedPassword = ""
+})
 </script>
 
 <template>
-    <div id="registration_form" v-if="!mailNotifSent && !regisFailed">
+    <div id="registration_form">
         <div class="item_container">
             <label>E-Mail Adresse</label>
             <div class="form_item">
@@ -61,13 +63,21 @@ onMounted(() => {
                 <span v-if="authStore.emailValid" class="validation valid_input"> 
                     ✓
                 </span>
+                <span v-if="invalidFormSubmit && !authStore.emailValid" class="validation invalid_input">
+                    !
+                </span>
             </div>
         </div>
         <div class="item_container">
             <label> Passwort </label>
             <div class="form_item">     
-                <input class="form_input" @focusin="pwdFocused = true" @focusout="pwdFocused = false" @input="authStore.updateValidation()" v-model="authStore.Password" type="password" id="password"/>
-                <span v-if="authStore.pwdValid" class="validation valid_input">✓</span>
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Password" type="password" id="password"/>
+                <span v-if="authStore.pwdValid" class="validation valid_input">
+                    ✓
+                </span>
+                <span v-if="invalidFormSubmit && !authStore.pwdValid" class="validation invalid_input">
+                    !
+                </span>
             </div>
         </div>
         
@@ -78,9 +88,12 @@ onMounted(() => {
                 <span v-if="authStore.repeatValid" class="validation valid_input">
                     ✓
                 </span>
+                <span v-if="invalidFormSubmit && !authStore.repeatValid" class="validation invalid_input">
+                    !
+                </span>
             </div>
         </div>
-        <button class="button_regis" ref="button_regis" @click="clickRegis()" v-if="!mailNotifSent && !regisFailed">
+        <button class="button_regis" ref="button_regis" @click="clickRegis()">
         Jetzt registrieren
         </button>
         <span class="center_stuff">
@@ -92,7 +105,7 @@ onMounted(() => {
 
 <style scoped>
     #registration_form {
-        display: flex;
+        display: grid;
         align-items: stretch;
         flex-direction: column;
         padding: 5%;
@@ -101,11 +114,13 @@ onMounted(() => {
     .item_container{
         display: flex;
         flex-direction: column;
+        justify-self: center;
         margin-top: .8rem;
     } .form_item {
         display: flex;
         align-items: center;
         position: relative;
+        /* width: 10rem; */
     } .item_container {
         align-self: center;
     } .form_input {
@@ -120,8 +135,8 @@ onMounted(() => {
         font-size: 1rem;
         display: block;
         margin-right: auto;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
+        margin-top: 1.2rem;
+        margin-bottom: .8rem;
         margin-left: auto;
 
     }

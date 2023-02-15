@@ -6,29 +6,31 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
     id: 'GameAssetStore',
     state: () => ({
         hexModel: null,
-        forestModel: null,
-        cliffsModel: null,
-        houseModel: null,
-        tentModel: null,
-        chestModel: null,
-        crystalModel: null,
 
         hexCursor: null,
         
+        modelURIs:
+            ['forest_1', 'flag', 'house', 
+            'tent_field_camp', 'crystals', 
+            'chest_lp', 'tree_ancient'],
+
         pointerDownSound: new Howl({
             src: 'isef_pointer_down.mp3',
-            volume: .7
+            volume: .6
         }),
 
         pointerUpSound: new Howl({
             src: 'isef_pointer_up.mp3',
-            volume: .7
+            volume: .6
         }),
 
         placeObjectSound: new Howl({
             src: 'isef_place_building.mp3',
             volume: .1
         }),
+
+        assets3d: [], // name: {string}, model: {arrayBuffer}
+        assetsLoaded: false
             
     }),
     getters: {
@@ -47,7 +49,7 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             await fetch("HexBase.glb", {
             // await fetch("api/asset/?name=hex.glb", {
                 headers: {
-                    // Authorization: `Bearer ${localStorage.getItem(token)}`,
+                    // Authorization: `Bearer ${useAuthStore().token}`,
                     credentials: 'include',
                     "Content-Type": "application/octet-stream"
                 }
@@ -57,17 +59,20 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
                 this.hexModel = arrayBuffer
             })
         },
-        async loadForest() {
-            await fetch("api/asset/?name=forest.glb", {
+        async loadAsset(uri, authStore) {
+            await fetch(`api/asset/glb?name=${uri}.glb`, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem(token)}`,
+                    Authorization: `Bearer ${authStore.token}`,
                     credentials: 'include',
                     "Content-Type": "application/octet-stream"
                 }
             })
             .then(async (response) => await response.arrayBuffer())
             .then(arrayBuffer => {
-                this.forestModel = arrayBuffer
+                this.assets3d.push({
+                    name: uri, model: arrayBuffer
+                })
+                console.log(this.assets3d)
             })
         },
         async loadHexCursor() {

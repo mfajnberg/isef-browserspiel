@@ -4,6 +4,7 @@ import { usePlayer } from '@vue-youtube/core'
 import { useUIStore } from './stores/UIStore.js'
 import { useAuthStore } from './stores/AuthStore.js'
 import { usePartyStore } from './stores/PartyStore'
+import { useGameAssetStore } from './stores/GameAssetStore'
 import { requestTokenRefresh } from './services/AuthService.js'
 
 import Header from './components/Header.vue'
@@ -14,12 +15,10 @@ import AdminPrompt from './components/authentication/AdminPrompt.vue'
 import AvatarCreator from './components/ingame/AvatarCreator.vue'
 import Overlay from './components/ingame/Overlay.vue'
 
-    let image1 = new Image()
-    image1.src = "grass_texture_1.jpg"
-
     const authStore = useAuthStore()
     const uiStore = useUIStore()
     const partyStore = usePartyStore()
+    const gameAssetStore = useGameAssetStore()
 
     const videoId = ref('PmdVSxLBZjU');
     const youtube = ref();
@@ -81,7 +80,7 @@ import Overlay from './components/ingame/Overlay.vue'
                     <p>
                         Bald wird diese App Teil einer integrierten Spielwelt.
                         Bist du bereit frischen Wind in ein wachsendes Team zu bringen? <br/>
-                        Für die Arbeit am Schwesterprojekt sind nämlich noch diverse <a class="anchor_inline">Stellen</a> offen. 
+                        Für die Arbeit am Schwesterprojekt sind diverse <a class="anchor_inline">Stellen</a> offen. 
                     </p>
                 </div>
             </div>
@@ -167,6 +166,9 @@ import Overlay from './components/ingame/Overlay.vue'
     } .vid {
         /* border-style: none; */
         padding: 0;
+    } .roadmap {
+        font-size: .8rem;
+        text-align: center;
     } .welcome_item_heading {
         color: white;
         height: 0rem;

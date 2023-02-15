@@ -1,6 +1,7 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { HexVector } from "../classes/HexVector";
 import { Sites } from "../stores/000Singletons";
+import { useGameAssetStore } from "../stores/GameAssetStore";
 import { spawnSite } from "../threejs/ActorManager";
 
 export async function requestGetWorldSliceAdmin(authStore, worldStore) {
@@ -22,15 +23,15 @@ export async function requestGetWorldSliceAdmin(authStore, worldStore) {
             return await response.json()
         })
         .then(data => {
-            console.log("Updating sites for editing...") 
+            console.log("Placing objects for edit worldmap...") 
             worldStore.disposeAll()
             const loader = new GLTFLoader()
             data.forEach(element => {
-                console.log(element)
                 if (element.site){
                     if (element.site.type === 100) {
-                        spawnSite(loader, worldStore.scene, worldStore, 
-                            new HexVector(element.Q, element.R), 'forest_1.glb')
+                        worldStore.previewModelURI = 'forest_1'
+                        spawnSite(loader, worldStore, useGameAssetStore(),
+                            new HexVector(element.Q, element.R))
                     }
                 }
             })

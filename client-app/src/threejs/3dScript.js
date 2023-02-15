@@ -20,7 +20,6 @@ export async function init(canvasDomId) {
   lights = crew.lights
   scene.add(lights[0]) // directional
   scene.add(lights[1]) // ambient
-
   worldStore.setScene(scene)
 
   // initActors(scene, worldStore, assetStore)
@@ -36,16 +35,9 @@ export async function init(canvasDomId) {
   // cameraFolder.add(crew.camera.position, 'z', -400, 400)
   // document.getElementById("3js_gui").appendChild(_gui.domElement)
   
-
   function run() {
     requestAnimationFrame(run)
     uiStore.updateClock()
-
-    if (worldStore.changedPreviewURL) {
-      loadSitePreview(gltfLoader, scene, worldStore)
-      worldStore.changedPreviewURL = false
-    }
-    
     renderer.render(scene, crew.camera)
   }
   run()

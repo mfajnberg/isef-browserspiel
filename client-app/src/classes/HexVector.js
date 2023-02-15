@@ -21,7 +21,7 @@ export class HexVector {
   }
 
   // possibly wrong syntax
-  neighbors() {
+  getNeighborVectors() {
     return [
       new HexVector(this.Q + 1, this.R),
       new HexVector(this.Q + 1, this.R - 1),

@@ -24,7 +24,8 @@
 <style scoped>
     .impressum {
         max-height: 80vh;
-        max-width: 60rem;
+        width: 60rem;
+        margin-top: 5vh;
         overflow: auto;
         color:white;
         background-color: rgba(0, 0, 0, 0.852);

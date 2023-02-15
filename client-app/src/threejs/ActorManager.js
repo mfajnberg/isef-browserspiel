@@ -3,8 +3,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 import { Worldmap } from '../classes/Worldmap'
 import { Sites, Sites3d } from '../stores/000Singletons'
+import { useGameAssetStore } from '../stores/GameAssetStore'
 
-export async function initActors(scene, worldStore, assetStore) {
+export async function initActors(worldStore, assetStore) {
     // dummy data
     // await worldStore.loadVisibleHexTiles()
     const visible = Worldmap.makeHexGridVectors(2)
@@ -16,6 +17,9 @@ export async function initActors(scene, worldStore, assetStore) {
     const tex2 = texLoader.load('grass_texture_2.jpg')
     const tex3 = texLoader.load('grass_texture_3.jpg')
     const hexTextures = [tex1, tex2, tex3]
+    
+    if (worldStore.cursor == null)
+        loadHexCursor(loader, worldStore, null)
 
     // // replace with calls to proper asset loading service
     await assetStore.loadHex()
@@ -27,17 +31,17 @@ export async function initActors(scene, worldStore, assetStore) {
     // await assetStore.loadCrystal()
 
     for (let i = 0; i < visible.length; i++) {
-        initHex(loader, scene, worldStore, assetStore, visible[i], i%3, hexTextures)
+        initHex(loader, worldStore, assetStore, visible[i], i%3, hexTextures)
     }
 
-    loadHexCursor(loader, scene, worldStore, null)
     try {
-        loadSitePreview(loader, scene, worldStore, null)
+        loadSitePreview(loader, worldStore, null)
     }
     catch { }
+
 }
 
-function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation, hexTextures) {
+function initHex(loader, worldStore, assetStore, hexData, randomRotation, hexTextures) {
     loader.parse(assetStore.getHexModel, '', (loadedObject) => {
         loadedObject.scene.traverse(child => {
             if (child.isMesh) {
@@ -55,10 +59,14 @@ function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation,
         loadedObject.scene.translateZ(hexData.getWorldZFromAxialR())
         loadedObject.scene.userData.Q = hexData.Q
         loadedObject.scene.userData.R = hexData.R
-        loadedObject.scene.userData.free = true
+        loadedObject.scene.userData.isBlocked = false
+        loadedObject.scene.userData.FCost = 0
+        loadedObject.scene.userData.GCost = 0
+        loadedObject.scene.userData.HCost = 0
+        loadedObject.scene.userData.CameFrom = null
         loadedObject.scene.name = `${hexData.Q}|${hexData.R}`
 
-        scene.add(loadedObject.scene)
+        worldStore.scene.add(loadedObject.scene)
         worldStore.hexes3d.push(loadedObject.scene)
         
         const sites = new Sites()
@@ -73,8 +81,7 @@ function initHex(loader, scene, worldStore, assetStore, hexData, randomRotation,
 
 }
 
-function loadHexCursor(loader, scene, worldStore) {
-
+function loadHexCursor(loader, worldStore) {
     loader.load('HexCursor.glb', (loadedObject => {
         loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
@@ -82,13 +89,17 @@ function loadHexCursor(loader, scene, worldStore) {
             }
         })
         worldStore.cursor = loadedObject.scene
-        scene.add(loadedObject.scene)
+        worldStore.scene.add(loadedObject.scene)
     }))
 }
 
-export function loadSitePreview(loader, scene, worldStore) {
-    
-    loader.load(worldStore.previewUrl, (loadedObject => {
+export function loadSitePreview(loader, worldStore, gameAssetStore) {
+    for (let asset of gameAssetStore.assets3d) {
+        if (asset.name == worldStore.previewModelURI) {
+            var model = asset.model
+        }
+    }
+    loader.parse(model, '', (loadedObject => {
         loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
             child.castShadow = true
@@ -101,38 +112,40 @@ export function loadSitePreview(loader, scene, worldStore) {
         }
         
         worldStore.preview = loadedObject.scene
-        scene.add(loadedObject.scene)
+        worldStore.scene.add(loadedObject.scene)
     }))
 }
 
-export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
-    loader.load(modelUrl, (loadedObject => {
+export function spawnSite(loader, worldStore, gameAssetStore, hexVector) {
+    for (let asset of gameAssetStore.assets3d) {
+        if (asset.name == worldStore.previewModelURI) {
+            var model = asset.model
+        }
+    }
+    loader.parse(model, '', (loadedObject => {
         loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
             child.castShadow = true
             }
         })
-        scene.add(loadedObject.scene)
+        worldStore.scene.add(loadedObject.scene)
 
         loadedObject.scene.translateX(hexVector.getWorldXFromAxialQ())
         loadedObject.scene.translateZ(hexVector.getWorldZFromAxialR())
         loadedObject.scene.userData.hexVector = hexVector
 
         // occupy correct hex object3d
-        let hexTile
         for (let hex of worldStore.hexes3d) {
             if (hex.userData.Q === hexVector.Q && hex.userData.R === hexVector.R) {
-                hexTile = hex
+                hex.userData.isBlocked = true
             }
         }
-        hexTile.userData.blocked = true
-
         // set type in sites.buffer
         const sites = new Sites()
-        for (let hex of sites.buffer) {
-            if (hex.AxialCoordinates.Q === hexVector.Q + worldStore.getAbsoluteZeroOffset.Q && 
-                hex.AxialCoordinates.R === hexVector.R + worldStore.getAbsoluteZeroOffset.R) {
-                    hex.SiteType = 100 // programmatically decide the exact type
+        for (let site of sites.buffer) {
+            if (site.AxialCoordinates.Q === hexVector.Q + worldStore.getAbsoluteZeroOffset.Q && 
+                site.AxialCoordinates.R === hexVector.R + worldStore.getAbsoluteZeroOffset.R) {
+                    site.SiteType = 100 // programmatically decide the exact type
             }
         }
 
@@ -145,7 +158,6 @@ export function spawnSite(loader, scene, worldStore, hexVector, modelUrl) {
 export function dispose(object3d) {
     object3d.children.forEach(child => {
         dispose(child);
-        console.log("disposing recursively...")
     });
     object3d.geometry && object3d.geometry.dispose()
     object3d.material && object3d.material.dispose()

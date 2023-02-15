@@ -6,9 +6,10 @@ import { useUIStore } from '../stores/UIStore'
 import { spawnSite } from './ActorManager';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { HexVector } from '../classes/HexVector';
+import { Worldmap } from '../classes/Worldmap';
 
 export function initCameraPawn(canvas, scene, worldStore) {
-    const assetStore = useGameAssetStore()
+    const gameAssetStore = useGameAssetStore()
     const uiStore = useUIStore()
 
     const _renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true })
@@ -46,18 +47,24 @@ export function initCameraPawn(canvas, scene, worldStore) {
         let qHov = worldStore.hoveredItem.userData.Q
         let rHov = worldStore.hoveredItem.userData.R
 
-        if (worldStore.hoveredItem.userData.blocked) {
+        if (worldStore.hoveredItem.userData.isBlocked) {
             console.log(`hex ${qHov}|${rHov} already occupied`)
             return
         }
-        assetStore.placeObjectSound.play()
-        spawnSite(glbLoader, scene, worldStore, new HexVector(qHov, rHov), worldStore.previewUrl)
+        gameAssetStore.placeObjectSound.play()
+        spawnSite(glbLoader, worldStore, gameAssetStore, new HexVector(qHov, rHov))
     })
 
     window.addEventListener('pointerdown', (e) => {
         if (e.button === 0 && uiStore.showingWorldmap && worldStore.hoveredItem) {
             if (uiStore.editorMode && worldStore.preview && worldStore.objectSnapped) {
                 placeActor()
+            }
+            else {
+                let path = Worldmap.findPathAStar(
+                    worldStore.hexes3d.find(hex => 
+                        hex.userData.Q === 0 && hex.userData.R === 0), worldStore.hoveredItem, worldStore)
+                console.log(path)
             }
         }
     })
@@ -82,7 +89,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
             worldStore.hoveredItem = hex
 
             if (worldStore.preview 
-                && !hex.userData.blocked
+                && !hex.userData.isBlocked
                 && vec.distanceTo(point) < .82) {
                     worldStore.preview.position.set(vec.x, vec.y, vec.z)
                     worldStore.preview.visible = true

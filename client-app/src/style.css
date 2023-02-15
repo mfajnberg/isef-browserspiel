@@ -109,16 +109,16 @@ h3 {
 button {
   /* display: flex; */
   border: 1px solid transparent;
-  /* margin-top: 16px; */
+  /* margin-top: 0rem; */
   /* margin-bottom: 10px; */
-  padding: 1rem 0rem 1rem 0rem;
+  padding: .3rem 0rem .3rem 0rem;
   width: 10rem;
   max-width: 33vw;
   font-weight: 700;
   font-size: 1em;
   font-family: 'Fondamento';
   color: rgb(133, 113, 86);
-  line-height: 0;
+  /* line-height: 0; */
   background-color: black;
   border-style: outset;
   border-color: rgb(133, 113, 86);
@@ -141,6 +141,17 @@ button:active {
   color: white;
   text-shadow: 0rem 0rem 1rem white;
   transition:all 0s;
+}
+
+p {
+}
+
+input {
+  /* background-color: black; */
+  /* border-color: white; */
+  /* border-width: 1px; */
+  font-size: .8rem;
+  height: 1rem;
 }
 
 .card {

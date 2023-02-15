@@ -48,12 +48,13 @@ onMounted(() => {
 
 <template>
     <div class="creator">
-        <div class="option">
+        <h3>Wähle deinen Avatar...</h3>
+        <div class="option" ref="option_one">
             <div class="portrait portrait-first"></div>
+            <span class="name">
+                {{creatorStore.statBlocks[0].Name}} <br/><br/>
+            </span>
             <div class="statblock statblock-first">
-                <span class="name">
-                    {{creatorStore.statBlocks[0].Name}} <br/><br/>
-                </span>
                 <span class="attribute">Verstand: </span>
                 <span class="value">{{creatorStore.statBlocks[0].Intellect}} </span>
                 <span class="attribute">Disziplin: </span>
@@ -74,12 +75,12 @@ onMounted(() => {
                 ✓
             </button>
         </div> 
-        <div class="option">
+        <div class="option" ref="option_two">
             <div class="portrait portrait-second"></div>
+            <span class="name">
+                {{creatorStore.statBlocks[1].Name}} <br/><br/>
+            </span>
             <div class="statblock statblock-second">
-                <span class="name">
-                    {{creatorStore.statBlocks[1].Name}} <br/><br/>
-                </span>
                 <span class="attribute">Verstand: </span>
                 <span class="value">{{creatorStore.statBlocks[1].Intellect}} </span>
                 <span class="attribute">Disziplin: </span> 
@@ -100,12 +101,12 @@ onMounted(() => {
                 ✓
             </button>
         </div>
-        <div class="option">
+        <div class="option" ref="option_three">
             <div class="portrait portrait-third"></div>
+            <span class="name">
+                {{creatorStore.statBlocks[2].Name}} <br/><br/>
+            </span>
             <div class="statblock statblock-third">
-                <span class="name">
-                    {{creatorStore.statBlocks[2].Name}} <br/><br/>
-                </span>
                 <span class="attribute">Verstand: </span>
                 <span class="value">{{creatorStore.statBlocks[2].Intellect}} </span>
                 <span class="attribute">Disziplin: </span>
@@ -140,6 +141,15 @@ onMounted(() => {
         background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%);
         user-select: none;
     }
+    h3 {
+        justify-self: center;
+        align-self: center;
+        line-height: 0%;
+        position: fixed;
+        top: 2%;
+        color: rgba(252, 205, 143, .5);
+        font-family: 'fondamento';
+    }
     .option {
         display: grid;
         padding-top: 15%;
@@ -147,7 +157,7 @@ onMounted(() => {
         padding-right: 5%;
         padding-bottom: 10%;
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1.5fr 3fr .5fr ;
+        grid-template-rows: 2fr .25fr 1.5fr 3fr .5fr ;
         text-shadow: 0rem 0rem 1rem black;
         /* height: 100%; */
     } 
@@ -169,43 +179,39 @@ onMounted(() => {
         background-image: url('Portrait_Leito.jpg');
     }.portrait-third {
         background-image: url('Portrait_Marsilio.jpg');
-    }
-    .statblock{
+    }.name{
         grid-row: 2;
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 1rem;
+        font-family: 'fondamento';
+        font-style: italic;
+        color: white;
+        flex-wrap: nowrap;
+        white-space: nowrap;}
+    .statblock{
+        grid-row: 3;
         display: grid;
-        grid-template-columns: 1fr 1fr .5fr .5fr 1fr;
+        grid-template-columns: 1fr .25fr .75fr;
         justify-self: center;
-        width: 100%;
+        width: 50%;
         /* max-width: 200px; */
         max-height: 10%;
         text-align: right;
         font-size: .8rem;
-    }.statblock-first{
-
-    }.statblock-second{
-
-    }.statblock-third{
-
-    }.name{
-        grid-column: 2/5;
-        margin-top: 1rem;
-        text-align: center;
-        font-size: 1rem;
-        font-style: italic;
-        color: white;
-        flex-wrap: nowrap;
-        white-space: nowrap;
-    }.attribute{
-        grid-column: 2;
+    }
+    .attribute{
+        grid-column: 1;
     }.value{
-        grid-column: 3;
-        padding-right: 20%;
+        grid-column: 2;
+        /* padding-right: 20%; */
         color: white;
         text-align: right;
         text-shadow: 0rem 0rem 1rem white;
     }
     .description{
-        grid-row: 3;
+        font-family: 'fondamento';
+        grid-row: 4;
         margin-top: 10%;
         /* max-height: 30%; */
         padding: 0% 5% 0% 5%;
@@ -213,12 +219,15 @@ onMounted(() => {
         overflow: auto;
         pointer-events: all;
         color: rgba(252, 205, 143, 0.5);
+        transition: all .15s;
+    } .description:hover {
+        color: rgb(252, 205, 143)
     }
     .button_select {
         position: fixed;
         justify-self: center;
         bottom: 1%;
-        grid-row: 4;
+        grid-row: 5;
         width: 70%;
         height: 7%;
         pointer-events: all;

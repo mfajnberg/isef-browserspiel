@@ -13,13 +13,14 @@ export class Ambience {
     this.music = new Howler.Howl({
         src: 'isef_ambience_1.mp3',
         loop: true,
-        volume: .1,
+        volume: .08,
         mute: false,
         preload: true
     })
   }
 }
 
+// this is more like a buffer of HexTileDTOs, actually......
 export class Sites {
   constructor() {
     if (_instanceSites) {

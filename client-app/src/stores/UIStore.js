@@ -18,6 +18,8 @@ export const useUIStore = defineStore('UIStore', {
         showingImprint: false,
         showingHome: true,
 
+        loadingAssets: false,
+
         nextUpdate: null // time object, compared in init loop
     }),
     getters: {
@@ -97,7 +99,7 @@ export const useUIStore = defineStore('UIStore', {
             header.style.background = "rgba(0,0,0,0)"
         },
 
-        async PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) {
+        async PlayNow(authStore, partyStore, worldStore, gameAssetStore, creatorStore) {
             // // DEBUG-------------------------------***
             // authStore.loginResponse = { status: 200 }
             // authStore.loggedIn = true
@@ -107,26 +109,42 @@ export const useUIStore = defineStore('UIStore', {
             // }
             // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
             if (authStore.loginResponse.status === 200) {
+                // fetch assets if not done already
+                if (!gameAssetStore.assetsLoaded) {
+                    this.loadingAssets = true
+                    for (let uri of gameAssetStore.modelURIs) {
+                        await gameAssetStore.loadAsset(uri, authStore)
+                    }
+                    gameAssetStore.assetsLoaded = true
+                    this.loadingAssets = false
+                }
+
+                // admin just logged in
                 if (authStore.userIsAdmin == true && !this.getShowingAdminPrompt) {
                     console.log("Admin status detected...")
                     this.showAdminPrompt()
                 }
+
+                // new player just logged in || new admin wants to play
                 else if (partyStore.avatar === null) {
                     console.log("No avatar yet...")
                     await requestGetChoices(authStore, creatorStore)
                     this.showAvatarCreator()
                 }
+
+                // existing player logged in or admin wants to play
                 else  {
                     if (!worldStore.initialized)
-                        await worldStore.ACTION(assetStore)
+                        await worldStore.ACTION(gameAssetStore)
                     if (!this.editorMode)
                         worldStore.preview = null
                         await requestGetHexTiles(authStore, worldStore)
                     
-                    this.showWorldmap(worldStore, assetStore)
+                    this.showWorldmap(worldStore, gameAssetStore)
                 }
             }
         },
+        
         setEditorMode(bool) { this.editorMode = bool}
     },
 })

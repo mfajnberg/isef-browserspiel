@@ -4,27 +4,21 @@ import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestWorldSave } from '../../services/EditorService'
-import { Sites, Sites3d } from '../../stores/000Singletons'
+import { Ambience, Sites, Sites3d } from '../../stores/000Singletons'
 import { useAuthStore } from '../../stores/AuthStore'
 import { usePartyStore } from '../../stores/PartyStore'
+import { loadSitePreview } from '../../threejs/ActorManager'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
     const worldStore = useWorldStore()
-    const assetStore = useGameAssetStore()
+    const gameAssetStore = useGameAssetStore()
     const partyStore = usePartyStore()
     const sites = new Sites()
     const sites3d = new Sites3d()
+    const ambience = new Ambience()
 
-    // const previewModelUrls = 
-    //     ['forest_1.glb', 'cliffs.glb', 'house.glb', 
-    //     'tent_field_camp.glb', 'crystals.glb', 
-    //     'chest_lp.glb', 'crystals.glb']
-    const previewModelUrls = 
-        ['forest_1.glb', 'forest_1.glb', 'forest_1.glb', 
-        'forest_1.glb', 'forest_1.glb', 
-        'forest_1.glb', 'forest_1.glb']
-    
     const portrait = ref(null)
     const slot_1 = ref(null);
     const slot_2 = ref(null);
@@ -36,6 +30,8 @@ import { usePartyStore } from '../../stores/PartyStore'
 
     const slots = [slot_1, slot_2, slot_3, slot_4, slot_5, slot_6, slot_7]
 
+    const loader = new GLTFLoader()
+
     let selected = [];
     function clickSlot(num) {
         if (uiStore.editorMode) {
@@ -46,8 +42,8 @@ import { usePartyStore } from '../../stores/PartyStore'
             }
             selected.push(slots[num])
             slots[num].value.style.borderColor = "rgb(252, 205, 143)"
-            worldStore.changedPreviewURL = true
-            worldStore.previewUrl = previewModelUrls[num]
+            worldStore.previewModelURI = gameAssetStore.modelURIs[num]
+            loadSitePreview(loader, worldStore, gameAssetStore)
         }
         else {
             if (selected.includes(num)) {
@@ -79,8 +75,8 @@ import { usePartyStore } from '../../stores/PartyStore'
 
         for (let slot of slots) {
             slot.value.addEventListener('pointerdown', (e) => {
-                if (e.button === 0) {
-                    assetStore.pointerDownSound.play()
+                if (e.button === 0 && uiStore.editorMode) {
+                    gameAssetStore.pointerDownSound.play()
                     slotPressed = slot
                     clickSlot(slots.indexOf(slot))
                 }
@@ -96,11 +92,17 @@ import { usePartyStore } from '../../stores/PartyStore'
         })
     })
 
-    function debug2() {
+    function debug1() {
         console.log(sites.buffer)
     }
-    function debug3() {
+    function debug2() {
         console.log(sites3d.buffer)
+    }
+    function muteMusic() {
+        ambience.music.mute(true)
+    }
+    function unmuteMusic() {
+        ambience.music.mute(false)
     }
 
 </script>
@@ -110,81 +112,122 @@ import { usePartyStore } from '../../stores/PartyStore'
     <div id="overlay">
         <div id="clock">{{uiStore.currentTime}}</div>
         <div id="slot_panel">
-            <div id="portrait" ref="portrait"></div>
+            <div id="portrait" ref="portrait" v-if="!uiStore.editorMode"></div>
             <div class="slot" ref="slot_1">
-                <span class="slot_text">
+                <span class="slot_text1" v-if="uiStore.editorMode">
+                    Wald
+                </span>                
+                <span class="slot_text2" v-if="!uiStore.editorMode">
                     {{1}}
                 </span>
             </div>
             <div class="slot" ref="slot_2">
-                <span class="slot_text">
+                <span class="slot_text1" v-if="uiStore.editorMode">
+                    Banner
+                </span>
+                <span class="slot_text2" v-if="!uiStore.editorMode">
                     {{2}}
                 </span>
             </div>
             <div class="slot" ref="slot_3">
-                <span class="slot_text">
+                <span class="slot_text1" v-if="uiStore.editorMode">
+                    Haus
+                </span>
+                <span class="slot_text2" v-if="!uiStore.editorMode">
                     {{3}}
                 </span>
             </div>
             <div class="slot" ref="slot_4">
-                <span class="slot_text">
+                <span class="slot_text1" v-if="uiStore.editorMode">
+                    Zelt
+                </span>
+                <span class="slot_text2" v-if="!uiStore.editorMode">
                     {{4}}
                 </span>
             </div>
             <div class="slot" ref="slot_5">
-                <span class="slot_text">
+                <span class="slot_text1" v-if="uiStore.editorMode">
+                    Kristall
+                </span>
+                <span class="slot_text2" v-if="!uiStore.editorMode">
                     {{5}}
                 </span>
             </div>
             <div class="slot" ref="slot_6">
-                <span class="slot_text">
+                <span class="slot_text1" v-if="uiStore.editorMode">
+                    Truhe
+                </span>
+                <span class="slot_text2" v-if="!uiStore.editorMode">
                     {{6}}
                 </span>
             </div>
             <div class="slot" ref="slot_7">
-                <span class="slot_text">
+                <span class="slot_text1" v-if="uiStore.editorMode">
+                    Baum
+                </span>
+                <span class="slot_text2" v-if="!uiStore.editorMode">
                     {{7}}
                 </span>
             </div>
         </div>
-        <div id="debug_panel" v-if="uiStore.editorMode === true && authStore.userIsAdmin === true">
+        <p class="slot_panel_info" v-if="uiStore.editorMode">Slot klicken, um eine platzierbare Stätte zu wählen.</p>
+        <div id="debug_panel">
             <!-- <button class="debug" @click="requestWorldSave(authStore)">Post Layout</button> -->
+            <button class="debug" @click="muteMusic">♪ Mute Music ♪</button>
+            <button class="debug" @click="unmuteMusic">♪ Unmute ♪</button>
+            <button class="debug" @click="debug1">debug sites</button>
+            <button class="debug" @click="debug2">debug sites3d</button>
             <button class="debug inactive" @click="">Post Layout</button>
-            <button class="debug" @click="debug2">(action 2)</button>
-            <button class="debug" @click="debug3">(action 3)</button>
-            <button class="debug">(action 4)</button>
         </div>
-        <div id="info_hex">{{worldStore.getHoveredName}}</div>
+        <div id="info_hex">
+            <div class="axial" v-if="worldStore.hoveredItem">
+                <label class="label_axial">
+                    Q: 
+                </label>
+                <span class="span_axial">{{worldStore.hoveredItem.userData.Q}}</span>
+                <label class="label_axial">
+                    R: 
+                </label>
+                <span class="span_axial">{{worldStore.hoveredItem.userData.R}}</span>
+            </div>
+            <p>Ziehen Sie die rechte Maustaste, um die Kamera zu bewegen.</p>
+        </div>
     </div>
 </template>
 
-
 <style scoped>
-
+p {
+    font-size: .8rem;
+    user-select: none;
+}
 #overlay {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 3fr 7fr 12fr 7fr 1fr ;
-    width: 100%;
+    width: 60rem;
+    max-width: 100%;
 }
-
 #clock {
     padding-top: 4vh;
     grid-row: 1;
-    grid-column: 4 / 6;
+    grid-column: 4/6;
     align-self:flex-start;
     justify-self: center;
 
     font-family: monospace;
     user-select: none;
 }
-
+.slot_panel_info {
+    position: absolute;
+    bottom: 0%;
+    /* left: 2vw; */
+}
 #slot_panel{
     display: flex;
     height: 130px;
     position: fixed;
     bottom: 5vh;
-    left: 2vw;
+    /* left: 2vw; */
     right: auto;
     font-style: italic;
     background-image: url('leather_texture.jpg');
@@ -212,7 +255,7 @@ import { usePartyStore } from '../../stores/PartyStore'
     width: 100px;
     height: 130px;
 
-    cursor: pointer;
+    /* cursor: pointer; */
     pointer-events: all;
     user-select: none;
 
@@ -228,8 +271,17 @@ import { usePartyStore } from '../../stores/PartyStore'
 } .slot:active {
     /* border-style: inset; */
     /* box-shadow: 10px 14px 16px -4px black inset; */
-    margin-top: 2px;
-}.slot_text{
+    /* margin-top: 2px; */
+}.slot_text1{
+    display: flex;
+    margin: auto;
+    margin-left: 3%;
+    margin-bottom: 0;
+    padding: 3px;
+    padding-right: 6px;
+    align-self: flex-end;
+    /* color: white; */
+}.slot_text2{
     display: flex;
     margin: auto;
     margin-right: 0;
@@ -247,10 +299,11 @@ import { usePartyStore } from '../../stores/PartyStore'
 } .debug {
     display: flex; /* for now */
     align-self: center;
-    margin: 15px;
+    /* margin: 15px; */
     padding-left: 15px;
     padding-right: 15px;
 
+    justify-content: center;
     pointer-events:all;
     cursor: pointer;
     user-select: none;
@@ -260,11 +313,24 @@ import { usePartyStore } from '../../stores/PartyStore'
 
 
 #info_hex {
-    position: fixed;
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+} .axial {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    position: absolute;
     right: 0%;
     bottom: 5vh;
-
-    user-select: none;
+    font-size: 1rem;
+    line-height: 1.2em;
+    width: 25%;
+    text-align: right;
+} .span_axial {
+    font-family: monospace;
 }
 
 </style>

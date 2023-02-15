@@ -27,12 +27,20 @@ async function clickEdit() {
     uiStore.showWorldmap(worldStore, assetStore)
 }
 
+async function clickPlay() {
+    uiStore.setEditorMode(false)
+    await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) 
+}
+
 function playSoundPointerDown() { assetStore.pointerDownSound.play() }
 function playSoundPointerUp(event) { if (event.button === 0) assetStore.pointerUpSound.play() }
 const button_edit = ref(null)
+const button_play = ref(null)
 onMounted(() => {
     button_edit.value.addEventListener('pointerdown', playSoundPointerDown);
+    button_play.value.addEventListener('pointerdown', playSoundPointerDown);
     button_edit.value.addEventListener('pointerup', playSoundPointerUp);  
+    button_play.value.addEventListener('pointerup', playSoundPointerUp);  
     document.addEventListener("mousedown", dragStart)
     document.addEventListener("mouseup", dragEnd)
     document.addEventListener("mousemove", drag)
@@ -50,7 +58,7 @@ function dragStart(e) {
     if (e.target === draggableElement.value) {
             initialX = e.clientX - xOffset
             initialY = e.clientY - yOffset
-            console.log(e.target)
+            // console.log(e.target)
             isDragging = true
     }
 }
@@ -75,29 +83,39 @@ function setTranslate(xPos, yPos, el) {
 
 <template>
     <div class="admin" ref="draggableElement">
-        Herzlich willkommen im Bereich für Admins!<br/><br/>
-        Bitte gib die gewünschten Koordinaten zum editieren ein. <br/><br/>
-        <span>
-            Q: <input v-model="qInput"/>
-        </span> <br/>
-        <span>
-            R: <input v-model="rInput"/>
-        </span> <br/>
-        <button ref="button_edit" @click="clickEdit()">Welt editieren</button>
+        <h3>Herzlich willkommen im Bereich für Admins!</h3>
+        <button ref="button_play" @click="clickPlay" class="button_play"> Als Spieler fortfahren </button>
+        <div class="world_edit_form">
+            <p>oder Koordinaten eingeben:</p>
+            <div>
+                <span>
+                    <label class="label_coordinate">Q</label><input class="input_coordinate" v-model="qInput"/>
+                </span>
+                <span>
+                    <label class="label_coordinate">R</label><input class="input_coordinate" v-model="rInput"/>
+                </span>
+            </div>
+        </div>
+        <button ref="button_edit" @click="clickEdit()" class="button_edit">und die Welt editieren</button>
     </div>
 </template>
 
 <style scoped>
 .admin {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 2fr 1fr 1fr;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2em;
+    /* padding: 2rem; */
+    width: 60rem;
+    max-width: 100%;
     
     position: absolute;
     z-index: 100;
     
+    font-size: .8rem;
     text-shadow: 0rem 0rem 1rem black;
     background-color: rgba(0, 0, 0, 0.832);
 
@@ -107,5 +125,47 @@ function setTranslate(xPos, yPos, el) {
     border-width: 1px;
 
     user-select: none;
+} 
+h3, p {
+    grid-column: span 3;
+}
+span {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+} 
+button {
+    font-size: 1rem;
+}
+.button_play {
+    grid-column: 1;
+    width: 12rem;
+    align-self: center;
+    justify-self: center;
+} 
+.world_edit_form {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+} .label_coordinate {
+    display: flex;
+    justify-content: center;
+    margin-left: .5rem;
+    color: white;
+} .input_coordinate {
+    display: flex;
+    margin-left: .5rem;
+    width: 4rem;
+    max-width: 10vw;
+    height: 1rem;
+    text-align: center;
+}
+.button_edit {
+    grid-column: 3;
+    grid-row: 2;
+    width: 12rem;
+    align-self: center;
+    justify-self: center;
 }
 </style>

@@ -79,7 +79,7 @@ import { Ambience } from '../stores/000Singletons.js'
         <button id="button_play" 
             @click="clickPlay" 
             ref="button_play"
-            v-show="!uiStore.showingAuthentication && !uiStore.showingWorldmap && !uiStore.showingAvatarCreator">
+            v-show="uiStore.showingHome || uiStore.showingImprint">
             Jetzt spielen
         </button>
 
