@@ -110,6 +110,28 @@ namespace web_api.GameModel.Worldmap
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal static List<HexTile> ValidatePath(DataContext context, List<HexTileDTO> path)
+        {
+            List<HexTile> result = new List<HexTile>();
+            foreach (var tile in path)
+            {
+                var dbTile = context.HexTiles.Where(h => h.AxialR == tile.AxialCoordinates.R
+                                        && h.AxialQ == tile.AxialCoordinates.Q).First();
 
+                if (dbTile == null)
+                    throw new Exception("ups, that was wrong");
+
+                if (!dbTile.CanBeTraveled())
+                    throw new Exception("tile cannot be reached");
+
+                result.Add(dbTile);
+            }
+            return result;
+        }
     }
 }

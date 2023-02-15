@@ -99,6 +99,19 @@ namespace web_api
             modelBuilder.Entity<OngoingGameplayInteraction>()
                 .HasDiscriminator<InteractionType>("Type")
                 .HasValue<TravelOGI>(InteractionType.Travel);
+
+            modelBuilder.Entity<OngoingGameplayInteraction>()
+                 .HasOne<Party>()
+                 .WithMany()
+                 .IsRequired()
+                 .HasForeignKey(o => o.PartyId);
+
+            modelBuilder.Entity<Party>()
+                .HasOne<OngoingGameplayInteraction>()
+                .WithMany()
+                .HasForeignKey(p => p.Action);
+                 
+
         }
     }
 }

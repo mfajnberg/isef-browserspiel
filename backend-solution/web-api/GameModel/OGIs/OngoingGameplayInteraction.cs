@@ -19,6 +19,11 @@ namespace web_api.GameModel.OGIs
         public int Id { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public int PartyId { get; set; }
+
+        /// <summary>
         /// gets or sets the Type of <c>OngoingGameplayInteraction</c> 
         /// </summary>
         public InteractionType Type { get; set; }

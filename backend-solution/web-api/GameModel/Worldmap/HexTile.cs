@@ -56,10 +56,24 @@ namespace web_api.GameModel.Worldmap
         [NotMapped]
         public HexTile Previous { get; internal set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public int TravelTime { get; internal set; } = 7;
 
         internal IEnumerable<HexTile> GetNeighbors()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        internal bool CanBeTraveled()
+        {
+            return !IsBlocked;
+            // ToDo: implement other traveling restrictions
         }
     }
 }

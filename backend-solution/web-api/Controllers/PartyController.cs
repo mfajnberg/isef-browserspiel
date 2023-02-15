@@ -8,6 +8,7 @@ using System.Security.Claims;
 using web_api.DTOs;
 using web_api.GameModel;
 using web_api.GameModel.Creatures;
+using web_api.GameModel.Items;
 using web_api.GameModel.OGIs;
 using web_api.GameModel.Worldmap;
 
@@ -89,9 +90,9 @@ namespace web_api.Controllers
         /// </summary>
         /// <response code="200">when the <c>TravelOGI</c> has been successfully scheduled</response>
         /// <response code="422">if any error occured while getting <c>Avatar</c>, <c>HexTile</c></response>
-        /// <param name="destination">the destionation of the current user travel</param>
+        /// <param name="path">the destionation of the current user travel</param>
         [HttpPost("travel")]
-        public async Task<ActionResult> TravelTo([FromBody] HexTileDTO destination )
+        public async Task<ActionResult> TravelTo([FromBody] List<HexTileDTO> path )
         {
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
@@ -100,20 +101,58 @@ namespace web_api.Controllers
             if (response != null) 
                 return response;
 
-            var destinationHex = _context.HexTiles.Where(h => h.AxialR == destination.AxialCoordinates.R 
-                                            && h.AxialQ == destination.AxialCoordinates.Q).FirstOrDefault();
-            if (destinationHex == null)
-                return UnprocessableEntity("Destination");
+            List<HexTile> hexTilesPath = null;
 
-            var party = _context.Parties.Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+            try
+            {
+                hexTilesPath = WorldManager.ValidatePath(_context, path);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Path validation failed: {ex.Message}");
+            }
 
-            await party.StartTravelingAsync(destinationHex, _context);
+            if (hexTilesPath != null)
+            {
+                var party = _context.Parties.Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+                if (party == null)
+                    UnprocessableEntity("Party");
 
-            TravelOGI travel = new TravelOGI();
-            travel.ScheduledAt = DateTime.Now;
-            travel.ScheduledFor = DateTime.Now.AddSeconds(7); // add rules to calculate travel time
-            _context.TravelOGIs.Add(travel);
-            await _context.SaveChangesAsync();
+                DateTime scheduleTimeAt = DateTime.Now;
+                DateTime scheduleTimeFor = DateTime.Now;
+
+                List<TravelOGI> newTravelOgis = new List<TravelOGI>();
+
+                for (int i = 0; i < hexTilesPath.Count; i++)
+                {
+                    TravelOGI travel = new TravelOGI();
+                    travel.Id = i + 1;
+                    travel.PartyId = party.Id;
+                    travel.AxialQ = hexTilesPath[i].AxialQ;
+                    travel.AxialR = hexTilesPath[i].AxialR;
+                    travel.ScheduledAt = scheduleTimeAt;
+
+                    scheduleTimeFor = scheduleTimeFor.AddSeconds(hexTilesPath[i].TravelTime);
+                    travel.ScheduledFor = scheduleTimeFor; // add rules to calculate travel time
+
+                    newTravelOgis.Add(travel);
+
+                }
+
+
+                 _context.TravelOGIs.AddRange(newTravelOgis);
+                 _context.SaveChanges();
+
+
+                await party.StartTravelingAsync(hexTilesPath[hexTilesPath.Count -1], _context);
+                
+
+            }
+           
+
+            
+
+            
 
             return Ok();
         }
