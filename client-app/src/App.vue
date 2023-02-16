@@ -74,7 +74,7 @@ import Overlay from './components/ingame/Overlay.vue'
                         <Authenticator/>
                     </div>
                     <div class="loading welcome_item" v-if="(uiStore.getShowingHome || uiStore.getShowingAuthentication) && uiStore.loadingAssets">
-                        <h3 class="heading_loading">Inhalte werden geladen</h3>
+                        <h3 class="heading_loading">Inhalte werden geladen...</h3>
                         <span class="text_transparent">{{uiStore.loadingProgress}}</span>
                     </div>
                 </div>

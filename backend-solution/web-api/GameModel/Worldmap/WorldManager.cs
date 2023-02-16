@@ -79,7 +79,7 @@ namespace web_api.GameModel.Worldmap
         /// <param name="RelativeZero">a <c>HexTileDTO</c> which represents the middle of the slice</param>
         /// <param name="radius">amount of rings that should be calculated</param>
         /// <returns></returns>
-        public static async Task<List<HexTile>> GetSliceAsync(DataContext context, HexTileDTO RelativeZero, int radius = 2)
+        public static async Task<List<HexTile>> GetSliceAsync(DataContext context, HexTileDTO RelativeZero, int radius = 3)
         {
             List<HexTile> result = new List<HexTile>();
             List<HexVector> gridVectors = HexVector.MakeGridVectors(radius);
@@ -117,7 +117,7 @@ namespace web_api.GameModel.Worldmap
         /// <returns></returns>
         internal static List<HexTile> ValidatePath(DataContext context, List<HexTileDTO> path)
         {
-            List<HexTile> result = new List<HexTile>();
+            List<HexTile> result = new();
             foreach (var tile in path)
             {
                 var dbTile = context.HexTiles.Where(h => h.AxialR == tile.AxialCoordinates.R

@@ -21,6 +21,7 @@ namespace web_api.GameModel.OGIs
         /// <summary>
         /// 
         /// </summary>
+        [ForeignKey("Party")]
         public int PartyId { get; set; }
 
         /// <summary>

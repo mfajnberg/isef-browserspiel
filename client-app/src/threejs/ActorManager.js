@@ -10,7 +10,7 @@ import { AnimationLoader } from 'three'
 export async function initActors(worldStore, gameAssetStore) {
     // dummy data
     // await worldStore.loadVisibleHexTiles()
-    const visible = Worldmap.makeHexGridVectors(2)
+    const visible = Worldmap.makeHexGridVectors(3)
     worldStore.worldmap = new Worldmap()
     
     const loader = new GLTFLoader()
@@ -40,13 +40,8 @@ export async function initActors(worldStore, gameAssetStore) {
         initHex(loader, worldStore, gameAssetStore, visible[i], i%3, hexTextures)
     }
 
-    loadCharacter(worldStore, gameAssetStore)
-
-    try {
-        loadSitePreview(loader, worldStore, null)
-    }
-    catch { }
-
+    if (!worldStore.character)
+        loadCharacter(worldStore, gameAssetStore)
 }
 
 function initHex(loader, worldStore, gameAssetStore, hexData, randomRotation, hexTextures) {
@@ -149,14 +144,14 @@ export function loadSitePreview(loader, worldStore, gameAssetStore) {
     loader.parse(model, '', (loadedObject => {
         loadedObject.scene.traverse((child) => {
             if (child.isMesh) {
-            child.castShadow = true
+            child.castShadow = false
             }
         })
         loadedObject.scene.visible = true
 
-        if (worldStore.preview != null) {
+        try {
             dispose(worldStore.preview)
-        }
+        } catch (e) {}
         
         worldStore.preview = loadedObject.scene
         worldStore.scene.add(loadedObject.scene)

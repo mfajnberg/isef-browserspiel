@@ -29,12 +29,17 @@ export async function requestGetWorldSliceAdmin(authStore, worldStore) {
             data.forEach(element => {
                 if (element.site){
                     if (element.site.type === 100) {
-                        worldStore.previewModelURI = 'forest_1.glb'
+                        worldStore.previewModelURI = "forest_1.glb"
                         spawnSite(loader, worldStore, useGameAssetStore(),
-                            new HexVector(element.Q, element.R))
+                            new HexVector(
+                                element.Q - worldStore.getAbsoluteZeroOffset.Q, 
+                                element.R - worldStore.getAbsoluteZeroOffset.R
+                            )
+                        )
                     }
                 }
             })
+            worldStore.previewModelURI = "HexPreview.glb"
         })
         .catch(error => { 
             // console.log(error) 

@@ -7,7 +7,7 @@ import { requestWorldSave } from '../../services/EditorService'
 import { Ambience, Sites, Sites3d } from '../../stores/000Singletons'
 import { useAuthStore } from '../../stores/AuthStore'
 import { usePartyStore } from '../../stores/PartyStore'
-import { loadSitePreview } from '../../threejs/ActorManager'
+import { dispose, loadSitePreview } from '../../threejs/ActorManager'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
     const uiStore = useUIStore()
@@ -105,6 +105,15 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
         document.addEventListener("mouseup", dragEnd)
         document.addEventListener("mousemove", drag)
         document.addEventListener("mouseleave", dragEnd)
+        document.addEventListener('keyup', (event) => {
+            if (event.key === "Escape") {
+                try {
+                    dispose(worldStore.preview)
+                } catch (error) { console.log(error) }
+                worldStore.previewModelURI = "HexPreview.glb",
+                loadSitePreview(new GLTFLoader(), worldStore, gameAssetStore)
+            }
+        })
     })
 
 const draggableElement = ref(null)
@@ -121,7 +130,7 @@ var yOffset = 0
         if (e.target === draggableElement.value) {
                 initialX = e.clientX - xOffset
                 initialY = e.clientY - yOffset
-                console.log(e.target)
+                // console.log(e.target)
                 isDragging = true
         }
     }

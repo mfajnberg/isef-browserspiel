@@ -22,9 +22,9 @@ async function clickEdit() {
     worldStore.ACTION(assetStore)
     worldStore.setAbsoluteZeroOffset(qInput, rInput)
     await requestGetWorldSliceAdmin(authStore, worldStore)
-    uiStore.editorMode = true
-    // await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
-    uiStore.showWorldmap(worldStore, assetStore)
+
+    uiStore.setEditorMode(true)
+    await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
 }
 
 async function clickPlay() {

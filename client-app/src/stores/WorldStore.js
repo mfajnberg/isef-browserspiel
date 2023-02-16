@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia' 
+import { requestGetWorldSliceAdmin } from '../services/EditorService'
 import { requestGetHexTiles } from '../services/WorldmapService'
-import { initActors, dispose } from '../threejs/ActorManager'
+import { initActors, dispose, playAnim } from '../threejs/ActorManager'
 import { Sites, Sites3d } from './000Singletons'
+import { useAuthStore } from './AuthStore'
+import { useGameAssetStore } from './GameAssetStore'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
@@ -80,6 +83,13 @@ export const useWorldStore = defineStore('WorldStore', {
                 dispose(obj3d)
             }
             sites3d.buffer = []
+        },
+        movePawn() {
+            console.log("doing stuff")
+            const gameAssetStore = useGameAssetStore()
+            requestGetWorldSliceAdmin(useAuthStore(), this)
+            playAnim(this, gameAssetStore, "Idle.fbx")
+            gameAssetStore.pointerUpSound.play()
         }
     },
 })

@@ -7,6 +7,7 @@ import { playAnim, spawnSite } from './ActorManager';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { HexVector } from '../classes/HexVector';
 import { Worldmap } from '../classes/Worldmap';
+import { useAuthStore } from '../stores/AuthStore';
 
 export function initCameraPawn(canvas, scene, worldStore) {
     const gameAssetStore = useGameAssetStore()
@@ -51,50 +52,49 @@ export function initCameraPawn(canvas, scene, worldStore) {
             console.log(`hex ${qHov}|${rHov} already occupied`)
             return
         }
-        gameAssetStore.placeObjectSound.play()
         spawnSite(glbLoader, worldStore, gameAssetStore, new HexVector(qHov, rHov))
+        gameAssetStore.placeObjectSound.play()
     })
 
     window.addEventListener('pointerdown', (e) => {
-        if (e.button === 0 && uiStore.showingWorldmap && worldStore.hoveredItem) {
-            if (uiStore.editorMode && worldStore.preview && worldStore.objectSnapped) {
-                placeActor()
-            }
+        if (e.button === 0 && uiStore.showingWorldmap && worldStore.hoveredItem && worldStore.objectSnapped) {
+            if (uiStore.editorMode && worldStore.previewModelURI != "HexPreview.glb") 
+                    placeActor()
+            
             else if (!uiStore.editorMode) {
-
-                // let path = Worldmap.findPathAStar(
-                //     worldStore.hexes3d.find(hex => 
-                //         hex.userData.Q === 0 && hex.userData.R === 0), worldStore.hoveredItem, worldStore)
-                // console.log(path)
-
                 const q = worldStore.hoveredItem.userData.Q
                 const r = worldStore.hoveredItem.userData.R
+                let closeBoi = false
                 if (q == 1 && r == 0) {
+                    closeBoi = true
                     worldStore.character.rotation.y = 0.523599 + (1.0472 * 7 )
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
                 }
                 else if (q == 0 && r == 1) {
+                    closeBoi = true
                     worldStore.character.rotation.y = 0.523599 + (1.0472 * 6 )
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
                 }
                 else if (q == -1 && r == 1) {
+                    closeBoi = true
                     worldStore.character.rotation.y = 0.523599 + (1.0472 * 5 )
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
                 }
                 else if (q == -1 && r == 0) {
+                    closeBoi = true
                     worldStore.character.rotation.y = 0.523599 + (1.0472 * 4 )
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
                 }
                 else if (q == 0 && r == -1) {
+                    closeBoi = true
                     worldStore.character.rotation.y = 0.523599 + (1.0472 * 3 )
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
                 }
                 else if (q == 1 && r == -1) {
+                    closeBoi = true
                     worldStore.character.rotation.y = 0.523599 + (1.0472 * 2 )
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
                 }
-                else {
-                    playAnim(worldStore, gameAssetStore, "Idle.fbx")
+                if (closeBoi) {
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                    gameAssetStore.placeObjectSound.play()
+                    worldStore.absoluteZeroOffset.Q += q
+                    worldStore.absoluteZeroOffset.R += r
+                    setTimeout(worldStore.movePawn, 3000)
                 }
             }
         }
@@ -126,8 +126,22 @@ export function initCameraPawn(canvas, scene, worldStore) {
                     worldStore.preview.visible = true
                     worldStore.objectSnapped = true
                 }
-            else {
+                else {
+                worldStore.preview.visible = false
                 worldStore.objectSnapped = false
+            }
+            
+            if (worldStore.hoveredItem.userData.Q == 0 && worldStore.hoveredItem.userData.R == 0) {
+                worldStore.preview.visible = false
+            } else {
+                const distance = Math.max(
+                    Math.abs(0 - worldStore.hoveredItem.userData.Q), 
+                    Math.abs(0 - worldStore.hoveredItem.userData.R), 
+                    Math.abs(0 + 0 - worldStore.hoveredItem.userData.Q - worldStore.hoveredItem.userData.R))
+    
+                if (!uiStore.editorMode && distance > 1) {
+                    worldStore.preview.visible = false
+                }
             }
         }
         else {

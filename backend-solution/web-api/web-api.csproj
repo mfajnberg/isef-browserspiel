@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20230215220323_party_ogi_relationship.cs" />
+    <Compile Remove="Migrations\20230215220323_party_ogi_relationship.Designer.cs" />
+    <Compile Remove="Migrations\20230215220921_party_ogi_relationship.cs" />
+    <Compile Remove="Migrations\20230215220921_party_ogi_relationship.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="appsettings.Development.json" />
   </ItemGroup>
 

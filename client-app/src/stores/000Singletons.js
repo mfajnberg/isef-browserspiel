@@ -14,7 +14,7 @@ export class Ambience {
         src: 'music.mp3',
         loop: true,
         volume: .12,
-        mute: false,
+        mute: true,
         preload: true
     })
   }

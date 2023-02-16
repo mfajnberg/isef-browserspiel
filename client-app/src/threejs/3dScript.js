@@ -39,6 +39,14 @@ export async function init(canvasDomId) {
     try {
       worldStore.animationMixer.update(clock.getDelta())
     } catch (e) {}
+
+    if (worldStore.preview) {
+      if (worldStore.previewModelURI == "HexPreview.glb") {
+        try {
+          worldStore.preview.rotation.y += .01
+        } catch (e) {console.log(e)}
+      }
+    }
     
     uiStore.updateClock()
     renderer.render(scene, crew.camera)

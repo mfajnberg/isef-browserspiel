@@ -10,11 +10,12 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
         hexPreview: null,
         
         modelURIs:
-            ['forest_1.glb', 'flag.glb', 'house.glb', 
-            'tent_field_camp.glb', 'crystals.glb', 
-            'chest_lp.glb', 'tree_ancient.glb'],        
-        // modelURIs:
-        //     [],
+            [
+                'forest_1.glb', 'flag.glb', 'house.glb', 'tent_field_camp.glb', 
+                    'crystals.glb', 'chest_lp.glb', 'tree_ancient.glb', 
+                'HexPreview.glb', 
+                'Arissa.fbx', 'Idle.fbx', 'Walking.fbx'
+            ],        
 
         pointerDownSound: new Howl({
             src: 'isef_pointer_down.mp3',
@@ -78,6 +79,9 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             })            
             .then(async (response) => await response.arrayBuffer())
             .then(arrayBuffer => {
+                this.assets3d.push({
+                    name: "HexPreview."
+                })
                 this.hexPreview = arrayBuffer
             })
         },

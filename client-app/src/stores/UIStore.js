@@ -89,7 +89,7 @@ export const useUIStore = defineStore('UIStore', {
             if (!ambience.music.playing()){
                 ambience.music.play()
             }
-            ambience.music.mute(false)
+            // ambience.music.mute(false)
         },
         showImprint() {
             this.showingHome = false
@@ -114,6 +114,7 @@ export const useUIStore = defineStore('UIStore', {
                 // fetch assets if not done already
                 if (!gameAssetStore.assetsLoaded) {
                     this.loadingAssets = true
+                    // if (localStorage.getItem("assets") == undefined) {
                     for (let uri of gameAssetStore.modelURIs) {
                         if (uri == "forest_1.glb")
                         this.loadingProgress = "Wälder aufforsten..."
@@ -128,13 +129,25 @@ export const useUIStore = defineStore('UIStore', {
                         else if (uri == "chest_lp.glb")
                         this.loadingProgress = "Schatztruhen vergraben..."
                         else if (uri == "tree_ancient.glb")
-                        this.loadingProgress = "Die alten Götter anbeten..."
+                        this.loadingProgress = "Die alten Götter nach Rat fragen..."
+                        else if (uri == "HexPreview.glb")
+                        this.loadingProgress = "Axiale Koordinatensysteme nachvollziehen..."
+                        else if (uri == "Arissa.fbx")
+                        this.loadingProgress = "Cape ausklopfen und ausschütteln..."
+                        else if (uri == "Walking.fbx")
+                        this.loadingProgress = "Draußen spazieren gehen..."
+                        else if (uri == "Idle.fbx")
+                        this.loadingProgress = "Ein Nickerchen machen..."
                         await gameAssetStore.fetchAsset(uri, authStore)
                     }
-                    await gameAssetStore.fetchAsset("Arissa.fbx", authStore)
-                    await gameAssetStore.fetchAsset("Idle.fbx", authStore)
-                    await gameAssetStore.fetchAsset("Walking.fbx", authStore)
-                    console.log(gameAssetStore.assets3d)
+                        // const fetchPromises = gameAssetStore.modelURIs.map(uri => 
+                        //     gameAssetStore.fetchAsset(uri, authStore))
+                        // await Promise.all(fetchPromises)
+                        // localStorage.setItem("assets", gameAssetStore.assets3d)
+                    // }
+                    // else {
+                    //     gameAssetStore.assets3d = localStorage.getItem("assets")
+                    // }
                     gameAssetStore.assetsLoaded = true
                     this.loadingAssets = false
                 }
@@ -151,14 +164,14 @@ export const useUIStore = defineStore('UIStore', {
                 }
 
                 // existing player logged in or admin wants to play
-                else  {
+                else {
                     if (!worldStore.initialized)
                         await worldStore.ACTION(gameAssetStore)
                     if (!this.editorMode) {
                         await requestGetHexTiles(authStore, worldStore)
-                        worldStore.previewModelURI = "HexPreview.glb"
-                        // loadSitePreview(new GLTFLoader(), worldStore, gameAssetStore)
                     }
+                    worldStore.previewModelURI = "HexPreview.glb",
+                    loadSitePreview(new GLTFLoader(), worldStore, gameAssetStore)
                     this.showWorldmap(worldStore, gameAssetStore)
                 }
             }

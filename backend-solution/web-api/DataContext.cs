@@ -94,24 +94,16 @@ namespace web_api
             // one Party can own more memebers
             modelBuilder.Entity<Party>()
                 .HasMany(p => p.Members);
+            modelBuilder.Entity<Party>()
+                .HasOne<OngoingGameplayInteraction>();
 
             // OGI has a reference to InteractionType enum 
             modelBuilder.Entity<OngoingGameplayInteraction>()
                 .HasDiscriminator<InteractionType>("Type")
                 .HasValue<TravelOGI>(InteractionType.Travel);
-
             modelBuilder.Entity<OngoingGameplayInteraction>()
-                 .HasOne<Party>()
-                 .WithMany()
-                 .IsRequired()
-                 .HasForeignKey(o => o.PartyId);
-
-            modelBuilder.Entity<Party>()
-                .HasOne<OngoingGameplayInteraction>()
-                .WithMany()
-                .HasForeignKey(p => p.Action);
-                 
-
+                .HasIndex(o => o.PartyId)
+                .IsUnique(false);
         }
     }
 }

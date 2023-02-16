@@ -60,7 +60,8 @@ namespace web_api.GameModel
         /// <summary>
         /// gets or sets the current OGI
         /// </summary>
-        public OngoingGameplayInteraction? Action { get; set; }
+        [ForeignKey("OGI")]
+        public int? ActionId { get; set; }
 
         /// <summary>
         /// set the given destination to the new destination of the party
