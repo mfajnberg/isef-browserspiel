@@ -8,16 +8,29 @@ import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useWorldStore } from '../stores/WorldStore';
 import { useCreatorStore } from '../stores/AvatarCreatorStore';
 import { Ambience } from '../stores/000Singletons.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { loadCharacter, loadHexCursor, loadSitePreview, spawnSite } from '../threejs/ActorManager';
+import { HexVector } from '../classes/HexVector';
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
     const partyStore = usePartyStore()
-    const assetStore = useGameAssetStore()
+    const gameAssetStore = useGameAssetStore()
     const worldStore = useWorldStore()
     const creatorStore = useCreatorStore()
     const ambience = new Ambience()
 
     async function clickPlay() {
+        if (uiStore.devMode) {
+            const loader = new GLTFLoader()
+            uiStore.showWorldmap(worldStore, gameAssetStore)
+            spawnSite(loader, worldStore, gameAssetStore, new HexVector(1,0),1)
+            loadCharacter(worldStore, gameAssetStore)
+            loadHexCursor(loader, worldStore, gameAssetStore)
+            loadSitePreview(loader, worldStore, gameAssetStore)
+            return
+        }
+
         if (authStore.loggedIn === false) {
             authStore.mailNotifSent = false
             authStore.regisFailed = false
@@ -26,7 +39,7 @@ import { Ambience } from '../stores/000Singletons.js'
         }
         else {
             uiStore.setEditorMode(false)
-            await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore) 
+            await uiStore.PlayNow(authStore, partyStore, worldStore, gameAssetStore, creatorStore) 
         }
     }
 
@@ -45,13 +58,37 @@ import { Ambience } from '../stores/000Singletons.js'
         authStore.updateValidation()
         ambience.music.mute(true)
     }
+    
+    var elem = document.documentElement
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen()
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen()
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen()
+            }
+            uiStore.fullscreen = true
+        }
+        else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen()
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen()
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen()
+            }
+            uiStore.fullscreen = false
+        }
+    }
 
     function playSoundPointerDown() {
-        assetStore.pointerDownSound.play()
+        gameAssetStore.pointerDownSound.play()
     }
     function playSoundPointerUp(event) {
         if (event.button === 0) {
-            assetStore.pointerUpSound.play()
+            gameAssetStore.pointerUpSound.play()
         }
     }
 
@@ -71,13 +108,7 @@ import { Ambience } from '../stores/000Singletons.js'
 <template>
     <div id="header">
     <div id="header_content" v-show="!uiStore.loadingAssets">
-        <button id="button_play" 
-            @click="clickPlay" 
-            ref="button_play"
-            v-show="uiStore.showingHome || uiStore.showingImprint">
-            Jetzt spielen
-        </button>
-
+        
         <button id="button_home" 
             @click="clickHome()"
             ref="button_home"
@@ -85,6 +116,19 @@ import { Ambience } from '../stores/000Singletons.js'
             Home
         </button>
 
+        <button 
+            @click="toggleFullscreen"
+            v-show="uiStore.showingWorldmap">
+            Toggle Fullscreen
+        </button>
+
+        <button id="button_play" 
+            @click="clickPlay" 
+            ref="button_play"
+            v-show="uiStore.showingHome || uiStore.showingImprint">
+            Jetzt spielen
+        </button>
+    
         <button id="button_logout" ref="button_logout" v-show="authStore.loggedIn" @click="clickLogout()">
             Ausloggen
         </button>

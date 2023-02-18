@@ -8,6 +8,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { HexVector } from '../classes/HexVector';
 import { Worldmap } from '../classes/Worldmap';
 import { useAuthStore } from '../stores/AuthStore';
+import { requestTravel } from '../services/WorldmapService';
+import { DateTime } from 'luxon';
 
 export function initCameraPawn(canvas, scene, worldStore) {
     const gameAssetStore = useGameAssetStore()
@@ -21,6 +23,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
 
     const _camera = new THREE.PerspectiveCamera
         (60, window.innerWidth / (window.innerHeight), 0.1, 20000)
+    worldStore.camera = _camera
     _camera.position.x = 0
     _camera.position.y = 10
     _camera.position.z = 14
@@ -58,10 +61,12 @@ export function initCameraPawn(canvas, scene, worldStore) {
 
     window.addEventListener('pointerdown', (e) => {
         if (e.button === 0 && uiStore.showingWorldmap && worldStore.hoveredItem && worldStore.objectSnapped) {
-            if (uiStore.editorMode && worldStore.previewModelURI != "HexPreview.glb") 
+            if (uiStore.editorMode 
+                && !uiStore.hoveringOverlay
+                && worldStore.previewModelURI != "HexPreview2.glb") 
                     placeActor()
             
-            else if (!uiStore.editorMode) {
+            else if (!uiStore.editorMode && !worldStore.traveling) {
                 const q = worldStore.hoveredItem.userData.Q
                 const r = worldStore.hoveredItem.userData.R
                 let closeBoi = false
@@ -90,11 +95,17 @@ export function initCameraPawn(canvas, scene, worldStore) {
                     worldStore.character.rotation.y = 0.523599 + (1.0472 * 2 )
                 }
                 if (closeBoi) {
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
                     gameAssetStore.placeObjectSound.play()
-                    worldStore.absoluteZeroOffset.Q += q
-                    worldStore.absoluteZeroOffset.R += r
-                    setTimeout(worldStore.movePawn, 3000)
+                    worldStore.absoluteZeroOffset.Q += q // ???
+                    worldStore.absoluteZeroOffset.R += r // ???
+                    requestTravel(useAuthStore(), worldStore)
+                    worldStore.traveling = true
+                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
+                    setTimeout(worldStore.movePawn, 5000)
+                    uiStore.nextUpdateTime = DateTime.local().plus({
+                            seconds: 5
+                        })
+                    
                 }
             }
         }
@@ -110,16 +121,17 @@ export function initCameraPawn(canvas, scene, worldStore) {
             let hex = intersects[0].object.parent
             let vec = new THREE.Vector3();
             const point = intersects[ 0 ].point;
-            if (worldStore.preview) {
-                worldStore.preview.position.set(point.x, point.y, point.z)
-                worldStore.preview.visible = true
-            }
+            // if (worldStore.preview && !worldStore.traveling) {
+            //     worldStore.preview.position.set(point.x, point.y, point.z)
+            //     worldStore.preview.visible = true
+            // }
             vec.setFromMatrixPosition(hex.matrixWorld)
             worldStore.cursor.visible = true
             worldStore.cursor.position.set(point.x, point.y, point.z)
             worldStore.hoveredItem = hex
 
             if (worldStore.preview 
+                && !worldStore.traveling
                 && !hex.userData.isBlocked
                 && vec.distanceTo(point) < .82) {
                     worldStore.preview.position.set(vec.x, vec.y, vec.z)

@@ -13,7 +13,7 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             [
                 'forest_1.glb', 'flag.glb', 'house.glb', 'tent_field_camp.glb', 
                     'crystals.glb', 'chest_lp.glb', 'tree_ancient.glb', 
-                'HexPreview.glb', 
+                'HexPreview.glb', 'HexPreview2.glb', 'HexCursor.glb',
                 'Arissa.fbx', 'Idle.fbx', 'Walking.fbx'
             ],        
 
@@ -56,35 +56,6 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
                 this.hexModel = arrayBuffer
             })
         },
-        async loadHexCursor() {
-            await fetch("HexCursor.glb", {
-                headers: {
-                    // Authorization: `Bearer ${localStorage.getItem(token)}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })            
-            .then(async (response) => await response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.hexCursor = arrayBuffer
-            })
-        },        
-        async loadHexPreview() {
-            await fetch("HexPreview.glb", {
-                headers: {
-                    // Authorization: `Bearer ${localStorage.getItem(token)}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })            
-            .then(async (response) => await response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.assets3d.push({
-                    name: "HexPreview."
-                })
-                this.hexPreview = arrayBuffer
-            })
-        },
         async fetchAsset(uri, authStore) {
             await fetch(`api/asset/get?name=${uri}`, {
                 headers: {
@@ -93,7 +64,8 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
                     "Content-Type": "application/octet-stream"
                 }
             })
-            .then(async (response) => await response.arrayBuffer())
+            .then(async (response) => 
+                await response.arrayBuffer())
             .then(arrayBuffer => {
                 this.assets3d.push({
                     name: uri, data: arrayBuffer

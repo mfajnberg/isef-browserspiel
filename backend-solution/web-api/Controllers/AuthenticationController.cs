@@ -129,7 +129,10 @@ namespace web_api.Controllers
         public async Task<ActionResult<string>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            var user = _context.Users.Where(u => u.RefreshToken == refreshToken).FirstOrDefault();
+            var user = _context.Users.Where(u => u.RefreshToken == refreshToken)
+                .Include(u => u.Avatar)
+                    .FirstOrDefault();
+
             if (user == null || user.TokenExpires < DateTime.Now)
                 return Unauthorized("Invalid Refresh Token.");
 

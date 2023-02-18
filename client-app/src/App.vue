@@ -94,7 +94,7 @@ import Overlay from './components/ingame/Overlay.vue'
             <Overlay id="overlay" v-if="uiStore.getShowingWorldmap"/>
             <Imprint v-if="uiStore.getShowingImprint"/>
         </div>
-        <Footer/>
+        <Footer v-if="!uiStore.showingWorldmap"/>
     </div>
 </template>
 
@@ -105,9 +105,12 @@ import Overlay from './components/ingame/Overlay.vue'
     justify-content: center;
     position: fixed;
     height: 100vh;
+    height: 100svh;
     width: 100vw;
+    width: 100svw;
     left: 0;
     top: 0;
+    overflow: auto;
 
     background-image: url("twilight_aegis.jpg");
         background-repeat: no-repeat;
@@ -260,6 +263,7 @@ import Overlay from './components/ingame/Overlay.vue'
     align-self: flex-start;
     justify-content: center;
     font-family: 'Fondamento';
+    max-width: 100vw;
     } .text_transparent {
         grid-row: 3;
         display: flex;

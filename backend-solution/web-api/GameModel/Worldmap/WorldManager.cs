@@ -27,7 +27,8 @@ namespace web_api.GameModel.Worldmap
                     Site = CreateSite(item.SiteType)
                     
                 };
-                if ((int)item.SiteType > 100 && (int)item.SiteType < 200)
+                if ((int)item.SiteType > 100)
+                //if ((int)item.SiteType > 100 && (int)item.SiteType < 200)
                     hexTile.IsBlocked = true;
 
                 var dbHexTile = context.HexTiles.Where(h => h.AxialQ == hexTile.AxialQ && h.AxialR == hexTile.AxialR).FirstOrDefault();
@@ -38,6 +39,8 @@ namespace web_api.GameModel.Worldmap
                 else
                 {
                     // Todo: replace empty hextiles
+                    dbHexTile.Site = hexTile.Site;
+                    dbHexTile.IsBlocked = hexTile.IsBlocked;
                 }
  
             }
@@ -66,6 +69,27 @@ namespace web_api.GameModel.Worldmap
 
                 case SiteType.Interactive:
                     return new SiteInteractive();
+
+                case SiteType.Forest:
+                    return new Forest();
+
+                case SiteType.Banner:
+                    return new Banner();
+
+                case SiteType.Camp:
+                    return new Camp();
+
+                case SiteType.House:
+                    return new House();
+
+                case SiteType.Chest:
+                    return new Chest();
+
+                case SiteType.Crystal:
+                    return new Crystal();
+
+                case SiteType.AncientTree:
+                    return new AncientTree();
 
             }
 

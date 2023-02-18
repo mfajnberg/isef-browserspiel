@@ -17,20 +17,23 @@ export const useWorldStore = defineStore('WorldStore', {
         },
         
         scene: null,
+        camera: null,
         hexes3d: [],
         sites3d: [],
-        cursor: null,
+        character: null,
+        
         objectSnapped: false,
-        preview: null,
-        previewModelURI: "",
         hoveredItem: null,
+        preview: null,
+        cursor: null,
         
-        moveArrows: [],
-        
+        previewModelURI: "",
+
         response: null,
 
-        character: null,
         animationMixer: null,
+
+        traveling: false
     }),
     getters: {
         getScene: (state) => state.scene,
@@ -65,29 +68,27 @@ export const useWorldStore = defineStore('WorldStore', {
         },
         disposeAll() {
             const sites3d = new Sites3d()
-            const sites = new Sites()
             for (let obj3d of sites3d.buffer) {
                 for (let hex of this.hexes3d) {
                     if (hex.userData.Q === obj3d.userData.hexVector.Q &&
                         hex.userData.R === obj3d.userData.hexVector.R) {
                             hex.userData.isBlocked = false
+                        }
                     }
+                    obj3d.userData.hexVector = null
+                    dispose(obj3d)
                 }
-                for (let site of sites.buffer) {
-                    if (site.AxialCoordinates.Q === obj3d.userData.hexVector.Q &&
-                        site.AxialCoordinates.R === obj3d.userData.hexVector.R) {
-                            site.SiteType = 0
-                    }
-                }
-                obj3d.userData.hexVector = null
-                dispose(obj3d)
-            }
             sites3d.buffer = []
+            
+            const sites = new Sites()
+            for (let site of sites.buffer) {
+                        site.SiteType = 0
+            }
         },
-        movePawn() {
-            console.log("doing stuff")
+        async movePawn() {
+            this.traveling = false
             const gameAssetStore = useGameAssetStore()
-            requestGetWorldSliceAdmin(useAuthStore(), this)
+            await requestGetHexTiles(useAuthStore(), this)
             playAnim(this, gameAssetStore, "Idle.fbx")
             gameAssetStore.pointerUpSound.play()
         }

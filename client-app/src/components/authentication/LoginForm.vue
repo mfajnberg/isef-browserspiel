@@ -7,6 +7,9 @@ import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestLogin } from '../../services/AuthService'
 import { useWorldStore } from '../../stores/WorldStore';
 import { useCreatorStore } from '../../stores/AvatarCreatorStore';
+import { spawnSite, loadCharacter, loadHexCursor } from '../../threejs/ActorManager';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { HexVector } from '../../classes/HexVector';
 
 const uiStore = useUIStore()
 const authStore = useAuthStore()
@@ -28,7 +31,6 @@ async function LogInEnter() {
 
 async function LogIn() {
     await requestLogin(authStore, partyStore)
-    // if (true) {
     if (authStore.loginResponse.ok) {
         authStore.loginFailed = false
         await uiStore.PlayNow(authStore, partyStore, worldStore, gameAssetStore, creatorStore)

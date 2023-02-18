@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia' 
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { Ambience } from './000Singletons.js'
 import { requestGetChoices } from '../services/AvatarCreatorService'
 import { requestGetHexTiles } from '../services/WorldmapService'
@@ -10,6 +10,7 @@ export const useUIStore = defineStore('UIStore', {
     id: 'UIStore',
     state: () => ({
         editorMode: false,
+        hoveringOverlay: false,
         
         currentTime: "",
 
@@ -20,10 +21,17 @@ export const useUIStore = defineStore('UIStore', {
         showingImprint: false,
         showingHome: true,
 
+        fullscreen: false,
+
         loadingAssets: false,
         loadingProgress: "",
 
-        nextUpdate: null // time object, compared in init loop
+        nextUpdateTime: null, // time object, compared in init loop
+        nextUpdateTimeDiff: null,
+        displayNextUpdateTime: null,
+
+
+        devMode: false
     }),
     getters: {
         getShowingAuthentication: (state) => state.showingAuthentication,
@@ -37,6 +45,18 @@ export const useUIStore = defineStore('UIStore', {
     actions: {
         updateClock() {
             this.currentTime = DateTime.local().toLocaleString(DateTime.TIME_24_WITH_SECONDS)
+        },
+        updateCountdown() {
+            try {
+                this.displayNextUpdateTime = this.nextUpdateTime
+                    .diff(DateTime.local()).toFormat('hh:mm:ss')
+
+                // this.displayNextUpdateTime = Duration
+                //     .fromObject(nextUpdateTimeDiff)
+                //     .toFormat('hh:mm:ss')
+            } catch (e) {
+                console.log(e)
+            }
         },
         showHome() {
             this.showingHome = true
@@ -106,10 +126,10 @@ export const useUIStore = defineStore('UIStore', {
             // // DEBUG-------------------------------***
             // authStore.loginResponse = { status: 200 }
             // authStore.loggedIn = true
+            // partyStore.avatar = { name: "Marsilio Mirandola" }
+            // this.showingWorldmap = true
+            // return
             // authStore.userIsAdmin = true
-            // partyStore.avatar = {
-            //     name: "Marsilio Mirandola"
-            // }
             if (authStore.loginResponse.status === 200) {
                 // fetch assets if not done already
                 if (!gameAssetStore.assetsLoaded) {
@@ -123,15 +143,19 @@ export const useUIStore = defineStore('UIStore', {
                         else if (uri == "house.glb")
                         this.loadingProgress = "Siedlerhöfe möblieren..."
                         else if (uri == "tent_field_camp.glb")
-                        this.loadingProgress = "Heringe für die Zelte besorgen..."
+                        this.loadingProgress = "Heringe für die Zelte fangen..."
                         else if (uri == "crystals.glb")
                         this.loadingProgress = "Mineralien aus Erathia importieren..."
                         else if (uri == "chest_lp.glb")
                         this.loadingProgress = "Schatztruhen vergraben..."
                         else if (uri == "tree_ancient.glb")
-                        this.loadingProgress = "Die alten Götter nach Rat fragen..."
+                        this.loadingProgress = "Die alten Götter um Rat bitten..."
                         else if (uri == "HexPreview.glb")
                         this.loadingProgress = "Axiale Koordinatensysteme nachvollziehen..."
+                        else if (uri == "HexPreview2.glb")
+                        this.loadingProgress = "Weltherrschaftspläne aushacken..."
+                        else if (uri == "HexCursor.glb")
+                        this.loadingProgress = "Algorithmische Komplexität unterschätzen..."
                         else if (uri == "Arissa.fbx")
                         this.loadingProgress = "Cape ausklopfen und ausschütteln..."
                         else if (uri == "Walking.fbx")
@@ -168,9 +192,20 @@ export const useUIStore = defineStore('UIStore', {
                     if (!worldStore.initialized)
                         await worldStore.ACTION(gameAssetStore)
                     if (!this.editorMode) {
+                        worldStore.setAbsoluteZeroOffset(
+                            authStore.loginResponseData.party.location.Q,
+                            authStore.loginResponseData.party.location.R
+                        )
                         await requestGetHexTiles(authStore, worldStore)
+                        try {
+                            worldStore.character.visible = true
+                        } catch (e) { }
+                    } else { 
+                        try {
+                            worldStore.character.visible = false
+                        } catch (e) { }
                     }
-                    worldStore.previewModelURI = "HexPreview.glb",
+                    worldStore.previewModelURI = "HexPreview2.glb",
                     loadSitePreview(new GLTFLoader(), worldStore, gameAssetStore)
                     this.showWorldmap(worldStore, gameAssetStore)
                 }

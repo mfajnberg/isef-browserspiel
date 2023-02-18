@@ -44,7 +44,10 @@ namespace web_api.DTOs
             response.Avatar = user.Avatar;
             Party? userParty;
             if (user.Avatar != null)
-                userParty = context.Parties.Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+            {
+                userParty = context.Parties.Include(p => p.Location).Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
+                response.Party = userParty;
+            }
             response.IsAdmin = user.IsAdmin;
 
             return response;

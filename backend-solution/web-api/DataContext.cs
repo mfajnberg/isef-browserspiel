@@ -89,7 +89,14 @@ namespace web_api
                 .HasDiscriminator<SiteType>("Type")
                 .HasValue<SiteBase>(SiteType.Empty)
                 .HasValue<SiteObstacle>(SiteType.Obstacle)
-                .HasValue<SiteInteractive>(SiteType.Interactive);
+                .HasValue<SiteInteractive>(SiteType.Interactive)
+                .HasValue<Forest>(SiteType.Forest)
+                .HasValue<Banner>(SiteType.Banner)
+                .HasValue<Camp>(SiteType.Camp)
+                .HasValue<House>(SiteType.House)
+                .HasValue<Chest>(SiteType.Chest)
+                .HasValue<Crystal>(SiteType.Crystal)
+                .HasValue<AncientTree>(SiteType.AncientTree);
 
             // one Party can own more memebers
             modelBuilder.Entity<Party>()

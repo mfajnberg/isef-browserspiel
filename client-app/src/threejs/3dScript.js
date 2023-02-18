@@ -34,24 +34,29 @@ export async function init(canvasDomId) {
   // cameraFolder.add(crew.camera.position, 'y', -400, 400)
   // cameraFolder.add(crew.camera.position, 'z', -400, 400)
   // document.getElementById("3js_gui").appendChild(_gui.domElement)
+
   const clock = new THREE.Clock()
+
   function run() {
-    try {
-      worldStore.animationMixer.update(clock.getDelta())
-    } catch (e) {}
-
-    if (worldStore.preview) {
-      if (worldStore.previewModelURI == "HexPreview.glb") {
-        try {
-          worldStore.preview.rotation.y += .01
-        } catch (e) {console.log(e)}
+    if (uiStore.showingWorldmap) {
+      try {
+        worldStore.animationMixer.update(clock.getDelta())
+      } catch (error) { 
+        // console.(error) 
       }
+      try {
+        worldStore.preview.rotation.y += .01
+      } catch (error) { 
+        // console.log(error) 
+      }
+      if (worldStore.traveling)
+        uiStore.updateCountdown()
     }
-    
     uiStore.updateClock()
-    renderer.render(scene, crew.camera)
 
+    renderer.render(scene, crew.camera)
     requestAnimationFrame(run)
   }
+
   run()
 }

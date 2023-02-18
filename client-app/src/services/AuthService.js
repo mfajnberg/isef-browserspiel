@@ -1,3 +1,5 @@
+import { useWorldStore } from "../stores/WorldStore"
+
 export async function requestTokenRefresh(authStore, partyStore) {
     const options = {
         method: 'POST',
@@ -11,17 +13,19 @@ export async function requestTokenRefresh(authStore, partyStore) {
             authStore.loginResponse = response
             if (!response.ok) {
                 console.log(response.text())
-                // DISPLAY ERROR MSG IN UI!!!
             }
             else { 
-                const authResponseDTO = await response.json()
-                authStore.token = authResponseDTO.accessToken
-                console.log(authStore.token)
-                authStore.userIsAdmin = authResponseDTO.isAdmin
-                partyStore.avatar = authResponseDTO.avatar
+                authStore.loginResponseData = await response.json()
+                authStore.token = authStore.loginResponseData.accessToken
+                authStore.userIsAdmin = authStore.loginResponseData.isAdmin
+                partyStore.avatar = authStore.loginResponseData.avatar
                 if (authStore.stayLoggedIn)
                     localStorage.setItem('token', authStore.token)
                 authStore.loggedIn = true
+                useWorldStore().setAbsoluteZeroOffset(
+                    authStore.loginResponseData.party.location.Q,
+                    authStore.loginResponseData.party.location.R
+                )
             }
         })
 }
@@ -43,17 +47,20 @@ export async function requestLogin(authStore, partyStore) {
             authStore.loginResponse = response
             if (!response.ok) {
                 console.log(response.text())
-                // DISPLAY ERROR MSG IN UI!!!
             }
             else { 
-                const authResponseDTO = await response.json()
-                authStore.token = authResponseDTO.accessToken
-                authStore.userIsAdmin = authResponseDTO.isAdmin
-                partyStore.avatar = authResponseDTO.avatar
+                authStore.loginResponseData = await response.json()
+                authStore.token = authStore.loginResponseData.accessToken
+                authStore.userIsAdmin = authStore.loginResponseData.isAdmin
+                partyStore.avatar = authStore.loginResponseData.avatar
                 if (authStore.stayLoggedIn) {
                     localStorage.setItem('token', authStore.token)
                 }
                 authStore.loggedIn = true
+                useWorldStore().setAbsoluteZeroOffset(
+                    authStore.loginResponseData.party.location.Q,
+                    authStore.loginResponseData.party.location.R
+                )
             }
         })
 }

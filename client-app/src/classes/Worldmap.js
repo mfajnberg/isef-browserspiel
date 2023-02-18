@@ -122,4 +122,44 @@ export class Worldmap {
         }
         return result
     }
+
+}
+
+export function siteTypeToURI(code) {
+    switch (code) {
+        case 101:
+            return "forest_1.glb"
+        case 201:
+            return "flag.glb"
+        case 202:
+            return "house.glb"
+        case 203:
+            return "tent_field_camp.glb"
+        case 204:
+            return "crystals.glb"
+        case 205:
+            return "chest_lp.glb"
+        case 206:
+            return "tree_ancient.glb"
+
+    }
+}
+export function URIToSiteType(URI) {
+    switch (URI) {
+        case "forest_1.glb":
+            return 101
+        case "flag.glb":
+            return 201
+        case "house.glb":
+            return 202
+        case "tent_field_camp.glb":
+            return 203
+        case "crystals.glb":
+            return 204
+        case "chest_lp.glb":
+            return 205
+        case "tree_ancient.glb":
+            return 206
+
+    }
 }

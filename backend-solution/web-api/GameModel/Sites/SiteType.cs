@@ -18,12 +18,19 @@
         /// <summary>
         /// represents a HexTile with Cluster of Trees as Obstacle
         /// </summary>
-        TreeCluster1 = 101,
+        Forest = 101,
 
         /// <summary>
         /// represens a interactive HexTile
         /// </summary>
         Interactive = 200,
+
+        Banner = 201,
+        Camp = 202,
+        House = 203,
+        Chest = 204,
+        Crystal = 205,
+        AncientTree = 206,
 
         /// <summary>
         /// 
