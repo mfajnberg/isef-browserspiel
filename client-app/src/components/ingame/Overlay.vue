@@ -4,21 +4,20 @@ import { useUIStore } from '../../stores/UIStore.js'
 import { useWorldStore } from '../../stores/WorldStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore'
 import { requestWorldSave } from '../../services/EditorService'
-import { Ambience, Sites, Sites3d } from '../../stores/000Singletons'
+import { Ambience,TileDTOs, Sites3d } from '../../stores/000Singletons'
 import { useAuthStore } from '../../stores/AuthStore'
 import { usePartyStore } from '../../stores/PartyStore'
-import { dispose, loadSitePreview, loadCharacter } from '../../threejs/ActorManager'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { dispose, loadSitePreview, loadPawn3d } from '../../threejs/ActorManager'
+import { HexVector } from '../../classes/HexVector'
 
 const uiStore = useUIStore()
 const authStore = useAuthStore()
 const worldStore = useWorldStore()
 const gameAssetStore = useGameAssetStore()
 const partyStore = usePartyStore()
-const sites = new Sites()
+const sites = new TileDTOs()
 const sites3d = new Sites3d()
 const ambience = new Ambience()
-const loader = new GLTFLoader()
 
 const portrait = ref(null)
 const slot_1 = ref(null);
@@ -36,18 +35,16 @@ function clickSlot(num) {
     if (uiStore.editorMode) {
         if (selected.length != 0) {
             selected[0].value.style.borderColor = "rgba(133, 113, 86, 0)"
-            // selected[0].value.style.borderStyle = "groove"
             selected.pop()
         }
         selected.push(slots[num])
         slots[num].value.style.borderColor = "rgb(252, 205, 143)"
         worldStore.previewModelURI = gameAssetStore.modelURIs[num]
-        loadSitePreview(loader, worldStore, gameAssetStore)
+        loadSitePreview(worldStore)
     }
     else {
         if (selected.includes(num)) {
             slots[num].value.style.borderColor = "rgba(133, 113, 86, 0)"
-            // selected[0].value.style.borderStyle = "groove"
             for (var i = 0; i < selected.length; i++) {
                 if (selected[i] === num) {
                     selected.splice(i, 1)
@@ -68,15 +65,20 @@ function debug2() {
     console.log(sites3d.buffer)
 }
 function debug3() {
-    console.log(slot_1.value)
+    if (uiStore.editorMode) {
+        worldStore.setCameraPosition(
+            worldStore.editingAt.getWorldXFromAxialQ(),
+            worldStore.editingAt.getWorldZFromAxialR()
+        )
+    }
 }
-function muteMusic() {
-    ambience.music.mute(true)
-    console.log(ambience.music.playing)
-}
-function unmuteMusic() {
-    ambience.music.mute(false)
-    console.log(ambience.music.playing)
+
+function toggleMusic() {
+    if (ambience.music.mute())
+        ambience.music.mute(false)
+    else {
+        ambience.music.mute(true)
+    }
 }
 function postLayout() {
     if (uiStore.editorMode)
@@ -84,31 +86,36 @@ function postLayout() {
 }
 
 function cancelPlacement() {
-    if (worldStore.previewModelURI != "HexPreview2.glb") {
-        try {
-            dispose(worldStore.preview)
-        } catch (error) { console.log(error) }
-        worldStore.previewModelURI = "HexPreview2.glb"
-        loadSitePreview(new GLTFLoader(), worldStore, gameAssetStore)
-        if (selected.length != 0) {
-            selected[0].value.style.borderColor = "rgba(133, 113, 86, 0)"
-            selected.pop()
-        }
-        worldStore.preview.visible = false
-        console.log(worldStore.preview.visible)
+    if (worldStore.previewModelURI != "HexPreview2.glb" 
+        && !worldStore.orbit.isUserInteracting) {
+            try {
+                dispose(worldStore.preview)
+            } catch (error) { 
+                console.log(error) 
+            }
+
+            worldStore.previewModelURI = "HexPreview2.glb"
+            loadSitePreview(worldStore)
+            if (selected.length != 0) {
+                selected[0].value.style.borderColor = "rgba(133, 113, 86, 0)"
+                selected.pop()
+            }
+            worldStore.preview.visible = false
     }
 }
 
 async function setupComponent() {
     await nextTick()
-
+    if (!uiStore.devMode) {} else {
+        partyStore.avatar = { name: "Leito Froste" }
+    }
     try {
         if (partyStore.avatar.name === "Eliana Dawnbreak")
-            portrait.value.style.backgroundImage = "url('assets/Portrait_Eliana.jpg')"
+            portrait.value.style.backgroundImage = "url('Portrait_Eliana.jpg')"
         if (partyStore.avatar.name === "Leito Froste")
-            portrait.value.style.backgroundImage = "url('assets/Portrait_Leito.jpg')"
+            portrait.value.style.backgroundImage = "url('Portrait_Leito.jpg')"
         if (partyStore.avatar.name === "Marsilio Mirandola")
-            portrait.value.style.backgroundImage = "url('assets/Portrait_Marsilio.jpg')"
+            portrait.value.style.backgroundImage = "url('Portrait_Marsilio.jpg')"
     } catch (e) {
         console.log(e)
     }
@@ -119,17 +126,15 @@ async function setupComponent() {
     document.addEventListener("mouseleave", dragEnd)
 
     if (uiStore.editorMode) {
-        document.addEventListener('contextmenu', (event) => { 
-            cancelPlacement() 
+        document.addEventListener('contextmenu', () => { 
+            // cancelPlacement() 
         })
         document.addEventListener('keyup', (event) => {
             const key = event.key
             if (key == "Escape" || key == "Backspace" || key == "Delete")
                 cancelPlacement()
         })
-    }
-        
-    if (uiStore.editorMode) {
+
         for (let slot of slots) {
             slot.value.addEventListener('pointerdown', (e) => {
                 if (e.button === 0 && uiStore.editorMode) {
@@ -139,12 +144,22 @@ async function setupComponent() {
                 }
             })
         }
+        debug3()
     }
+    else {
+        let partyPos = new HexVector(partyStore.party.location.Q, partyStore.party.location.R)
+        let partyPosX = partyPos.getWorldXFromAxialQ()
+        let partyPosZ = partyPos.getWorldZFromAxialR()
+        worldStore.setCameraPosition(partyPosX, partyPosZ)
 
-    if (!uiStore.editorMode && !worldStore.character)
-        loadCharacter(worldStore, gameAssetStore)
+        if (!partyStore.pawn3d)
+            loadPawn3d()
+        else {
+            partyStore.pawn3d.position.x = partyPosX
+            partyStore.pawn3d.position.z = partyPosZ
+        }
+    }   
 }
-
 onMounted(() => {
     console.log("Mounting overlay...")
     setupComponent()
@@ -194,7 +209,7 @@ function setTranslate(xPos, yPos, el) {
             <span>
                 {{ uiStore.currentTime }}
             </span>
-            <span class="countdown" v-if="worldStore.traveling">
+            <span class="countdown" v-if="partyStore.traveling">
                 {{ uiStore.displayNextUpdateTime }}
             </span>
         </div>
@@ -262,17 +277,16 @@ function setTranslate(xPos, yPos, el) {
                 Slot klicken, um ein Objekt zum Platzieren auszuwählen.
             </span>
             <span class="strong" v-if="worldStore.previewModelURI != 'HexPreview2.glb'">
-                (Rechtsklick zum abbrechen)
+                (Escape/Backspace/Delete zum abbrechen)
             </span>
         </p>
         <div class="debug_panel" ref="draggableElement" @mouseover="uiStore.hoveringOverlay = true"
             @mouseleave="uiStore.hoveringOverlay = false">
             ***
-            <button class="debug" @click="muteMusic">♪ Mute Music ♪</button>
-            <button class="debug" @click="unmuteMusic">♪ Unmute ♪</button>
+            <button class="debug" @click="toggleMusic">♪ Toggle Music ♪</button>
             <button class="debug" @click="debug1">debug sites</button>
             <button class="debug" @click="debug2">debug sites3d</button>
-            <button class="debug" @click="debug3">debug overlay1</button>
+            <button class="debug" @click="debug3">debug camera</button>
             <button class="debug" v-if="uiStore.editorMode" @click="postLayout">Post Layout</button>
         </div>
         <div id="info_hex">

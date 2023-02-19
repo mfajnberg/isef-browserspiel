@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia' 
 import { Howl } from 'howler'
 import * as THREE from 'three'
+import { requestGetAsset } from '../services/gameAssetService'
 
 export const useGameAssetStore = defineStore('GameAssetStore', {
     id: 'GameAssetStore',
@@ -13,10 +14,16 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             [
                 'forest_1.glb', 'flag.glb', 'house.glb', 'tent_field_camp.glb', 
                     'crystals.glb', 'chest_lp.glb', 'tree_ancient.glb', 
-                'HexPreview.glb', 'HexPreview2.glb', 'HexCursor.glb',
+                'HexPreview.glb', 'HexPreview2.glb', 'HexCursor.glb', 'HexBase.glb',
                 'Arissa.fbx', 'Idle.fbx', 'Walking.fbx'
             ],        
-
+        
+        hexTextureURIs: [
+            "/assets/grass_texture_1.jpg", 
+            "/assets/grass_texture_2.jpg", 
+            "/assets/grass_texture_3.jpg", 
+    ],
+            
         pointerDownSound: new Howl({
             src: 'isef_pointer_down.mp3',
             volume: .6
@@ -42,35 +49,11 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
     },
     actions: {
         // factor out the name of the model to get
-        async loadHex() {
-            await fetch("HexBase.glb", {
-            // await fetch("api/asset/?name=hex.glb", {
-                headers: {
-                    // Authorization: `Bearer ${useAuthStore().token}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })
-            .then(async (response) => await response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.hexModel = arrayBuffer
-            })
+        async fetchAsset(uri) {
+            await requestGetAsset(uri)
         },
-        async fetchAsset(uri, authStore) {
-            await fetch(`api/asset/get?name=${uri}`, {
-                headers: {
-                    Authorization: `Bearer ${authStore.token}`,
-                    credentials: 'include',
-                    "Content-Type": "application/octet-stream"
-                }
-            })
-            .then(async (response) => 
-                await response.arrayBuffer())
-            .then(arrayBuffer => {
-                this.assets3d.push({
-                    name: uri, data: arrayBuffer
-                })
-            })
-        },
+        async devFetchHexBase() {
+            this.hexModel = await(await fetch("HexBase.glb")).arrayBuffer()
+        }
     },
 })

@@ -2,36 +2,34 @@ import { defineStore } from 'pinia'
 import { DateTime, Duration } from 'luxon'
 import { Ambience } from './000Singletons.js'
 import { requestGetChoices } from '../services/AvatarCreatorService'
-import { requestGetHexTiles } from '../services/WorldmapService'
-import { loadSitePreview } from '../threejs/ActorManager.js'
+import { requestPartyVision } from '../services/WorldmapService'
+import { loadHexCursor, loadSitePreview } from '../threejs/ActorManager.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export const useUIStore = defineStore('UIStore', {
     id: 'UIStore',
     state: () => ({
-        editorMode: false,
-        hoveringOverlay: false,
-        
-        currentTime: "",
+        devMode: false,
 
+        showingHome: true,
         showingAuthentication: false,
         showingAdminPrompt: false,
         showingAvatarCreator: false,
         showingWorldmap: false,
         showingImprint: false,
-        showingHome: true,
-
-        fullscreen: false,
-
+        
         loadingAssets: false,
         loadingProgress: "",
 
+        fullscreen: false,
+        editorMode: false,
+        
+        currentTime: "",
         nextUpdateTime: null, // time object, compared in init loop
         nextUpdateTimeDiff: null,
         displayNextUpdateTime: null,
-
-
-        devMode: false
+        
+        hoveringOverlay: false,
     }),
     getters: {
         getShowingAuthentication: (state) => state.showingAuthentication,
@@ -92,10 +90,7 @@ export const useUIStore = defineStore('UIStore', {
             this.showingWorldmap = false
             this.showingImprint = false
         },
-        showWorldmap(worldStore, assetStore) {
-            if (!worldStore.initialized)
-                worldStore.ACTION(assetStore)
-
+        showWorldmap() {
             this.showingHome = false
             this.showingAuthentication = false
             this.showingAdminPrompt = false
@@ -103,13 +98,10 @@ export const useUIStore = defineStore('UIStore', {
             this.showingWorldmap = true
             this.showingImprint = false
 
-            // var header = document.getElementById("header")
-            // header.style.background = "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)"       
             const ambience = new Ambience()
             if (!ambience.music.playing()){
                 ambience.music.play()
             }
-            // ambience.music.mute(false)
         },
         showImprint() {
             this.showingHome = false
@@ -123,55 +115,18 @@ export const useUIStore = defineStore('UIStore', {
         },
 
         async PlayNow(authStore, partyStore, worldStore, gameAssetStore, creatorStore) {
-            // // DEBUG-------------------------------***
-            // authStore.loginResponse = { status: 200 }
-            // authStore.loggedIn = true
-            // partyStore.avatar = { name: "Marsilio Mirandola" }
-            // this.showingWorldmap = true
-            // return
-            // authStore.userIsAdmin = true
             if (authStore.loginResponse.status === 200) {
+
                 // fetch assets if not done already
                 if (!gameAssetStore.assetsLoaded) {
                     this.loadingAssets = true
-                    // if (localStorage.getItem("assets") == undefined) {
                     for (let uri of gameAssetStore.modelURIs) {
-                        if (uri == "forest_1.glb")
-                        this.loadingProgress = "Wälder aufforsten..."
-                        else if (uri == "flag.glb")
-                        this.loadingProgress = "Wappen und Siegel beim Heroldsamt melden..."
-                        else if (uri == "house.glb")
-                        this.loadingProgress = "Siedlerhöfe möblieren..."
-                        else if (uri == "tent_field_camp.glb")
-                        this.loadingProgress = "Heringe für die Zelte fangen..."
-                        else if (uri == "crystals.glb")
-                        this.loadingProgress = "Mineralien aus Erathia importieren..."
-                        else if (uri == "chest_lp.glb")
-                        this.loadingProgress = "Schatztruhen vergraben..."
-                        else if (uri == "tree_ancient.glb")
-                        this.loadingProgress = "Die alten Götter um Rat bitten..."
-                        else if (uri == "HexPreview.glb")
-                        this.loadingProgress = "Axiale Koordinatensysteme nachvollziehen..."
-                        else if (uri == "HexPreview2.glb")
-                        this.loadingProgress = "Weltherrschaftspläne aushacken..."
-                        else if (uri == "HexCursor.glb")
-                        this.loadingProgress = "Algorithmische Komplexität unterschätzen..."
-                        else if (uri == "Arissa.fbx")
-                        this.loadingProgress = "Cape ausklopfen und ausschütteln..."
-                        else if (uri == "Walking.fbx")
-                        this.loadingProgress = "Draußen spazieren gehen..."
-                        else if (uri == "Idle.fbx")
-                        this.loadingProgress = "Ein Nickerchen machen..."
-                        await gameAssetStore.fetchAsset(uri, authStore)
+                        await gameAssetStore.fetchAsset(uri)
                     }
-                        // const fetchPromises = gameAssetStore.modelURIs.map(uri => 
-                        //     gameAssetStore.fetchAsset(uri, authStore))
-                        // await Promise.all(fetchPromises)
-                        // localStorage.setItem("assets", gameAssetStore.assets3d)
-                    // }
-                    // else {
-                    //     gameAssetStore.assets3d = localStorage.getItem("assets")
-                    // }
+                    for (let asset of gameAssetStore.assets3d) {
+                        if (asset.name == "HexBase.glb")
+                            gameAssetStore.hexModel = asset.data
+                    }                    
                     gameAssetStore.assetsLoaded = true
                     this.loadingAssets = false
                 }
@@ -189,24 +144,23 @@ export const useUIStore = defineStore('UIStore', {
 
                 // existing player logged in or admin wants to play
                 else {
-                    if (!worldStore.initialized)
-                        await worldStore.ACTION(gameAssetStore)
                     if (!this.editorMode) {
-                        worldStore.setAbsoluteZeroOffset(
-                            authStore.loginResponseData.party.location.Q,
-                            authStore.loginResponseData.party.location.R
+                        await requestPartyVision(
+                            partyStore.party.location.Q,
+                            partyStore.party.location.R
                         )
-                        await requestGetHexTiles(authStore, worldStore)
                         try {
-                            worldStore.character.visible = true
+                            partyStore.pawn3d.visible = true
                         } catch (e) { }
                     } else { 
                         try {
-                            worldStore.character.visible = false
+                            partyStore.pawn3d.visible = false
                         } catch (e) { }
                     }
-                    worldStore.previewModelURI = "HexPreview2.glb",
-                    loadSitePreview(new GLTFLoader(), worldStore, gameAssetStore)
+                    loadHexCursor(worldStore, gameAssetStore)
+                    worldStore.previewModelURI = "HexPreview2.glb"
+                    loadSitePreview(worldStore)
+                    worldStore.initialized = true
                     this.showWorldmap(worldStore, gameAssetStore)
                 }
             }

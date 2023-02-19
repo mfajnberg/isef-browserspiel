@@ -1,31 +1,36 @@
 import { defineStore } from 'pinia' 
+import { HexVector } from '../classes/HexVector'
+import { useWorldStore } from './WorldStore'
 
 export const usePartyStore = defineStore('PartyStore', {
     id: 'PartyStore',
     state: () => ({
-        coordinates: { 
-            Q: 0,
-            R: 0 
-        },
+        party: null, // .location.Q
         pawn3d: null,
+        avatar: null,
+
+        travelOK: false,
+        traveling: false,
+        start: null,
+        goal: null,
         
-        party: null,
-        avatar: null, // creature (player avatar)
         portraitUri: ""
     }),
     getters: {
-        getCoordinates: (state) => state.coordinates,
-        getPawn: (state) => state.pawn3d,
-        getAvatar: (state) => state.avatar,
-        getMembers: (state) => state.members,
-        getBackpack: (state) => state.backpack,
-        getPortraitUri:(state) => state.portraitUri
+        getPortraitUri:(state) => state.portraitUri,
     },
     actions: {
-        updatePartyLocation(hexVector) {
-            // set pawn world transform
-
+        updatePawn3dPosition() {
+            const partyLocationHexVector = new HexVector(this.party.location.Q, this.party.location.R)
+            const posX = partyLocationHexVector.getWorldXFromAxialQ()
+            const posZ = partyLocationHexVector.getWorldZFromAxialR()
+            try {
+                useWorldStore().setCameraPosition(posX, posZ)
+                this.pawn3d.position.x = posX
+                this.pawn3d.position.z = posZ
+            } catch (error) { 
+                // console.log(error) 
+            }
         }
-
     },
 })

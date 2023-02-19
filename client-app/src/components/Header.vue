@@ -9,8 +9,9 @@ import { useWorldStore } from '../stores/WorldStore';
 import { useCreatorStore } from '../stores/AvatarCreatorStore';
 import { Ambience } from '../stores/000Singletons.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { loadCharacter, loadHexCursor, loadSitePreview, spawnSite } from '../threejs/ActorManager';
+import { loadPawn3d, loadHexCursor, loadSitePreview, spawnSite } from '../threejs/ActorManager';
 import { HexVector } from '../classes/HexVector';
+import { requestPartyVision } from '../services/WorldmapService'
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
@@ -22,12 +23,13 @@ import { HexVector } from '../classes/HexVector';
 
     async function clickPlay() {
         if (uiStore.devMode) {
-            const loader = new GLTFLoader()
+            await gameAssetStore.devFetchHexBase()
+            await requestPartyVision(0, 0) // broken due to being POST to local json
             uiStore.showWorldmap(worldStore, gameAssetStore)
-            spawnSite(loader, worldStore, gameAssetStore, new HexVector(1,0),1)
-            loadCharacter(worldStore, gameAssetStore)
-            loadHexCursor(loader, worldStore, gameAssetStore)
-            loadSitePreview(loader, worldStore, gameAssetStore)
+            spawnSite(worldStore, gameAssetStore, new HexVector(1,0),1)
+            loadHexCursor(worldStore, gameAssetStore)
+            loadSitePreview(worldStore)
+            worldStore.initialized = true
             return
         }
 
@@ -55,7 +57,9 @@ import { HexVector } from '../classes/HexVector';
         authStore.hideLoginForm()
         authStore.mailNotifSent = false
         authStore.regisFailed = false
-        authStore.updateValidation()
+        try {
+            authStore.updateValidation()
+        } catch (error) {}
         ambience.music.mute(true)
     }
     

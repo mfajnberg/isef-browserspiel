@@ -68,9 +68,9 @@ namespace web_api.Controllers
             bool success = await _worldManager.updateSliceLayout(_context, worldGenData);
             if (!success)
             {
-                return BadRequest("no");
+                return BadRequest("Layout update failed!");
             }
-            return Ok("yes");
+            return Ok("World Layout was successfully updated...");
         }
 
 
@@ -91,7 +91,7 @@ namespace web_api.Controllers
             if (!isAdminFromClaim())
                 return Unauthorized();
 
-            List<HexTile> result = await WorldManager.GetSliceAsync(_context, RelativeZero);
+            List<HexTile> result = await WorldManager.GetSliceAsync(_context, RelativeZero, 5);
             return Ok(result);
         }
 

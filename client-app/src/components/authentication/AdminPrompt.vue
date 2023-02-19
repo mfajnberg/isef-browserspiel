@@ -7,6 +7,8 @@ import { useWorldStore } from '../../stores/WorldStore';
 import { requestGetWorldSliceAdmin } from '../../services/EditorService'
 import { useAuthStore } from '../../stores/AuthStore';
 import { useCreatorStore } from '../../stores/AvatarCreatorStore';
+import { Worldmap } from '../../classes/Worldmap';
+import { HexVector } from '../../classes/HexVector';
 
 const uiStore = useUIStore()
 const authStore = useAuthStore()
@@ -19,11 +21,16 @@ let qInput = 0
 let rInput = 0
 
 async function clickEdit() {
-    worldStore.ACTION(assetStore)
-    worldStore.setAbsoluteZeroOffset(qInput, rInput)
-    await requestGetWorldSliceAdmin(authStore, worldStore)
-
     uiStore.setEditorMode(true)
+    worldStore.editingAt = new HexVector(qInput, rInput)
+    await requestGetWorldSliceAdmin(
+        worldStore.editingAt.Q,
+        worldStore.editingAt.R
+    )
+
+    // let hexVec = new HexVector(qInput, rInput)
+    // worldStore.moveCamera(hexVec.getWorldXFromAxialQ, hexVec.getWorldZFromAxialR)
+    
     await uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
 }
 
@@ -42,39 +49,6 @@ onMounted(() => {
     button_edit.value.addEventListener('pointerup', playSoundPointerUp)
     button_play.value.addEventListener('pointerup', playSoundPointerUp)
 })        
-const draggableElement = ref(null)
-var isDragging = false
-var currentX = 0
-var currentY = 0
-var initialX = 0
-var initialY = 0
-var xOffset = 0
-var yOffset = 0
-function dragStart(e) {
-    if (e.target === draggableElement.value) {
-            initialX = e.clientX - xOffset
-            initialY = e.clientY - yOffset
-            // console.log(e.target)
-            isDragging = true
-    }
-}
-function dragEnd() {
-    initialX = currentX
-    initialY = currentY
-    isDragging = false
-}
-function drag(e) {
-    if (isDragging) {
-        currentX = e.clientX - initialX
-        currentY = e.clientY - initialY
-        xOffset = currentX
-        yOffset = currentY
-        setTranslate(currentX, currentY, draggableElement)
-    }
-}
-function setTranslate(xPos, yPos, el) {
-    el.value.style.translate = `${xPos}px ${yPos}px`
-}
 </script>
 
 <template>

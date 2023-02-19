@@ -2,17 +2,15 @@ import * as THREE from 'three'
 import { useWorldStore } from '../stores/WorldStore'
 import { useUIStore } from '../stores/UIStore'
 import { initCameraPawn } from './Crew'
-import { loadSitePreview } from './ActorManager'
-import { GUI } from 'dat.gui'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { usePartyStore } from '../stores/PartyStore'
 
 export async function init(canvasDomId) {
 
   /* setup */
-  var worldStore = useWorldStore()
-  var uiStore = useUIStore()
+  const worldStore = useWorldStore()
+  const uiStore = useUIStore()
+  const partyStore = usePartyStore()
   var crew, canvas, renderer, scene, lights
-  const gltfLoader = new GLTFLoader()
   canvas = document.getElementById(canvasDomId)
   scene = new THREE.Scene()
   crew = initCameraPawn(canvas, scene, worldStore)
@@ -20,7 +18,7 @@ export async function init(canvasDomId) {
   lights = crew.lights
   scene.add(lights[0]) // directional
   scene.add(lights[1]) // ambient
-  worldStore.setScene(scene)
+  worldStore.scene = scene
 
   // initActors(scene, worldStore, assetStore)
 
@@ -49,8 +47,15 @@ export async function init(canvasDomId) {
       } catch (error) { 
         // console.log(error) 
       }
-      if (worldStore.traveling)
+      if (!partyStore.traveling) { }
+      else {
         uiStore.updateCountdown()
+        const displaceVector = new THREE.Vector3().subVectors(partyStore.goal.position, partyStore.start.position)
+        const velocityVector = displaceVector.divideScalar(.7) // das ist aktuell kompletter quatsch
+        const distanceVector = velocityVector.clone().multiplyScalar(clock.getDelta())
+        partyStore.pawn3d.position.add(distanceVector)
+        worldStore.moveCamera(distanceVector.x, distanceVector.z)
+      }
     }
     uiStore.updateClock()
 

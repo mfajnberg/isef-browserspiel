@@ -110,7 +110,6 @@ import Overlay from './components/ingame/Overlay.vue'
     width: 100svw;
     left: 0;
     top: 0;
-    overflow: auto;
 
     background-image: url("twilight_aegis.jpg");
         background-repeat: no-repeat;

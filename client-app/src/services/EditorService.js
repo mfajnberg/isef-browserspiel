@@ -1,52 +1,72 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { HexVector } from "../classes/HexVector";
-import { siteTypeToURI } from "../classes/Worldmap";
-import { Sites } from "../stores/000Singletons";
-import { useGameAssetStore } from "../stores/GameAssetStore";
-import { spawnSite } from "../threejs/ActorManager";
+import { useGameAssetStore } from '../stores/GameAssetStore'
+import { useWorldStore } from '../stores/WorldStore';
+import { useAuthStore } from '../stores/AuthStore';
+import { useUIStore } from '../stores/UIStore';
+import {TileDTOs } from "../stores/000Singletons";
 
-export async function requestGetWorldSliceAdmin(authStore, worldStore) {
+import { initHex, spawnSite } from '../threejs/ActorManager'
+import { siteTypeToURI, Worldmap } from "../classes/Worldmap";
+import { HexVector } from '../classes/HexVector'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { TextureLoader } from 'three';
+
+export async function requestGetWorldSliceAdmin(q, r) {
+    const worldStore = useWorldStore()
+    const gameAssetStore = useGameAssetStore()
     const options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authStore.token}`,
+            'Authorization': `Bearer ${useAuthStore().token}`
         },
         credentials: 'include',
         body: JSON.stringify({
-            axialCoordinates: worldStore.getAbsoluteZeroOffset,
+            axialCoordinates: {Q: q, R: r},
             siteType: 0
         })
     }
-    await fetch("/api/admin/world/get", options)
-        .then(async response => { 
-            worldStore.response = response
-            return await response.json()
-        })
-        .then(data => {
-            worldStore.disposeAll() 
-            const loader = new GLTFLoader()
-            data.forEach(element => {
-                if (element.site){
-                    worldStore.previewModelURI = siteTypeToURI(element.site.type)
-                    spawnSite(loader, worldStore, useGameAssetStore(),
-                        new HexVector(
-                            element.Q - worldStore.getAbsoluteZeroOffset.Q, 
-                            element.R - worldStore.getAbsoluteZeroOffset.R
-                        ), element.site.type
-                    )
-                    
+    const URL = (!useUIStore().devMode) ? "/api/admin/world/get" : "/api/party/vision.json" 
+    await fetch(URL, options)
+    .then(async response => { 
+        worldStore.response = response
+        return await response.json()
+    })
+    .then(async data => {
+        worldStore.disposeAll()
+        const loader = new GLTFLoader()
+
+        // set hex model reference
+        if (!useUIStore().devMode) {
+            for (let asset of gameAssetStore.assets3d) {
+                if (asset.name == "HexBase.glb") {
+                    gameAssetStore.hexModel = asset.data
                 }
-            })
-            worldStore.previewModelURI = "HexPreview2.glb"
+            }
+        }
+        let vectors = Worldmap.makeHexGridVectors(5)
+        const texLoader = new TextureLoader()
+        
+        vectors.forEach(hexPosition => {
+            initHex(loader, texLoader, worldStore, useGameAssetStore(), hexPosition, hexPosition.Q%3)
         })
-        .catch(error => { 
-            // console.log(error) 
+
+        data.forEach(element => {
+            const vector = new HexVector(element.Q, element.R)
+
+            // spawn site object3d
+            if (element.site){
+                worldStore.previewModelURI = siteTypeToURI(element.site.type)
+                spawnSite(worldStore, useGameAssetStore(), vector)
+            }
         })
+    })
+    .catch(error => { 
+        console.log(error) 
+    })
 }
 
 export async function requestWorldSave(authStore) {
-    const sites = new Sites()
+    const sites = new TileDTOs()
     const options = {
         method: 'POST',
         headers: {

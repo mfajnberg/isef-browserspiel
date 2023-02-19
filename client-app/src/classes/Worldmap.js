@@ -1,5 +1,6 @@
 import { HexVector } from './HexVector';
 import { PriorityQueue } from '@datastructures-js/priority-queue'
+import { Hexes3d } from '../stores/000Singletons';
 
 export class Worldmap {
     constructor() {
@@ -7,8 +8,8 @@ export class Worldmap {
         this.sites = []
     }
 
-    static findHex(axial, worldStore) {
-        for (let hex of worldStore.hexes3d) {
+    static findHex(axial) {
+        for (let hex of new Hexes3d().buffer) {
             if (axial.Q == hex.userData.Q) {
                 if (axial.R == hex.userData.R) {
                     return hex
@@ -112,7 +113,7 @@ export class Worldmap {
         for (let vec of 
                 new HexVector(ofHex.userData.Q, ofHex.userData.R)
                 .getNeighborVectors()) {
-            for (let hex of worldStore.hexes3d) {
+            for (let hex of new Hexes3d().buffer) {
                 if (hex.userData.Q === vec.Q
                     && hex.userData.R === vec.R
                     && !hex.userData.isBlocked) {

@@ -4,22 +4,21 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useGameAssetStore } from '../stores/GameAssetStore'
 import { useUIStore } from '../stores/UIStore'
 import { playAnim, spawnSite } from './ActorManager';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { HexVector } from '../classes/HexVector';
-import { Worldmap } from '../classes/Worldmap';
-import { useAuthStore } from '../stores/AuthStore';
 import { requestTravel } from '../services/WorldmapService';
 import { DateTime } from 'luxon';
+import {Hexes3d, TileDTOs } from '../stores/000Singletons';
+import { usePartyStore } from '../stores/PartyStore';
 
 export function initCameraPawn(canvas, scene, worldStore) {
     const gameAssetStore = useGameAssetStore()
     const uiStore = useUIStore()
+    const partyStore = usePartyStore()
 
     const _renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true })
     _renderer.setSize(window.innerWidth, window.innerHeight)
     _renderer.shadowMap.enabled = true
     _renderer.shadowMap.type = THREE.PCFSoftShadowMap
-
 
     const _camera = new THREE.PerspectiveCamera
         (60, window.innerWidth / (window.innerHeight), 0.1, 20000)
@@ -30,6 +29,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
     _camera.lookAt(scene.position)
     
     const _orbit = new OrbitControls(_camera, _renderer.domElement)
+    worldStore.orbit = _orbit
     _orbit.mouseButtons = { RIGHT: THREE.MOUSE.ROTATE, LEFT: THREE.MOUSE.PAN }
     _orbit.enablePan = false
     _orbit.enableZoom = true
@@ -43,8 +43,6 @@ export function initCameraPawn(canvas, scene, worldStore) {
     const _pointer = new THREE.Vector2()
     const _raycaster = new THREE.Raycaster()
 
-    const glbLoader = new GLTFLoader()
-
     var intersects
 
     let placeActor = _.debounce((event) => {
@@ -55,56 +53,64 @@ export function initCameraPawn(canvas, scene, worldStore) {
             console.log(`hex ${qHov}|${rHov} already occupied`)
             return
         }
-        spawnSite(glbLoader, worldStore, gameAssetStore, new HexVector(qHov, rHov))
+        spawnSite(worldStore, gameAssetStore, new HexVector(qHov, rHov))
         gameAssetStore.placeObjectSound.play()
     })
 
-    window.addEventListener('pointerdown', (e) => {
+    window.addEventListener('pointerdown', async (e) => {
         if (e.button === 0 && uiStore.showingWorldmap && worldStore.hoveredItem && worldStore.objectSnapped) {
+            worldStore.clickedItem = worldStore.hoveredItem
             if (uiStore.editorMode 
                 && !uiStore.hoveringOverlay
                 && worldStore.previewModelURI != "HexPreview2.glb") 
                     placeActor()
             
-            else if (!uiStore.editorMode && !worldStore.traveling) {
-                const q = worldStore.hoveredItem.userData.Q
-                const r = worldStore.hoveredItem.userData.R
+            else if (!uiStore.editorMode && !partyStore.traveling) {
+
+                // normalize using relative party world offset
+                const qClicked = worldStore.clickedItem.userData.Q
+                const rClicked = worldStore.clickedItem.userData.R
+                const qRelative = qClicked - partyStore.party.location.Q
+                const rRelative = rClicked - partyStore.party.location.R
+                partyStore.travelOK = false
+
                 let closeBoi = false
-                if (q == 1 && r == 0) {
+                if (qRelative == 1 && rRelative == 0) {
                     closeBoi = true
-                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 7 )
+                    partyStore.pawn3d.rotation.y = 0.523599 + (1.0472 * 7 )
                 }
-                else if (q == 0 && r == 1) {
+                else if (qRelative == 0 && rRelative == 1) {
                     closeBoi = true
-                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 6 )
+                    partyStore.pawn3d.rotation.y = 0.523599 + (1.0472 * 6 )
                 }
-                else if (q == -1 && r == 1) {
+                else if (qRelative == -1 && rRelative == 1) {
                     closeBoi = true
-                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 5 )
+                    partyStore.pawn3d.rotation.y = 0.523599 + (1.0472 * 5 )
                 }
-                else if (q == -1 && r == 0) {
+                else if (qRelative == -1 && rRelative == 0) {
                     closeBoi = true
-                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 4 )
+                    partyStore.pawn3d.rotation.y = 0.523599 + (1.0472 * 4 )
                 }
-                else if (q == 0 && r == -1) {
+                else if (qRelative == 0 && rRelative == -1) {
                     closeBoi = true
-                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 3 )
+                    partyStore.pawn3d.rotation.y = 0.523599 + (1.0472 * 3 )
                 }
-                else if (q == 1 && r == -1) {
+                else if (qRelative == 1 && rRelative == -1) {
                     closeBoi = true
-                    worldStore.character.rotation.y = 0.523599 + (1.0472 * 2 )
+                    partyStore.pawn3d.rotation.y = 0.523599 + (1.0472 * 2 )
                 }
                 if (closeBoi) {
                     gameAssetStore.placeObjectSound.play()
-                    worldStore.absoluteZeroOffset.Q += q // ???
-                    worldStore.absoluteZeroOffset.R += r // ???
-                    requestTravel(useAuthStore(), worldStore)
-                    worldStore.traveling = true
-                    playAnim(worldStore, gameAssetStore, "Walking.fbx")
-                    setTimeout(worldStore.movePawn, 5000)
-                    uiStore.nextUpdateTime = DateTime.local().plus({
+                    await requestTravel(qClicked, rClicked)
+                    if (partyStore.travelOK) {
+                        partyStore.goal = worldStore.clickedItem
+                        partyStore.traveling = true
+                        playAnim(worldStore, "Walking.fbx")
+                        setTimeout(worldStore.movePawn, 5000) // cb
+                        uiStore.nextUpdateTime = DateTime.local().plus({
                             seconds: 5
                         })
+                    }
                     
                 }
             }
@@ -116,22 +122,18 @@ export function initCameraPawn(canvas, scene, worldStore) {
         _pointer.y = - (event.clientY / window.innerHeight) * 2 + 1
 
         _raycaster.setFromCamera(_pointer, _camera)
-        intersects = _raycaster.intersectObjects(worldStore.getHexes3d)
-        if (uiStore.showingWorldmap && intersects.length > 0) {
+        intersects = _raycaster.intersectObjects(new Hexes3d().buffer)
+        if (worldStore.cursor && uiStore.showingWorldmap && intersects.length > 0) {
             let hex = intersects[0].object.parent
             let vec = new THREE.Vector3();
             const point = intersects[ 0 ].point;
-            // if (worldStore.preview && !worldStore.traveling) {
-            //     worldStore.preview.position.set(point.x, point.y, point.z)
-            //     worldStore.preview.visible = true
-            // }
             vec.setFromMatrixPosition(hex.matrixWorld)
             worldStore.cursor.visible = true
             worldStore.cursor.position.set(point.x, point.y, point.z)
             worldStore.hoveredItem = hex
 
             if (worldStore.preview 
-                && !worldStore.traveling
+                && !partyStore.traveling
                 && !hex.userData.isBlocked
                 && vec.distanceTo(point) < .82) {
                     worldStore.preview.position.set(vec.x, vec.y, vec.z)
@@ -143,15 +145,15 @@ export function initCameraPawn(canvas, scene, worldStore) {
                 worldStore.objectSnapped = false
             }
             
-            if (worldStore.hoveredItem.userData.Q == 0 && worldStore.hoveredItem.userData.R == 0) {
+            if (worldStore.hoveredItem.userData.Q == partyStore.party.location.Q && worldStore.hoveredItem.userData.R == partyStore.party.location.R) {
                 worldStore.preview.visible = false
             } else {
                 const distance = Math.max(
-                    Math.abs(0 - worldStore.hoveredItem.userData.Q), 
-                    Math.abs(0 - worldStore.hoveredItem.userData.R), 
-                    Math.abs(0 + 0 - worldStore.hoveredItem.userData.Q - worldStore.hoveredItem.userData.R))
-    
-                if (!uiStore.editorMode && distance > 1) {
+                    Math.abs(partyStore.party.location.Q - worldStore.hoveredItem.userData.Q), 
+                    Math.abs(partyStore.party.location.R - worldStore.hoveredItem.userData.R), 
+                    Math.abs(partyStore.party.location.Q + partyStore.party.location.R - worldStore.hoveredItem.userData.Q - worldStore.hoveredItem.userData.R)
+                )
+                if (!uiStore.editorMode && distance != 1) {
                     worldStore.preview.visible = false
                 }
             }
@@ -166,11 +168,10 @@ export function initCameraPawn(canvas, scene, worldStore) {
             catch (e) { }
         }
     }, .01)
-
-    // function getHalfwayPoints(origin) {}
-    // function getCornerVectors(origin) {}
-
-        canvas.addEventListener('mousemove', updateWorldCursor)
+    canvas.addEventListener('mousemove', (event) => {
+        if (worldStore.initialized)
+            updateWorldCursor(event)
+    })
 
     window.addEventListener('resize', () => {
         _camera.aspect = window.innerWidth / window.innerHeight
@@ -194,7 +195,6 @@ export function initCameraPawn(canvas, scene, worldStore) {
     const _ambLight = new THREE.AmbientLight()
     _ambLight.intensity = .45
     _lights.push(_dirLight, _ambLight)
-
 
     return { renderer: _renderer, camera: _camera, lights: _lights, orbit: _orbit, pointer: _pointer, raycaster: _raycaster }
 }

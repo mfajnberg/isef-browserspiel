@@ -1,29 +1,23 @@
 import { defineStore } from 'pinia' 
-import { requestGetWorldSliceAdmin } from '../services/EditorService'
-import { requestGetHexTiles } from '../services/WorldmapService'
-import { initActors, dispose, playAnim } from '../threejs/ActorManager'
-import { Sites, Sites3d } from './000Singletons'
-import { useAuthStore } from './AuthStore'
+import { requestPartyVision } from '../services/WorldmapService'
+import { dispose, playAnim } from '../threejs/ActorManager'
+import { TileDTOs, Sites3d, Hexes3d } from './000Singletons'
 import { useGameAssetStore } from './GameAssetStore'
+import { usePartyStore } from './PartyStore'
+import { Vector3 } from 'three'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
     state: () => ({
         initialized: false,
-
-        absoluteZeroOffset: {
-            Q: 0, 
-            R: 0
-        },
         
         scene: null,
         camera: null,
-        hexes3d: [],
-        sites3d: [],
-        character: null,
+        orbit: null,
         
         objectSnapped: false,
         hoveredItem: null,
+        clickedItem: null,
         preview: null,
         cursor: null,
         
@@ -33,64 +27,52 @@ export const useWorldStore = defineStore('WorldStore', {
 
         animationMixer: null,
 
-        traveling: false
+        editingAt: null
     }),
     getters: {
-        getScene: (state) => state.scene,
-        getHexes3d: (state) => state.hexes3d,
-        getSites: (state) => state.sites3d,
-        getSitesBuffer: (state) => state.sitesBuffer,
-        getHoveredName: (state) => {
-            if (state.hoveredItem != null) {
-                return state.hoveredItem.name
-            }
-            return ""
-            },
-        getAbsoluteZeroOffset: (state) => state.absoluteZeroOffset
     },
     actions: {
-        setAbsoluteZeroOffset(q, r) {
-            this.absoluteZeroOffset.Q = q
-            this.absoluteZeroOffset.R = r
-        },
 
-        async fetchWorldData() {
-            await requestGetHexTiles(this)
-        },
-        setScene(scene) {
-            this.scene = scene
-        },
-        async ACTION(assetStore) {
-            if (!this.initialized) {
-                await initActors(this, assetStore)
-                this.initialized = true
-            }
-        },
         disposeAll() {
+            for (let hex of new Hexes3d().buffer) {
+                dispose(hex)
+            }
+            new Hexes3d().buffer.length = 0
+            const tiles = new TileDTOs()
             const sites3d = new Sites3d()
             for (let obj3d of sites3d.buffer) {
-                for (let hex of this.hexes3d) {
-                    if (hex.userData.Q === obj3d.userData.hexVector.Q &&
-                        hex.userData.R === obj3d.userData.hexVector.R) {
-                            hex.userData.isBlocked = false
-                        }
-                    }
-                    obj3d.userData.hexVector = null
-                    dispose(obj3d)
-                }
-            sites3d.buffer = []
-            
-            const sites = new Sites()
-            for (let site of sites.buffer) {
-                        site.SiteType = 0
+                dispose(obj3d)
             }
+            tiles.buffer.length = 0
+            sites3d.buffer.length = 0
         },
+
         async movePawn() {
-            this.traveling = false
+            const partyStore = usePartyStore()
+            partyStore.traveling = false
             const gameAssetStore = useGameAssetStore()
-            await requestGetHexTiles(useAuthStore(), this)
-            playAnim(this, gameAssetStore, "Idle.fbx")
+            await requestPartyVision(
+                useWorldStore().clickedItem.userData.Q, 
+                useWorldStore().clickedItem.userData.R
+            )
+            playAnim(this, "Idle.fbx")
             gameAssetStore.pointerUpSound.play()
+            partyStore.start = partyStore.goal
+        },
+
+        moveCamera(x, z) {
+            this.camera.position.x += x
+            this.camera.position.z += z
+            this.orbit.target.x += x
+            this.orbit.target.z += z
+        },
+        setCameraPosition(x, z) {
+            this.orbit.target.x = x
+            this.orbit.target.z = z
+            this.camera.position.x = x
+            this.camera.position.z = z
+            this.camera.lookAt(new Vector3(x, 0, z))
+            this.orbit.update()
         }
     },
 })

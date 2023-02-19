@@ -15,17 +15,15 @@ export async function requestTokenRefresh(authStore, partyStore) {
                 console.log(response.text())
             }
             else { 
-                authStore.loginResponseData = await response.json()
-                authStore.token = authStore.loginResponseData.accessToken
-                authStore.userIsAdmin = authStore.loginResponseData.isAdmin
-                partyStore.avatar = authStore.loginResponseData.avatar
+                const data = await response.json()
+                authStore.loginResponseData = data
+                authStore.token = data.accessToken
+                authStore.userIsAdmin = data.isAdmin
+                partyStore.party = data.party
+                partyStore.avatar = data.avatar
                 if (authStore.stayLoggedIn)
                     localStorage.setItem('token', authStore.token)
                 authStore.loggedIn = true
-                useWorldStore().setAbsoluteZeroOffset(
-                    authStore.loginResponseData.party.location.Q,
-                    authStore.loginResponseData.party.location.R
-                )
             }
         })
 }
@@ -49,18 +47,15 @@ export async function requestLogin(authStore, partyStore) {
                 console.log(response.text())
             }
             else { 
-                authStore.loginResponseData = await response.json()
-                authStore.token = authStore.loginResponseData.accessToken
-                authStore.userIsAdmin = authStore.loginResponseData.isAdmin
-                partyStore.avatar = authStore.loginResponseData.avatar
-                if (authStore.stayLoggedIn) {
+                const data = await response.json()
+                authStore.loginResponseData = data
+                authStore.token = data.accessToken
+                authStore.userIsAdmin = data.isAdmin
+                partyStore.party = data.party
+                partyStore.avatar = data.avatar
+                if (authStore.stayLoggedIn)
                     localStorage.setItem('token', authStore.token)
-                }
                 authStore.loggedIn = true
-                useWorldStore().setAbsoluteZeroOffset(
-                    authStore.loginResponseData.party.location.Q,
-                    authStore.loginResponseData.party.location.R
-                )
             }
         })
 }

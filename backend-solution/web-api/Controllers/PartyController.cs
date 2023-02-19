@@ -60,8 +60,8 @@ namespace web_api.Controllers
         /// <response code="200">when the vision of party was found</response>
         /// <response code="422">if any error occured while getting the current vision ot the users party</response>
         /// <returns> List of <c>HexTiles</c> which should be displayed to the user</returns>
-        [HttpGet("vision")]
-        public async Task<ActionResult> GetVisibleHexTiles()
+        [HttpPost("vision")]
+        public async Task<ActionResult> GetVisibleHexTiles([FromBody] HexTileDTO lookingFrom) // take "lookingFrom" hex tile dto argument
         {
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
@@ -70,6 +70,7 @@ namespace web_api.Controllers
             if (response != null)
                 return response;
 
+            // do this only for validation purposes
             Party party = _context.Parties.Include(p => p.Location).Where(p => p.Id == user.Avatar.PartyId).FirstOrDefault();
 
             if (party == null)
@@ -77,10 +78,7 @@ namespace web_api.Controllers
                 return UnprocessableEntity("Party");
             }
 
-            List<HexTile> result = await WorldManager.GetSliceAsync(_context, 
-                new HexTileDTO() { 
-                    AxialCoordinates = new HexVector(party.Location.AxialQ, party.Location.AxialR) 
-                });
+            List<HexTile> result = await WorldManager.GetSliceAsync(_context, lookingFrom);
 
             return Ok(result);
         }
@@ -102,7 +100,6 @@ namespace web_api.Controllers
                 return response;
 
             List<HexTile> hexTilesPath = null;
-
             try
             {
                 hexTilesPath = WorldManager.ValidatePath(_context, path);
@@ -120,9 +117,8 @@ namespace web_api.Controllers
 
                 DateTime scheduleTimeAt = DateTime.Now;
                 DateTime scheduleTimeFor = DateTime.Now;
-
+                
                 List<TravelOGI> newTravelOgis = new List<TravelOGI>();
-
                 for (int i = 0; i < hexTilesPath.Count; i++)
                 {
                     TravelOGI travel = new TravelOGI();
@@ -136,24 +132,13 @@ namespace web_api.Controllers
                     travel.ScheduledFor = scheduleTimeFor; // add rules to calculate travel time
 
                     newTravelOgis.Add(travel);
-
                 }
-
 
                  _context.TravelOGIs.AddRange(newTravelOgis);
                  _context.SaveChanges();
 
-
                 await party.StartTravelingAsync(hexTilesPath[hexTilesPath.Count -1], _context);
-                
-
             }
-           
-
-            
-
-            
-
             return Ok();
         }
 
