@@ -54,9 +54,13 @@ export const useAuthStore = defineStore('AuthStore', {
         },
         hideRegisForm() {
             this.showingRegisForm = false
+            this.Password = ""
+            this.repeatedPassword = ""
         },
         hideLoginForm() {
             this.showingLoginForm = false
+            this.Password = ""
+            this.repeatedPassword = ""
         },
         
         updateValidation() {

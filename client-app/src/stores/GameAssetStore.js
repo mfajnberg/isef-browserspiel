@@ -14,7 +14,7 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             [
                 'forest_1.glb', 'flag.glb', 'house.glb', 'tent_field_camp.glb', 
                     'crystals.glb', 'chest_lp.glb', 'tree_ancient.glb', 
-                'HexPreview.glb', 'HexPreview2.glb', 'HexCursor.glb', 'HexBase.glb',
+                , '3dCursorCross.glb', '3dCursorArrow.glb', 'HexBase.glb',
                 'Arissa.fbx', 'Idle.fbx', 'Walking.fbx'
             ],        
         
@@ -26,17 +26,17 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             
         pointerDownSound: new Howl({
             src: 'isef_pointer_down.mp3',
-            volume: .6
+            volume: .3
         }),
 
         pointerUpSound: new Howl({
             src: 'isef_pointer_up.mp3',
-            volume: .6
+            volume: .4
         }),
 
         placeObjectSound: new Howl({
             src: 'isef_place_building.mp3',
-            volume: .1
+            volume: .04
         }),
 
         assets3d: [], // name: {string}, data: {arrayBuffer}

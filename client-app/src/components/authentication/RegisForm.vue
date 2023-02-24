@@ -8,12 +8,6 @@ import { requestRegis } from '../../services/AuthService';
     const assetStore = useGameAssetStore()
     let invalidFormSubmit = ref(false)
 
-    function switchToLogin() {
-        authStore.hideRegisForm()
-        authStore.showLoginForm()
-        authStore.updateValidation()
-    }
-    
     async function clickRegis() {
         if (authStore.emailValid && authStore.pwdValid && authStore.repeatValid) {
             await requestRegis(authStore)
@@ -56,10 +50,10 @@ onBeforeUnmount(() => {
 
 <template>
     <div id="registration_form">
-        <div class="item_container">
+        <div class="item">
             <label>E-Mail Adresse</label>
-            <div class="form_item">
-                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Email" type="text" id="email_address"/> 
+            <div class="input_container">
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Email" type="text"/> 
                 <span v-if="authStore.emailValid" class="validation valid_input"> 
                     ✓
                 </span>
@@ -68,10 +62,10 @@ onBeforeUnmount(() => {
                 </span>
             </div>
         </div>
-        <div class="item_container">
+        <div class="item">
             <label> Passwort </label>
-            <div class="form_item">     
-                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Password" type="password" id="password"/>
+            <div class="input_container">     
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Password" type="password"/>
                 <span v-if="authStore.pwdValid" class="validation valid_input">
                     ✓
                 </span>
@@ -81,9 +75,9 @@ onBeforeUnmount(() => {
             </div>
         </div>
         
-        <div class="item_container">
+        <div class="item">
             <label> Passwort wiederholen </label>
-            <div class="form_item" v-if="authStore.getShowingRegisForm">
+            <div class="input_container">
                 <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password"/>
                 <span v-if="authStore.repeatValid" class="validation valid_input">
                     ✓
@@ -93,66 +87,67 @@ onBeforeUnmount(() => {
                 </span>
             </div>
         </div>
-        <button class="button_regis" ref="button_regis" @click="clickRegis()">
-        Jetzt registrieren
+        <button ref="button_regis" class="button_regis" 
+                @click="clickRegis()">
+            Jetzt registrieren
         </button>
-        <span class="center_stuff">
-            Bereits registriert? <br/>
-            <a @click="switchToLogin" style="cursor: pointer;">Jetzt einloggen!</a>
-        </span>
+
     </div>
 </template>
 
 <style scoped>
     #registration_form {
-        display: grid;
-        align-items: stretch;
+        display: flex;
         flex-direction: column;
-        padding: 5%;
+        justify-content: flex-start;
         z-index: 20;
+    } 
+    label {
+        user-select: none;
     }
-    .item_container{
+    .item{
         display: flex;
         flex-direction: column;
         justify-self: center;
-        margin-top: .8rem;
-    } .form_item {
+        margin-bottom: .8rem;
+    } .input_container {
         display: flex;
         align-items: center;
         position: relative;
-        /* width: 10rem; */
-    } .item_container {
-        align-self: center;
+        width: 10rem;
     } .form_input {
         display: flex;
-        width: 10rem;
+        width: 9.6rem;
     }.validation {
         width: 100%;
         position: absolute;
         right: -103%;
     }
     .button_regis {
+        margin-top: .2rem;
         font-size: 1rem;
-        display: block;
-        margin-right: auto;
-        margin-top: 1.2rem;
-        margin-bottom: .8rem;
-        margin-left: auto;
 
+    } .button_regis:active + * {
+        font-size: 2rem;
     }
-    .center_stuff {
+    .login_prompt {
         margin-left: auto;
         margin-right: auto;
+        margin-top: auto;
+        margin-bottom: 10%;
         text-align: center;
     }
+    a {
+        font-size: 1rem;
+    }
     .valid_input {
-        text-align: left;
+        left: 10.3rem;
         color:rgb(0, 255, 0);
         user-select: none;
     }
     .invalid_input {
-        text-align: left;
-        color: red;
+        left: 10.5rem;
+        color: rgb(253, 0, 76);
         user-select: none;
     }
 

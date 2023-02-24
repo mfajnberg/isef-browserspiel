@@ -52,19 +52,18 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="admin" ref="draggableElement">
-        <h3>Herzlich willkommen im Bereich für Admins!</h3>
+    <div class="admin">
         <button ref="button_play" @click="clickPlay" class="button_play"> Als Spieler fortfahren </button>
         <div class="world_edit_form">
-            <p>oder Koordinaten eingeben:</p>
-            <div>
-                <span>
-                    <label class="label_coordinate">Q</label><input class="input_coordinate" v-model="qInput"/>
-                </span>
-                <span>
-                    <label class="label_coordinate">R</label><input class="input_coordinate" v-model="rInput"/>
-                </span>
-            </div>
+                <span>oder Koordinaten eingeben:</span>
+                <div>
+                    <span>
+                        <label class="label_coordinate">Q</label><input class="input_coordinate" v-model="qInput"/>
+                    </span>
+                    <span>
+                        <label class="label_coordinate">R</label><input class="input_coordinate" v-model="rInput"/>
+                    </span>
+                </div>
         </div>
         <button ref="button_edit" @click="clickEdit()" class="button_edit">und die Welt editieren.</button>
     </div>
@@ -74,18 +73,19 @@ onMounted(() => {
 .admin {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     /* padding: 2rem; */
+    height: 100%;
     width: 60rem;
     max-width: 100%;
-    
-    position: absolute;
+
     z-index: 100;
     
     font-size: .8rem;
+    text-align: center;
     text-shadow: 0rem 0rem 1rem black;
     background-color: rgba(0, 0, 0, 0.832);
 
@@ -109,6 +109,7 @@ button {
 }
 .button_play {
     grid-column: 1;
+    grid-row: 2;
     width: 12rem;
     align-self: center;
     justify-self: center;
@@ -117,6 +118,7 @@ button {
     grid-column: 2;
     grid-row: 2;
     display: flex;
+    flex-direction: column;
     align-items: center;
 } .label_coordinate {
     display: flex;
@@ -137,5 +139,10 @@ button {
     width: 12rem;
     align-self: center;
     justify-self: center;
+}
+.other {
+    grid-row: 3;
+    padding-left: 15%;
+    padding-right: 15%;
 }
 </style>

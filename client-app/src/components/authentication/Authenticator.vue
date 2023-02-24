@@ -6,23 +6,16 @@ import { ref } from 'vue';
 
 const authStore = useAuthStore()
 
-let check1Failed = ref(false)
-let check1FailedThenSucceeded = ref(false)
-
-let check2Failed = ref(false)
-let check2FailedThenSucceeded = ref(false)
+const regisRef = ref(null)
+const loginRef = ref(null)
 
 function checkWebGL1() {
     const canvas = document.createElement( 'canvas' );
     let enabled = !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) )
     if (enabled) {
-        if (check1Failed.value === true) {
-            check1FailedThenSucceeded.value = true
-        }
         return true
     }
     else {
-        check1Failed.value = true
         return false
     }
 }
@@ -30,52 +23,87 @@ function checkWebGL2() {
     const canvas = document.createElement( 'canvas' );
     let enabled = !! ( window.WebGL2RenderingContext && canvas.getContext( 'webgl2' ) );
     if (enabled) {
-        if (check2Failed.value === true) {
-            check2FailedThenSucceeded.value = true
-        }
         return true
     }
     else {
-        check2Failed.value = true
         return false
     }
 }
 
+function switchForms() {
+    if (authStore.showingLoginForm) 
+    {
+        authStore.hideLoginForm()
+        authStore.showRegisForm()
+        regisRef.value.style.left = "0%"
+        loginRef.value.style.right = "100%"
+        authStore.updateValidation()
+    } 
+    else if (authStore.showingRegisForm) 
+    {
+        authStore.hideRegisForm()
+        authStore.showLoginForm()
+        regisRef.value.style.left = "100%"
+        loginRef.value.style.right = "0%"
+        authStore.updateValidation()
+    }
+}
 </script>
 
 <template> 
-    <div class="authenticator" ref="draggableElement">
-        <div class="disclaimer" v-show="!authStore.mailNotifSent && !authStore.regisFailed">
+    <div class="authenticator">
+        <h3 class="strong" v-if="authStore.showingLoginForm">Login</h3>
+        <h3 class="strong" v-if="authStore.showingRegisForm">Registrierung</h3>
+        <p class="disclaimer" v-show="!authStore.mailNotifSent && !authStore.regisFailed">
             <span class="strong">Achtung:</span> <br/>
-            Diese Webanwendung verwendet <span class="strong">WebGL</span> <br/> 
-            Einige Browser (z.B. LibreWolf) deaktivieren diese Funktion automatisch.
+            Diese App verwendet WebGL. <br/> <br/> 
+            Einige Browser deaktivieren diese Funktion automatisch.
+            <br/><br/>
+            Wir empfehlen <a href="https://www.opera.com/gx" target="_blank">Opera GX</a> für ein angenehmes Spielerlebnis im Browser.
+            <!-- <br/><br/>
+            WebGL unter LibreWolf aktivieren:
             <br/>
-            <br/>
-            Falls Ihnen die Spielwelt daher nicht richtig angezeigt wird, können Sie WebGL wie folgt aktivieren:
-            <br/>
-            <span class="strong">Settings > LibreWolf > Enable WebGL</span>
-        </div>
+            <span class="strong"> > 'Settings'  <br/> > 'LibreWolf' <br/> > 'Enable WebGL' <br/> > Browser neu starten</span>  -->
+        </p>
 
-        <div class="form" v-show="!authStore.mailNotifSent && !authStore.regisFailed">
-            <RegistrationForm ref="regis" v-if="authStore.showingRegisForm"/>  
-            <LoginForm ref="login" v-if="authStore.showingLoginForm"/>  
+        <div class="form_container" 
+            v-if="authStore.showingLoginForm || authStore.showingRegisForm"
+            v-show="!authStore.mailNotifSent && !authStore.regisFailed">
+            <div ref="regisRef" class="form regis">
+                <RegistrationForm/>  
+            </div>
+            <div ref="loginRef" class="form login">
+                <LoginForm/>  
+            </div>
         </div>
+        
+        <p class="prompt" @click="switchForms">
+            <span v-if="authStore.showingLoginForm">
+                Noch kein Konto? <br/>
+            </span>
+            <a v-if="authStore.showingLoginForm">
+                Jetzt registrieren!
+            </a>
+            <a v-if="authStore.showingRegisForm">
+                Zurück
+            </a>
+        </p>
 
         <div class="validation" v-show="!authStore.mailNotifSent && !authStore.regisFailed">
-            <div class="validation_success" v-show="authStore.showingLoginForm && (checkWebGL1() === true || checkWebGL2() === true) && !(check1FailedThenSucceeded || check2FailedThenSucceeded)">
+            <div class="validation_suboptimal" v-show="authStore.showingLoginForm && (checkWebGL1() === true && checkWebGL2() === false)">
+                Ihr Browser verwendet eine veraltete Version von WebGL. Das Spielerlebnis könnte dadurch beeinträchtigt werden.  <br/>
+            </div>
+            <div class="validation_success" v-show="authStore.showingLoginForm && (checkWebGL2() === true)">
                 WebGL ist aktiviert ✓  <br/>
             </div>
-            <div class="validation_fail" v-show="authStore.showingLoginForm && (checkWebGL1() === false && checkWebGL2() === false) && !(check1FailedThenSucceeded || check2FailedThenSucceeded)">
-                WebGL ist deaktiviert !  <br/>
-            </div>
-            <div class="validation_restart" v-show="authStore.showingLoginForm && (checkWebGL1() === false && checkWebGL2() === false) && (check1FailedThenSucceeded || check2FailedThenSucceeded)">
-                WebGL aktiviert. Bitte Browser neu starten. <br/>
+            <div class="validation_fail" v-show="authStore.showingLoginForm && (checkWebGL1() === false && checkWebGL2() === false)">
+                WebGL ist deaktiviert. <br/> Bitte verwenden Sie einen anderen Browser. <br/>
             </div>
             <span class="validation_fail" v-show="authStore.showingLoginForm && authStore.loginFailed">
                 Zugangsdaten nicht erkannt . . .  <br/>
             </span>
             <span v-if="authStore.showingRegisForm"> 
-                Ihr Passwort braucht <span class="strong">6 bis 20 Zeichen</span>, <br/> mit mindestens einer <span class="strong">Zahl</span>, <br/> sowie <span class="strong">Groß- & Kleinbuchstaben</span> <br/>
+                Das Passwort braucht <span class="strong">6 bis 20 Zeichen</span>, <br/> mindestens eine <span class="strong">Zahl</span>, <br/> <span class="strong">Groß- & Kleinbuchstaben</span> <br/>
             </span>
         </div>
 
@@ -104,41 +132,137 @@ function checkWebGL2() {
 .authenticator {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: .3fr 1fr .3fr;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     font-size: .8rem;
 
     /* z-index: 19; */
     text-shadow: 0rem 0rem 1rem black;
 }
-.disclaimer {
-    /* grid-column: 1; */
-    padding: 5%;
+h3 {
+    padding-top: 2rem;
+    grid-column: 2;
+    grid-row: 1;
+    font-family: 'fondamento';
+    text-align: center;
 }
-
+.disclaimer {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    padding: 7.5%;
+    color: rgba(252, 205, 143, .5); 
+    font-size: 1rem;
+    text-align: right;
+    transition: 1s;
+} .disclaimer > a {
+    color: rgb(255, 0, 76);
+}
+ .disclaimer > a:hover {
+    color: white;
+} .disclaimer:hover + .form_container {
+    border-left-color: rgba(252, 205, 143, 1);
+    transition: 1s;
+} .disclaimer:hover {
+    color:  rgba(252, 205, 143, 1);
+    transition: 1s;
+}
+.form_container {
+    display: flex;
+    height: 35vh;
+    align-items: center;
+    position: relative;
+    border-style: solid;
+    border-color: transparent;
+    border-width: .2rem;
+    /* border-bottom-left-radius: 2.5rem;
+    border-top-right-radius: 2.5rem; */
+    border-right-width: .2rem;
+    /* border-left-color: rgba(252, 205, 143, .5); */
+    border-left-color: rgba(252, 205, 143, 1);
+    border-right-color: rgba(0, 0, 0, .8);
+    overflow: hidden;
+    transition: border-color 1s;
+}
 .form {
-    /* grid-column: 2; */
-    display: inherit;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
     width: 100%;
-    /* padding-left: 15%;
-    padding-right: 15%; */
+    /* height: 100%; */
+
+    position: absolute;
+    transition: ease .3s;
+
+} .regis {
+    left: 100%;
+} .login {
+    right: 0%;
+}
+.prompt {
+    align-self: center;
+    justify-self: center;
+    margin-top: auto;
+    margin-bottom: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 10rem;
+    height: 5rem;
+    padding-right: 6%;
+    padding-left: 6%;
+
+    text-align: center;
+    
+    border-width: 1px;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-top-style: none;
+    border-top-color: rgb(133, 113, 86);
+
+    color: rgba(252, 205, 143);
+
+    user-select: none;
+    transition: 1.5s;
+} .prompt:hover {
+    cursor: pointer;
+    transition: 1.5s;
+} .prompt:active {
+    transition: .1s;
+    letter-spacing: initial;
+} 
+.prompt > a {
+    /* font-size: 1rem; */
+    color: white;
+    transition: .2s;
+} .prompt:hover > a {
+    letter-spacing: .05rem;
+    transition: .5s;
+    /* text-shadow: 0rem 0rem 1rem white; */
+} .prompt:active > a {
+    /* letter-spacing: initial; */
+    transition: .2s;
+    /* border-radius: 0%; */
 }
 .validation {
-    place-self: center;
-    text-align: center;
-    /* font-size: .6rem; */
-    padding-top: 15%;
-    padding-bottom: 15%;
+    grid-column: 3;
+    grid-row: 1 / 4;
+    text-align: left;
+    padding: 7.5%;
 }
 .validation_success {
     color:rgb(0, 255, 0);
 }
 .validation_fail {
-    color:rgb(255, 0, 0);
+    color:rgb(255, 0, 76);
 }
-.validation_restart {
+.validation_suboptimal {
     color:rgb(255, 255, 0);
 }
 
@@ -146,6 +270,8 @@ function checkWebGL2() {
     font-size: 1rem;
     text-align: center;
     grid-column: span 3;
+    grid-row: 2;
+    padding-bottom: 10%;
 }
 
 @media (max-width: 800px) {

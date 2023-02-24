@@ -91,7 +91,7 @@ namespace web_api.Controllers
             if (!isAdminFromClaim())
                 return Unauthorized();
 
-            List<HexTile> result = await WorldManager.GetSliceAsync(_context, RelativeZero, 5);
+            List<HexTile> result = await WorldManager.GetSliceAsync(_context, RelativeZero, 4);
             return Ok(result);
         }
 

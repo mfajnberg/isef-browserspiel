@@ -10,10 +10,12 @@ import { useUIStore } from '../stores/UIStore'
 import { usePartyStore } from '../stores/PartyStore'
 import { useWorldStore } from '../stores/WorldStore'
 import { HexVector } from '../classes/HexVector'
+import { randFloat } from 'three/src/math/MathUtils'
 
-export function initHex(loader, texLoader, worldStore, gameAssetStore, hexData, randomRotation) {
+export function spawnHex(loader, texLoader, worldStore, gameAssetStore, hexData, randomRotation, siteType) {
     loader.parse(gameAssetStore.getHexModel, '', (loadedObject) => {
-        loadedObject.scene.traverse(child => {
+        const spawnedHex = loadedObject.scene
+        spawnedHex.traverse(child => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
                     map: texLoader.load(gameAssetStore.hexTextureURIs[Math.abs(randomRotation)])
@@ -25,38 +27,35 @@ export function initHex(loader, texLoader, worldStore, gameAssetStore, hexData, 
                 child.receiveShadow = true
             }
         })
-        loadedObject.scene.translateX(hexData.getWorldXFromAxialQ())
-        loadedObject.scene.translateZ(hexData.getWorldZFromAxialR())
-        loadedObject.scene.userData.Q = hexData.Q
-        loadedObject.scene.userData.R = hexData.R
-        loadedObject.scene.userData.isBlocked = false
-        loadedObject.scene.userData.FCost = 0
-        loadedObject.scene.userData.GCost = 0
-        loadedObject.scene.userData.HCost = 0
-        loadedObject.scene.userData.CameFrom = null
-        loadedObject.scene.name = `${hexData.Q}|${hexData.R}`
-        
-        worldStore.scene.add(loadedObject.scene)
-        new Hexes3d().buffer.push(loadedObject.scene)
-
+        spawnedHex.translateX(hexData.getWorldXFromAxialQ())
+        spawnedHex.translateZ(hexData.getWorldZFromAxialR())
+        spawnedHex.name = `${hexData.Q}|${hexData.R}`
+        spawnedHex.userData.Q = hexData.Q
+        spawnedHex.userData.R = hexData.R
+        spawnedHex.userData.isBlocked = false
+        spawnedHex.userData.siteType = siteType
+        spawnedHex.userData.FCost = 0
+        spawnedHex.userData.GCost = 0
+        spawnedHex.userData.HCost = 0
+        spawnedHex.userData.CameFrom = null
         const partyStore = usePartyStore()
         if (hexData.Q === partyStore.party.location.Q
-            && hexData.R === partyStore.party.location.R) {
-                partyStore.start = loadedObject.scene
-        }
-                
-        const sites = new TileDTOs()
-        sites.buffer.push({
+            && hexData.R === partyStore.party.location.R) 
+        {
+            partyStore.start = spawnedHex
+        }      
+        worldStore.scene.add(spawnedHex)
+        new Hexes3d().buffer.push(spawnedHex)
+        new TileDTOs().buffer.push({
             AxialCoordinates: {
                 // Q: hexData.Q + worldStore.getAbsoluteZeroOffset.Q,
                 // R: hexData.R + worldStore.getAbsoluteZeroOffset.R
                 Q: hexData.Q,
                 R: hexData.R
             },
-            SiteType: 0
+            SiteType: siteType
         })
     })
-
 }
 
 export async function loadPawn3d() {
@@ -73,7 +72,7 @@ export async function loadPawn3d() {
     }
     
     new FBXLoader().load(modelURL, (loadedObject => {
-        loadedObject.scale.set(.01, .01, .01)
+        loadedObject.scale.set(.005, .005, .005)
         loadedObject.traverse((child) => {
             if (child.isMesh) {
             child.castShadow = true
@@ -110,22 +109,23 @@ export function playAnim(worldStore, animationURL) {
     })
 }
 
-export async function loadHexCursor(worldStore, gameAssetStore) {
+export async function loadHexCursor() {
+    const worldStore = useWorldStore()
     try {
         dispose(worldStore.cursor)
     } catch (e) {}
     
-    for (let asset of gameAssetStore.assets3d) {
-        if (asset.name == "HexCursor.glb") {
-            var model = asset.data
+    if (!useUIStore().devMode) {
+        for (let asset of useGameAssetStore().assets3d) {
+            if (asset.name == "3dCursorArrow.glb") {
+                var model = asset.data
+            }
         }
+        var modelBlob = new Blob([model], { type: 'application/octet-stream' })
+        var modelURL = URL.createObjectURL(modelBlob)
     }
-
-    const modelBlob = new Blob([model], { type: 'application/octet-stream' })
-    let modelURL = URL.createObjectURL(modelBlob)
-    
-    if (useUIStore().devMode) {
-        modelURL = "HexCursor.glb"
+    else {
+        var modelURL = "3dCursorArrow.glb"
     }
     new GLTFLoader().load(modelURL, (loadedObject => {
         worldStore.cursor = loadedObject.scene
@@ -136,7 +136,7 @@ export async function loadHexCursor(worldStore, gameAssetStore) {
 export async function loadSitePreview(worldStore) {
     try {
         dispose(worldStore.preview)
-    } catch (e) {}
+    } catch (error) { console.log(error)}
     
     if (!useUIStore().devMode) {
         for (let asset of useGameAssetStore().assets3d) {
@@ -146,7 +146,7 @@ export async function loadSitePreview(worldStore) {
         }
     }
     else {
-        model = await (await fetch("HexPreview2.glb")).arrayBuffer()
+        model = await (await fetch("3dCursorCross.glb")).arrayBuffer()
     }
 
     new GLTFLoader().parse(model, '', (loadedObject => {
@@ -182,23 +182,26 @@ export async function spawnSite(worldStore, gameAssetStore, hexVector, siteType)
         
         loadedObject.scene.translateX(hexVector.getWorldXFromAxialQ())
         loadedObject.scene.translateZ(hexVector.getWorldZFromAxialR())
+
+        loadedObject.scene.rotateY(randFloat(1, 999))
         loadedObject.scene.userData.hexVector = hexVector
 
         // occupy correct hex object3d
         for (let hex of new Hexes3d().buffer) {
             if (hex.userData.Q === hexVector.Q && hex.userData.R === hexVector.R) {
+                hex.userData.siteType = siteType
                 hex.userData.isBlocked = true
             }
         }
         // set type in sites.buffer
-        const sites = new TileDTOs()
-        for (let site of sites.buffer) {
-            if (site.AxialCoordinates.Q === hexVector.Q && 
-                site.AxialCoordinates.R === hexVector.R) {
+        const tileDTOs = new TileDTOs()
+        for (let tileDTO of tileDTOs.buffer) {
+            if (tileDTO.AxialCoordinates.Q === hexVector.Q && 
+                tileDTO.AxialCoordinates.R === hexVector.R) {
                     if (siteType != undefined)
-                        site.SiteType = siteType
+                        tileDTO.SiteType = siteType
                     else {
-                        site.SiteType = URIToSiteType(worldStore.previewModelURI)
+                        tileDTO.SiteType = URIToSiteType(worldStore.previewModelURI)
                     }
             }
         }
@@ -210,12 +213,14 @@ export async function spawnSite(worldStore, gameAssetStore, hexVector, siteType)
 }
 
 export function dispose(object3d) {
-    object3d.children.forEach(child => {
-        dispose(child);
-    });
-    object3d.geometry && object3d.geometry.dispose()
-    object3d.material && object3d.material.dispose()
-    object3d.texture && object3d.texture.dispose()
-    try {object3d.parent.remove(object3d)} catch(e) {}
-    try {object3d.dispose()} catch(e) {}
+    try {
+        object3d.children.forEach(child => {
+            dispose(child);
+        });
+        object3d.geometry && object3d.geometry.dispose()
+        object3d.material && object3d.material.dispose()
+        object3d.texture && object3d.texture.dispose()
+        try {object3d.parent.remove(object3d)} catch(e) {}
+        try {object3d.dispose()} catch(e) {}
+    } catch {}
 }

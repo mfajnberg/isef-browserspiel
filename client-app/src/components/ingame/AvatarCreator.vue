@@ -10,7 +10,7 @@ import { usePartyStore } from '../../stores/PartyStore';
 
 const uiStore = useUIStore()
 const authStore = useAuthStore()
-const assetStore = useGameAssetStore()
+const gameAssetStore = useGameAssetStore()
 const partyStore = usePartyStore()
 const worldStore = useWorldStore()
 const creatorStore = useCreatorStore()
@@ -19,15 +19,15 @@ async function clickSelectAvatar(name) {
     // check response
     await requestPostChoice(authStore, creatorStore, partyStore, name)
     uiStore.editorMode = false
-    uiStore.PlayNow(authStore, partyStore, worldStore, assetStore, creatorStore)
+    uiStore.PlayNow(authStore, partyStore, worldStore, gameAssetStore, creatorStore)
 }
 
 function playSoundPointerDown() {
-    assetStore.pointerDownSound.play()
+    gameAssetStore.pointerDownSound.play()
 }
 function playSoundPointerUp(event) {
     if (event.button === 0) {
-        assetStore.pointerUpSound.play()
+        gameAssetStore.pointerUpSound.play()
     }
 }
 
@@ -140,6 +140,9 @@ onMounted(() => {
         position: fixed;
         background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%);
         user-select: none;
+
+    } .creator > * { 
+        pointer-events: all;
     }
     h3 {
         justify-self: center;
@@ -157,10 +160,20 @@ onMounted(() => {
         padding-right: 5%;
         padding-bottom: 10%;
         grid-template-columns: 1fr;
-        grid-template-rows: 2fr .25fr 1.5fr 3fr .5fr ;
+        grid-template-rows: 2fr .3fr 1.5fr 3fr .5fr ;
         text-shadow: 0rem 0rem 1rem black;
         /* height: 100%; */
     } 
+    .option:hover > .description {
+        color: rgb(252, 205, 143);
+        transition: 1s;
+    }.option:hover > .name {
+        border-bottom-color: white;
+        transition: 1s;
+    }.option:hover > .button_select {
+        border-color: rgb(252, 205, 143);
+        transition: 1s;
+    }
     .portrait {
     grid-row: 1;
     background-repeat: no-repeat;
@@ -182,13 +195,21 @@ onMounted(() => {
     }.name{
         grid-row: 2;
         margin-top: 1rem;
+        margin-bottom: 1rem;
         text-align: center;
+        display: flex;
+        width: fit-content;
+        height: 1.2rem;
+        justify-self: center;
+        padding: .2rem;
         font-size: 1rem;
         font-family: 'fondamento';
         font-style: italic;
         color: white;
-        flex-wrap: nowrap;
-        white-space: nowrap;}
+        border-style: double;
+        border-color: transparent;
+        transition: 1s;
+    }
     .statblock{
         grid-row: 3;
         display: grid;
@@ -217,11 +238,8 @@ onMounted(() => {
         padding: 0% 5% 0% 5%;
         font-style: italic;
         overflow: auto;
-        pointer-events: all;
         color: rgba(252, 205, 143, 0.5);
-        transition: all .15s;
-    } .description:hover {
-        color: rgb(252, 205, 143)
+        transition: 1s;
     }
     .button_select {
         position: fixed;
@@ -233,6 +251,7 @@ onMounted(() => {
         pointer-events: all;
         user-select: none;
         color: rgb(0, 255, 0);
-        transition: border-color .2s;
+
+        transition: 1s;
     }
 </style>

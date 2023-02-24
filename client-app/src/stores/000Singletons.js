@@ -73,16 +73,12 @@ export class LoadingScreens {
         text: "Die alten Götter um Rat bitten..."
       },
       {
-        name: "HexPreview.glb",
+        name: "3dCursorArrow.glb",
         text: "Axiale Koordinatensysteme nachvollziehen..."
       },
       {
-        name: "HexPreview2.glb",
-        text: "Weltherrschaftspläne aushacken..."
-      },
-      {
-        name: "HexCursor.glb",
-        text: "Algorithmische Komplexität unterschätzen..."
+        name: "3dCursorArrow.glb",
+        text: "Alles wieder von vorne machen müssen..."
       },
       {
         name: "Arissa.fbx",
@@ -109,7 +105,7 @@ export class Ambience {
     this.music = new Howler.Howl({
         src: 'music.mp3',
         loop: true,
-        volume: .12,
+        volume: .06,
         mute: false,
         preload: true
     })

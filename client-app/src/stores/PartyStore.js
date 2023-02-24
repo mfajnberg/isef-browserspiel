@@ -25,7 +25,6 @@ export const usePartyStore = defineStore('PartyStore', {
             const posX = partyLocationHexVector.getWorldXFromAxialQ()
             const posZ = partyLocationHexVector.getWorldZFromAxialR()
             try {
-                useWorldStore().setCameraPosition(posX, posZ)
                 this.pawn3d.position.x = posX
                 this.pawn3d.position.z = posZ
             } catch (error) { 

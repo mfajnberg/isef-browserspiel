@@ -4,7 +4,6 @@ import { usePlayer } from '@vue-youtube/core'
 import { useUIStore } from './stores/UIStore.js'
 import { useAuthStore } from './stores/AuthStore.js'
 import { usePartyStore } from './stores/PartyStore'
-import { useGameAssetStore } from './stores/GameAssetStore'
 import { requestTokenRefresh } from './services/AuthService.js'
 
 import Header from './components/Header.vue'
@@ -18,7 +17,6 @@ import Overlay from './components/ingame/Overlay.vue'
     const authStore = useAuthStore()
     const uiStore = useUIStore()
     const partyStore = usePartyStore()
-    const gameAssetStore = useGameAssetStore()
 
     const videoId = ref('PmdVSxLBZjU');
     const youtube = ref();
@@ -30,10 +28,6 @@ import Overlay from './components/ingame/Overlay.vue'
     },
         width: "100%",
         height: "100%"
-    });
-
-    onReady((event) => {
-        // event.target.playVideo();
     });
 
     onMounted(() => {
@@ -49,50 +43,56 @@ import Overlay from './components/ingame/Overlay.vue'
     <div id="background">
         <Header/>
         <div class="content">
-            <div class="welcome" v-show="uiStore.getShowingHome || uiStore.getShowingAuthentication">
-                <h2 class="welcome_heading grid_span_2">Willkommen in Averroes,</h2>
+            <div class="welcome" v-show="!uiStore.getShowingWorldmap && !uiStore.getShowingAvatarCreator">
+                <div class="welcome_heading grid_span_2">
+                    <h2 v-if="!uiStore.getShowingAdminPrompt">Willkommen in Averroes,</h2>
+                    <h2 v-if="uiStore.getShowingAdminPrompt">Herzlich willkommen, Admin!</h2>
+                </div>
                 <div class="welcome_sub_container grid_span_2">
-                    <div class="welcome_item" v-show="uiStore.getShowingHome && !uiStore.loadingAssets">
+                    <div class="welcome_item synopsis" v-show="uiStore.getShowingHome && !uiStore.loadingAssets">
+                        <h3 class="welcome_item_heading heading_synopsis">... einer Welt voller Gefahren und Abenteuer. </h3>
                         <p>
-                            ... einer Welt voller Gefahren und Abenteuer. 
+                            <span class="check_mark">✓</span> Erkunde legendäre Stätten
                             <br/><br/>
-                            Dich erwartet ein beispielloses Spielerlebnis, 
-                            mit Elementen aus klassischen Strategie- und Rollenspielen.
-                            <br/><br/> 
-                            ✓ Erkunde legendäre Stätten.
+                            <span class="check_mark">✓</span> Sammle Einfluss und Berühmtheit
                             <br/><br/>
-                            ✓ Sammle Einfluss und Berühmtheit.
-                            <br/><br/>
-                            ✓ Kämpfe, wofür es sich für dich zu kämpfen lohnt.
+                            <span class="check_mark">✓</span> Kämpfe, wofür es sich zu kämpfen lohnt
                         </p>
                     </div>
                     <div class="welcome_item vid" v-show="uiStore.getShowingHome && !uiStore.loadingAssets">
                         <div id="vid" ref="youtube"/>
                     </div>
     
-                    <div class="welcome_item grid_span_2" v-show="uiStore.getShowingAuthentication && !uiStore.loadingAssets">
-                        <Authenticator/>
+                    <div class="grid_span_2 admin" v-if="uiStore.getShowingAdminPrompt">
+                        <AdminPrompt/>
                     </div>
-                    <div class="loading welcome_item" v-if="(uiStore.getShowingHome || uiStore.getShowingAuthentication) && uiStore.loadingAssets">
+    
+                    <div class="loading welcome_item" v-if="uiStore.loadingAssets">
                         <h3 class="heading_loading">Inhalte werden geladen...</h3>
                         <span class="text_transparent">{{uiStore.loadingProgress}}</span>
                     </div>
                 </div>
+                
+                <div class="welcome_item grid_span_2 authenticator" v-show="uiStore.getShowingAuthentication && !uiStore.loadingAssets">
+                    <Authenticator/>
+                </div>
 
-                <div class="roadmap welcome_item grid_span_2" v-show="uiStore.getShowingHome || uiStore.showingAuthentication">
+                <div class="roadmap welcome_item grid_span_2" v-show="uiStore.getShowingHome || uiStore.showingAdminPrompt || uiStore.loadingAssets">
                     <h3 class="welcome_item_heading">Roadmap</h3>
                     <p>
                         Bald wird diese App Teil einer integrierten Spielwelt.
                         Bist du bereit frischen Wind in ein wachsendes Team zu bringen? <br/>
-                        Für die Arbeit am Schwesterprojekt sind diverse <a class="anchor_inline">Stellen</a> offen. 
+                        Für die Arbeit am Schwesterprojekt gibt es noch diverse offene <a class="anchor_inline">Stellen</a> 
                     </p>
                 </div>
+
+                <div class="grid_span_2 imprint" v-if="uiStore.getShowingImprint">
+                    <Imprint/>
+                </div>
             </div>
-            <AdminPrompt v-if="uiStore.getShowingAdminPrompt"/>
             <AvatarCreator id="avatar_creator" v-if="uiStore.getShowingAvatarCreator"/>
             <canvas canvas id="adventure_map" v-show="uiStore.getShowingWorldmap"></canvas>
             <Overlay id="overlay" v-if="uiStore.getShowingWorldmap"/>
-            <Imprint v-if="uiStore.getShowingImprint"/>
         </div>
         <Footer v-if="!uiStore.showingWorldmap"/>
     </div>
@@ -146,7 +146,7 @@ import Overlay from './components/ingame/Overlay.vue'
         height: 85%;
         grid-row-gap: 2rem;
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 5fr 3fr ;
+        grid-template-rows: 1fr 4.5fr 3fr 1fr ;
         width: 100%;
         max-width: 60rem;
         text-align: left;
@@ -161,24 +161,35 @@ import Overlay from './components/ingame/Overlay.vue'
         border-style: outset;
         border-width: 1px;
         border-color: rgba(133, 113, 86, 0.5) ;
+        font-size: 1rem;
         text-shadow: 0rem 0rem 1rem black;
         background-color: rgba(0, 0, 0, 0.852);
         /* transition: .5s; */
         cursor: default;
-    } .welcome_item:hover {
-        /* border-color: rgba(252, 205, 143, 100); */
-        /* border-style: inset; */
-        /* color: white; */
+    }
+    .synopsis {
+        justify-content: space-evenly;
+    }.check_mark {
+        display: inline-flex;
+        font-size: 1.4rem;
+        padding-right: .1rem;
+    }.weak {
+        color: white;
     } .vid {
         /* border-style: none; */
         padding: 0;
     } .roadmap {
-        font-size: .8rem;
+        /* font-size: .8rem; */
         text-align: center;
     } .welcome_item_heading {
+        margin-top: 0%;
         color: white;
+        font-size: 1rem;
         height: 0rem;
         text-align: center;
+    }  .heading_synopsis {
+        margin-bottom: 0%;
+        text-align: left;
     } .welcome_sub_container {
         display: grid;
         height: 100%;
@@ -189,9 +200,12 @@ import Overlay from './components/ingame/Overlay.vue'
     }.grid_span_2 {
         grid-column: span 2;
         /* text-align: justify; */
-    } .anchor_inline {
-        display: inline;
-        cursor:help;
+    }
+    .authenticator, .imprint {
+        grid-row: 2 / 4;
+        /* display: grid; */
+    } .admin {
+        grid-row: 1;
     }
     @media (max-width: 800px) {
         #background {

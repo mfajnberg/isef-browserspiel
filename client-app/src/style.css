@@ -68,21 +68,14 @@
 }
 
 a {
+  text-decoration: none;
   font-weight: 500;
   color: #646cff;
-  text-decoration: inherit;
+  transition: .2s;
 }
 a:hover {
-  color: #535bf2;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  color: white;
+  transition: .3s;
 }
 
 body {
@@ -100,7 +93,7 @@ h1 {
 }
 h2 {
   font-family: 'Fondamento';
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin: 0;
 }
 h3 {

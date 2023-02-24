@@ -100,6 +100,7 @@ namespace web_api.Controllers
         {
             Party party = new Party();
             party.LeaderId = avatar.Id;
+            party.Location = _context.HexTiles.Where(h => h.AxialQ == 0 && h.AxialR == 0).FirstOrDefault();
             
             _context.Parties.Add(party);
             await _context.SaveChangesAsync();

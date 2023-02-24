@@ -17,6 +17,7 @@ export const useWorldStore = defineStore('WorldStore', {
         
         objectSnapped: false,
         hoveredItem: null,
+        hoveredItemPrevious: null,
         clickedItem: null,
         preview: null,
         cursor: null,
@@ -32,19 +33,50 @@ export const useWorldStore = defineStore('WorldStore', {
     getters: {
     },
     actions: {
+        disposeSingleTileAt(hexVec) {
+            const hexes3d = new Hexes3d().buffer
+            const sites3d = new Sites3d().buffer
+            const tileDTOs = new TileDTOs().buffer
 
-        disposeAll() {
-            for (let hex of new Hexes3d().buffer) {
-                dispose(hex)
+            let hex3dIndex = 0
+            for (let hex3d of hexes3d) {
+                if (hexVec.Q === hex3d.userData.Q && hexVec.R === hex3d.userData.R) {
+                    dispose(hex3d)
+                    hexes3d.splice(hex3dIndex, 1)
+                    break
+                } else {
+                    hex3dIndex++
+                }
             }
-            new Hexes3d().buffer.length = 0
-            const tiles = new TileDTOs()
-            const sites3d = new Sites3d()
-            for (let obj3d of sites3d.buffer) {
-                dispose(obj3d)
+            
+            let site3dIndex = 0
+            for (let site3d of sites3d) {
+                if (hexVec.Q === site3d.userData.hexVector.Q && hexVec.R === site3d.userData.hexVector.R) {
+                    dispose(site3d)
+                    sites3d.splice(site3dIndex, 1)
+                    break
+                } else {
+                    site3dIndex++
+                }
             }
-            tiles.buffer.length = 0
-            sites3d.buffer.length = 0
+
+            tileDTOs.splice(tileDTOs.findIndex(
+                t => t.AxialCoordinates.Q === hexVec.Q
+                && t.AxialCoordinates.R === hexVec.R ), 1)
+        },
+        disposeAllTiles() {
+            const hexes3d = new Hexes3d().buffer
+            const sites3d = new Sites3d().buffer
+            const tileDTOs = new TileDTOs().buffer
+            for (let hex3d of hexes3d) {
+                dispose(hex3d)
+            }
+            for (let site3d of sites3d) {
+                dispose(site3d)
+            }
+            hexes3d.length = 0
+            sites3d.length = 0
+            tileDTOs.length = 0
         },
 
         async movePawn() {
@@ -71,8 +103,7 @@ export const useWorldStore = defineStore('WorldStore', {
             this.orbit.target.z = z
             this.camera.position.x = x
             this.camera.position.z = z
-            this.camera.lookAt(new Vector3(x, 0, z))
-            this.orbit.update()
+            // this.camera.lookAt(new Vector3(x, 0, z))
         }
     },
 })

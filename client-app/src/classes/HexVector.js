@@ -1,7 +1,8 @@
 export class HexVector {
-  constructor(axialQ, axialR) {
+  constructor(axialQ, axialR, siteType) {
     this.Q = axialQ
     this.R = axialR
+    this.siteType = siteType
   }
 
   equals(other) {

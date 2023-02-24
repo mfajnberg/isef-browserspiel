@@ -122,13 +122,14 @@ namespace web_api.Controllers
                 for (int i = 0; i < hexTilesPath.Count; i++)
                 {
                     TravelOGI travel = new TravelOGI();
-                    travel.Id = i + 1;
+                    travel.Id = 0;
                     travel.PartyId = party.Id;
                     travel.AxialQ = hexTilesPath[i].AxialQ;
                     travel.AxialR = hexTilesPath[i].AxialR;
                     travel.ScheduledAt = scheduleTimeAt;
 
-                    scheduleTimeFor = scheduleTimeFor.AddSeconds(hexTilesPath[i].TravelTime);
+                    //scheduleTimeFor = scheduleTimeFor.AddSeconds(hexTilesPath[i].TravelTime);
+                    scheduleTimeFor = scheduleTimeFor.AddSeconds(2);
                     travel.ScheduledFor = scheduleTimeFor; // add rules to calculate travel time
 
                     newTravelOgis.Add(travel);

@@ -1,6 +1,12 @@
 import { Creature } from "../classes/Creature"
+import { useUIStore } from "../stores/UIStore"
 
 export async function requestGetChoices(authStore, creatorStore) {
+    if (!useUIStore().devMode) {
+        var URL = "api/avatar/choices"
+    } else {
+        var URL = "api/avatar/choices.json"
+    }
     const options = {
         method: 'GET',
         headers: {
@@ -8,7 +14,7 @@ export async function requestGetChoices(authStore, creatorStore) {
             'Authorization': `Bearer ${authStore.token}`,
         }
     }
-    await fetch("api/avatar/choices", options)
+    await fetch(URL, options)
     .then(async (response) => await response.json())
     .then(avatarChoices => {
         for (let choice of avatarChoices) {

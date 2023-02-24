@@ -15,11 +15,6 @@ const worldStore = useWorldStore()
 const gameAssetStore = useGameAssetStore()
 const creatorStore = useCreatorStore()
 
-function switchToRegis() {
-    authStore.hideLoginForm()
-    authStore.showRegisForm()
-}
-
 // bind this to an Enter key event on the login widget
 async function LogInEnter() {
     gameAssetStore.pointerDownSound.play()
@@ -41,9 +36,6 @@ async function LogIn() {
 function playSoundPointerDown() {
     gameAssetStore.pointerDownSound.play()
 }
-function playSoundPointerUp() {
-    gameAssetStore.pointerUpSound.play()
-}
 
 const button_login = ref(null)
 onMounted(() => {
@@ -60,81 +52,65 @@ onBeforeUnmount( () => {
 
 <template>
     <div id="login_form" v-if="!uiStore.loadingAssets">
-        <h3 class="strong">Login</h3>
         <div class="item">
             <label class="item_label">E-Mail Adresse</label>
-            <input class="form_input" v-model="authStore.Email" id="email_address" @keyup.enter.native="LogInEnter"/>
+            <input class="form_input" v-model="authStore.Email" @keyup.enter.native="LogInEnter"/>
         </div>
         <div class="item">
             <label class="item_label">Passwort</label>
-            <input class="form_input" v-model="authStore.Password" type="password" id="password" @keyup.enter.native="LogInEnter"/>
+            <input class="form_input" v-model="authStore.Password" type="password" @keyup.enter.native="LogInEnter"/>
         </div>
         <div class="stay_logged_in">
             <label class="item_label">Angemeldet bleiben?</label>
             <input class="checkbox" v-model="authStore.stayLoggedIn" type="checkbox" />
         </div>
-        <button class="button_login" ref="button_login" v-on:click="LogIn(worldStore, gameAssetStore)">Einloggen</button>
-        <div class="register_prompt">
-            Noch kein Konto?
-            <a @click="switchToRegis" style="cursor: pointer;">Jetzt registrieren!</a>
-        </div>
+        <button ref="button_login" class="button_login"
+                v-on:click="LogIn(worldStore, gameAssetStore)">
+            Einloggen
+        </button>
     </div>
 </template>
 
 <style scoped>
 #login_form {
-    display: grid;
-    align-items: stretch;
-    justify-content: center;
+    display: flex;
     flex-direction: column;
-    /* padding: 5%; */
+    justify-content: flex-start;
     z-index: 20;
-} h3 {
-    font-family: 'fondamento';
-    text-align: center;
-    margin-bottom: 1rem;
-}
+} 
 .item {
     display: flex;
-    margin-bottom: .8rem;
     flex-direction: column;
     align-self: center;
     justify-self: center;
-    padding-left: 5%;
-    padding-right: 5%;
+    margin-bottom: .8rem;
     width: 10rem;
 } .item_label {
+    user-select: none;
 } 
 .form_input {
 
     /* width: 10rem; */
 }
 .button_login {
-    display: flex;
-    justify-content: center;
-    justify-self: center;
-    margin-top: .8rem;
-    margin-bottom: .8rem;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top: .2rem;
     font-size: 1rem;
 }
 .stay_logged_in {
     display: flex;
     align-self: center;
-    /* margin-top: 2%; */
+    align-items: center;
+    height: 2.725rem;
     margin-right: auto;
     margin-left: auto;
+    margin-bottom: .8rem;
 } .checkbox {
     margin-left: .7rem;
     width: 1rem;
     height: 1rem;
     /* color: black; */
 }
-.register_prompt {
-    margin-left: auto;
-    margin-right: auto;
-}
+
 .invalid_input {
         text-align: left;
         color: red;

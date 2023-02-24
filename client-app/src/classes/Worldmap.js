@@ -145,6 +145,26 @@ export function siteTypeToURI(code) {
 
     }
 }
+
+export function siteTypeToInfoText(code) {
+    switch (code) {
+        case 101:
+            return "Verbotener Wald"
+        case 201:
+            return "Sammelpunkt"
+        case 202:
+            return "Gehöft"
+        case 203:
+            return "Feldlager"
+        case 204:
+            return "Kristalle"
+        case 205:
+            return "Schatztruhe"
+        case 206:
+            return "Baum-Ent"
+
+    }
+}
 export function URIToSiteType(URI) {
     switch (URI) {
         case "forest_1.glb":

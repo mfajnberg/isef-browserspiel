@@ -30,6 +30,8 @@ export const useUIStore = defineStore('UIStore', {
         displayNextUpdateTime: null,
         
         hoveringOverlay: false,
+        hoveredName:"",
+        rightClick: false,
     }),
     getters: {
         getShowingAuthentication: (state) => state.showingAuthentication,
@@ -47,7 +49,9 @@ export const useUIStore = defineStore('UIStore', {
         updateCountdown() {
             try {
                 this.displayNextUpdateTime = this.nextUpdateTime
-                    .diff(DateTime.local()).toFormat('hh:mm:ss')
+                    .diff(DateTime.local())
+                    // .plus({seconds: 1})
+                    .toFormat('hh:mm:ss')
 
                 // this.displayNextUpdateTime = Duration
                 //     .fromObject(nextUpdateTimeDiff)
@@ -157,8 +161,8 @@ export const useUIStore = defineStore('UIStore', {
                             partyStore.pawn3d.visible = false
                         } catch (e) { }
                     }
-                    loadHexCursor(worldStore, gameAssetStore)
-                    worldStore.previewModelURI = "HexPreview2.glb"
+                    loadHexCursor()
+                    worldStore.previewModelURI = "3dCursorCross.glb"
                     loadSitePreview(worldStore)
                     worldStore.initialized = true
                     this.showWorldmap(worldStore, gameAssetStore)

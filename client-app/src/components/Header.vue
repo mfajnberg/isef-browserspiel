@@ -2,16 +2,16 @@
 import { ref, onMounted } from 'vue'
 import { LogOut } from '../services/AuthService.js'
 import { useAuthStore } from '../stores/AuthStore.js'
-import { usePartyStore } from '../stores/PartyStore';
+import { usePartyStore } from '../stores/PartyStore'
 import { useUIStore } from '../stores/UIStore.js'
 import { useGameAssetStore } from '../stores/GameAssetStore'
-import { useWorldStore } from '../stores/WorldStore';
-import { useCreatorStore } from '../stores/AvatarCreatorStore';
+import { useWorldStore } from '../stores/WorldStore'
+import { useCreatorStore } from '../stores/AvatarCreatorStore'
 import { Ambience } from '../stores/000Singletons.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { loadPawn3d, loadHexCursor, loadSitePreview, spawnSite } from '../threejs/ActorManager';
-import { HexVector } from '../classes/HexVector';
+import { loadHexCursor, loadSitePreview, spawnSite } from '../threejs/ActorManager';
+import { HexVector } from '../classes/HexVector'
 import { requestPartyVision } from '../services/WorldmapService'
+import { requestGetChoices } from '../services/AvatarCreatorService'
 
     const uiStore = useUIStore()
     const authStore = useAuthStore()
@@ -22,12 +22,25 @@ import { requestPartyVision } from '../services/WorldmapService'
     const ambience = new Ambience()
 
     async function clickPlay() {
+
         if (uiStore.devMode) {
+
+            // await requestGetChoices(authStore, creatorStore)
+            // uiStore.showAvatarCreator()
+            // return
+
+            // uiStore.editorMode = true
             await gameAssetStore.devFetchHexBase()
+            partyStore.party = { 
+                location: {
+                    Q: 0,
+                    R: 0
+                }
+            }
             await requestPartyVision(0, 0) // broken due to being POST to local json
             uiStore.showWorldmap(worldStore, gameAssetStore)
-            spawnSite(worldStore, gameAssetStore, new HexVector(1,0),1)
-            loadHexCursor(worldStore, gameAssetStore)
+            spawnSite(worldStore, gameAssetStore, new HexVector(1,0), 201)
+            loadHexCursor()
             loadSitePreview(worldStore)
             worldStore.initialized = true
             return
@@ -111,7 +124,7 @@ import { requestPartyVision } from '../services/WorldmapService'
 
 <template>
     <div id="header">
-    <div id="header_content" v-show="!uiStore.loadingAssets">
+    <div id="header_content" v-show="!uiStore.loadingAssets && !uiStore.showingAvatarCreator">
         
         <button id="button_home" 
             @click="clickHome()"
@@ -120,7 +133,7 @@ import { requestPartyVision } from '../services/WorldmapService'
             Home
         </button>
 
-        <button 
+        <button id="button_fullscreen"
             @click="toggleFullscreen"
             v-show="uiStore.showingWorldmap">
             Toggle Fullscreen
@@ -156,6 +169,8 @@ import { requestPartyVision } from '../services/WorldmapService'
         position: fixed;
         left: auto;
         right: auto;
+
+        pointer-events: none;
         
         z-index: 22;
     }
@@ -190,28 +205,37 @@ import { requestPartyVision } from '../services/WorldmapService'
         position: absolute;
         justify-self: left;
         /* color: white; */
+        pointer-events: all;
     }
-
+    
     #button_play {
         position: absolute;
+        top: 12vh;
         justify-self: center;
-        /* color: rgb(252, 205, 143); */
+        color: rgb(252, 205, 143);
+        transition: .25s;
+        pointer-events: all;
     } #button_play:hover {
         text-shadow: 0rem 0rem 1rem white;
         color: rgb(0, 255, 0);
     } #button_play:active {
+        transition: 0s;
         color: white;
     }
-
+    
+    #button_fullscreen {
+        pointer-events: all;
+    }
+    
     #logged_in {
         position: absolute;
         justify-self: right;
-
+        
         color: white;
         text-shadow: 
-            0px 0px 10px black,
-            0px 0px 10px black,
-            0px 0px 10px black;
+        0px 0px 10px black,
+        0px 0px 10px black,
+        0px 0px 10px black;
         user-select: none;
     } 
     
@@ -220,13 +244,11 @@ import { requestPartyVision } from '../services/WorldmapService'
         justify-self: right;
 
         color: red;
+        pointer-events: all;
     }    
-/* @media (max-width: 700px) {
-    #button_logout, #logged_in {
-        right: 0%;
-    }
-    #button_home {
-        left: 0%;
-    }
-}    */
-</style>
+    @media (max-width: 1124px) {
+        #button_play {
+            top: initial;
+        }
+    }   
+    </style>

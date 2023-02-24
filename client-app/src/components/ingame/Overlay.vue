@@ -64,13 +64,23 @@ function debug1() {
 function debug2() {
     console.log(sites3d.buffer)
 }
-function debug3() {
+function fixCamera() {
     if (uiStore.editorMode) {
         worldStore.setCameraPosition(
             worldStore.editingAt.getWorldXFromAxialQ(),
             worldStore.editingAt.getWorldZFromAxialR()
         )
+        worldStore.orbit.update()
     }
+    else {
+        const partyVec = new HexVector(partyStore.party.location.Q, partyStore.party.location.R)
+        worldStore.setCameraPosition(
+            partyVec.getWorldXFromAxialQ(),
+            partyVec.getWorldZFromAxialR()
+        )
+        worldStore.orbit.update()
+    }
+    console.log()
 }
 
 function toggleMusic() {
@@ -105,7 +115,6 @@ function cancelPlacement() {
 }
 
 async function setupComponent() {
-    await nextTick()
     if (!uiStore.devMode) {} else {
         partyStore.avatar = { name: "Leito Froste" }
     }
@@ -119,11 +128,6 @@ async function setupComponent() {
     } catch (e) {
         console.log(e)
     }
-
-    document.addEventListener("mousedown", dragStart)
-    document.addEventListener("mouseup", dragEnd)
-    document.addEventListener("mousemove", drag)
-    document.addEventListener("mouseleave", dragEnd)
 
     if (uiStore.editorMode) {
         document.addEventListener('contextmenu', () => { 
@@ -144,14 +148,11 @@ async function setupComponent() {
                 }
             })
         }
-        debug3()
     }
     else {
         let partyPos = new HexVector(partyStore.party.location.Q, partyStore.party.location.R)
         let partyPosX = partyPos.getWorldXFromAxialQ()
         let partyPosZ = partyPos.getWorldZFromAxialR()
-        worldStore.setCameraPosition(partyPosX, partyPosZ)
-
         if (!partyStore.pawn3d)
             loadPawn3d()
         else {
@@ -159,14 +160,23 @@ async function setupComponent() {
             partyStore.pawn3d.position.z = partyPosZ
         }
     }   
-}
+    }
 onMounted(() => {
     console.log("Mounting overlay...")
     setupComponent()
+
+    document.addEventListener("mousedown", dragStart)
+    document.addEventListener("mouseup", dragEnd)
+    document.addEventListener("mousemove", drag)
+    document.addEventListener("mouseleave", dragEnd)
+
+    document.addEventListener("mousemove", moveDynInfoBox)
+    fixCamera()
 })
 
-const draggableElement = ref(null)
+const dynInfoBoxRef = ref(null)
 
+const debugPanelRef = ref(null)
 var isDragging = false
 var currentX = 0
 var currentY = 0
@@ -175,10 +185,10 @@ var initialY = 0
 var xOffset = 0
 var yOffset = 0
 
-function dragStart(e) {
-    if (e.target === draggableElement.value) {
-        initialX = e.clientX - xOffset
-        initialY = e.clientY - yOffset
+function dragStart(event) {
+    if (event.target === debugPanelRef.value) {
+        initialX = event.clientX - xOffset
+        initialY = event.clientY - yOffset
         isDragging = true
     }
 }
@@ -187,17 +197,26 @@ function dragEnd() {
     initialY = currentY
     isDragging = false
 }
-function drag(e) {
+function drag(event) {
     if (isDragging) {
-        currentX = e.clientX - initialX
-        currentY = e.clientY - initialY
+        currentX = event.clientX - initialX
+        currentY = event.clientY - initialY
         xOffset = currentX
         yOffset = currentY
-        setTranslate(currentX, currentY, draggableElement)
+        setTranslate(currentX, currentY, debugPanelRef)
     }
 }
-function setTranslate(xPos, yPos, el) {
-    el.value.style.translate = `${xPos}px ${yPos}px`
+function setTranslate(xPos, yPos, elementRef) {
+    elementRef.value.style.translate = `${xPos}px ${yPos}px`
+}
+
+function moveDynInfoBox(event) {
+    if (!uiStore.rightClick) {
+        try {
+            dynInfoBoxRef.value.style.left = event.clientX + 'px'
+            dynInfoBoxRef.value.style.top = event.clientY + 'px'
+        } catch {}
+    }
 }
 
 </script>
@@ -213,9 +232,12 @@ function setTranslate(xPos, yPos, el) {
                 {{ uiStore.displayNextUpdateTime }}
             </span>
         </div>
-        <div id="slot_panel" @mouseover="uiStore.hoveringOverlay = true" @mouseleave="uiStore.hoveringOverlay = false">
-            <div id="portrait" ref="portrait" v-show="!uiStore.editorMode"></div>
-            <div class="slot" ref="slot_1">
+
+        <div id="slot_panel" 
+            @mouseover="uiStore.hoveringOverlay = true" 
+            @mouseleave="uiStore.hoveringOverlay = false">
+            <div ref="portrait" class="slot portrait" v-show="!uiStore.editorMode"></div>
+            <div ref="slot_1" class="slot">
                 <span class="slot_text1" v-show="uiStore.editorMode">
                     Wald
                 </span>
@@ -223,7 +245,7 @@ function setTranslate(xPos, yPos, el) {
                     {{ 1 }}
                 </span>
             </div>
-            <div class="slot" ref="slot_2">
+            <div ref="slot_2" class="slot">
                 <span class="slot_text1" v-show="uiStore.editorMode">
                     Banner
                 </span>
@@ -231,7 +253,7 @@ function setTranslate(xPos, yPos, el) {
                     {{ 2 }}
                 </span>
             </div>
-            <div class="slot" ref="slot_3">
+            <div ref="slot_3" class="slot">
                 <span class="slot_text1" v-show="uiStore.editorMode">
                     Haus
                 </span>
@@ -239,7 +261,7 @@ function setTranslate(xPos, yPos, el) {
                     {{ 3 }}
                 </span>
             </div>
-            <div class="slot" ref="slot_4">
+            <div ref="slot_4" class="slot">
                 <span class="slot_text1" v-show="uiStore.editorMode">
                     Zelt
                 </span>
@@ -247,7 +269,7 @@ function setTranslate(xPos, yPos, el) {
                     {{ 4 }}
                 </span>
             </div>
-            <div class="slot" ref="slot_5">
+            <div ref="slot_5" class="slot">
                 <span class="slot_text1" v-show="uiStore.editorMode">
                     Kristall
                 </span>
@@ -255,7 +277,7 @@ function setTranslate(xPos, yPos, el) {
                     {{ 5 }}
                 </span>
             </div>
-            <div class="slot" ref="slot_6">
+            <div ref="slot_6" class="slot">
                 <span class="slot_text1" v-show="uiStore.editorMode">
                     Truhe
                 </span>
@@ -263,7 +285,7 @@ function setTranslate(xPos, yPos, el) {
                     {{ 6 }}
                 </span>
             </div>
-            <div class="slot" ref="slot_7">
+            <div ref="slot_7" class="slot">
                 <span class="slot_text1" v-show="uiStore.editorMode">
                     Baum
                 </span>
@@ -272,6 +294,12 @@ function setTranslate(xPos, yPos, el) {
                 </span>
             </div>
         </div>
+        <p class="resource_panel" v-if="!uiStore.editorMode">
+            <span class="resource electrum"></span>
+            <label>Elektrum: </label>
+            <span class="strong number">{{ 100 }}</span>
+        </p>
+        
         <p class="slot_panel_info" v-if="uiStore.editorMode">
             <span v-if="worldStore.previewModelURI === 'HexPreview2.glb'">
                 Slot klicken, um ein Objekt zum Platzieren auszuwählen.
@@ -280,14 +308,18 @@ function setTranslate(xPos, yPos, el) {
                 (Escape/Backspace/Delete zum abbrechen)
             </span>
         </p>
-        <div class="debug_panel" ref="draggableElement" @mouseover="uiStore.hoveringOverlay = true"
+        <div ref="debugPanelRef" class="debug_panel" @mouseover="uiStore.hoveringOverlay = true"
             @mouseleave="uiStore.hoveringOverlay = false">
             ***
             <button class="debug" @click="toggleMusic">♪ Toggle Music ♪</button>
-            <button class="debug" @click="debug1">debug sites</button>
-            <button class="debug" @click="debug2">debug sites3d</button>
-            <button class="debug" @click="debug3">debug camera</button>
+            <button class="debug" v-if="uiStore.editorMode" @click="debug1">debug tileDTOs</button>
+            <button class="debug" v-if="uiStore.editorMode" @click="debug2">debug sites3d</button>
+            <button class="debug" v-if="uiStore.editorMode" @click="fixCamera">debug camera</button>
             <button class="debug" v-if="uiStore.editorMode" @click="postLayout">Post Layout</button>
+        </div>
+        <div ref="dynInfoBoxRef" class="dyn_info_box"
+            v-show="uiStore.rightClick && worldStore.clickedItem">
+            {{uiStore.hoveredName}}
         </div>
         <div id="info_hex">
             <div class="axial" v-if="worldStore.hoveredItem">
@@ -300,7 +332,7 @@ function setTranslate(xPos, yPos, el) {
                 </label>
                 <span class="span_axial">{{ worldStore.hoveredItem.userData.R }}</span>
             </div>
-            <p>Ziehen Sie die rechte Maustaste, um die Kamera zu bewegen.</p>
+            <p>Halten und ziehen Sie die <span class="strong">mittlere Maustaste</span> zum bewegen der Kamera</p>
         </div>
     </div>
 </template>
@@ -346,6 +378,26 @@ p {
     /* left: 2vw; */
 }
 
+.resource_panel{
+    display: flex;
+    position: fixed;
+    bottom: 15.5%
+} .resource_panel > * {
+    display: flex;
+    align-self: center;
+} .resource_panel > .number {
+    padding-left: .5rem;
+    font-family: monospace;
+}.resource {
+    height: 2.5rem;
+    width: 3rem;
+    padding-left: 0%;
+    background-image: url("elektrum.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+}
+
 #slot_panel {
     display: flex;
     height: auto;
@@ -354,33 +406,25 @@ p {
 
     /* left: 2vw; */
     right: auto;
-    background-image: url('leather_texture.jpg');
+    background-image: url("leather_texture.jpg");
     border-style: outset;
     border-width: 1px;
     /* border-top-right-radius: 5px; */
     border-color: rgb(133, 113, 86);
 }
 
-#portrait {
+.portrait {
     /* background-image: url('Portrait_Eliana.jpg'); */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-
-    align-self: center;
-    width: calc(7vh + 1rem);
-    aspect-ratio: 5 / 7;
-
-    user-select: none;
-    pointer-events: all;
-    cursor: pointer;
 }
 
 .slot {
     display: flex;
     align-self: center;
     /* margin: -.5px; */
-    width: calc(7vh + 1rem);
+    width: calc(6vh + 1rem);
     aspect-ratio: 5 / 7;
     /* cursor: pointer; */
     pointer-events: all;
@@ -411,7 +455,9 @@ p {
     padding: 3px;
     padding-right: 6px;
     align-self: flex-end;
-    /* color: white; */
+    font-family: monospace;
+    font-size: .8rem;
+    color: white;
 }
 
 .slot_text2 {
@@ -422,7 +468,7 @@ p {
     padding: 3px;
     padding-right: 6px;
     align-self: flex-end;
-    /* color: white; */
+    color: rgba(252, 205, 143, .5);
 }
 
 .debug_panel {
@@ -444,10 +490,12 @@ p {
     border-width: 1px;
     border-color: 1px;
     border-color: rgb(252, 205, 143);
+    transition: 0s;
 }
 
 .debug_panel:active {
     cursor: grabbing;
+    transition: 0s;
 }
 
 .debug {
@@ -486,9 +534,27 @@ p {
 }
 
 .label_axial {
-    /* padding-left: 3rem; */
+    color: rgba(252, 205, 143, .5);
 }
 
 .span_axial {
     font-family: monospace;
-}</style>
+}
+
+.dyn_info_box {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: .2rem;
+    padding-bottom: .2rem;
+    position: fixed;
+    color: white;
+    text-shadow: 0rem 0rem .2rem black, 0rem 0rem .2rem black;
+
+    background: linear-gradient(90deg, transparent 0%, black 50%, transparent 100%);
+    border-style: double;
+    border-color: transparent;
+    border-top-color: rgba(252, 205, 143, 1);
+    border-bottom-color: rgba(252, 205, 143, .5);
+    transition: linear 0s;
+}
+</style>

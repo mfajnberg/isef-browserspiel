@@ -4,7 +4,7 @@ import { useAuthStore } from '../stores/AuthStore';
 import { useUIStore } from '../stores/UIStore';
 import {TileDTOs } from "../stores/000Singletons";
 
-import { initHex, spawnSite } from '../threejs/ActorManager'
+import { spawnHex, spawnSite } from '../threejs/ActorManager'
 import { siteTypeToURI, Worldmap } from "../classes/Worldmap";
 import { HexVector } from '../classes/HexVector'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
@@ -21,8 +21,8 @@ export async function requestGetWorldSliceAdmin(q, r) {
         },
         credentials: 'include',
         body: JSON.stringify({
-            axialCoordinates: {Q: q, R: r},
-            siteType: 0
+            AxialCoordinates: {Q: q, R: r},
+            SiteType: 0
         })
     }
     const URL = (!useUIStore().devMode) ? "/api/admin/world/get" : "/api/party/vision.json" 
@@ -32,7 +32,7 @@ export async function requestGetWorldSliceAdmin(q, r) {
         return await response.json()
     })
     .then(async data => {
-        worldStore.disposeAll()
+        worldStore.disposeAllTiles()
         const loader = new GLTFLoader()
 
         // set hex model reference
@@ -43,11 +43,12 @@ export async function requestGetWorldSliceAdmin(q, r) {
                 }
             }
         }
-        let vectors = Worldmap.makeHexGridVectors(5)
-        const texLoader = new TextureLoader()
         
-        vectors.forEach(hexPosition => {
-            initHex(loader, texLoader, worldStore, useGameAssetStore(), hexPosition, hexPosition.Q%3)
+        let vectors = Worldmap.makeHexGridVectors(4)
+        const texLoader = new TextureLoader()
+        vectors.forEach(vec => {
+            const hexPosition = new HexVector(vec.Q + data[0].Q, vec.R + data[0].R)
+            spawnHex(loader, texLoader, worldStore, useGameAssetStore(), hexPosition, (69*hexPosition.Q + 420*hexPosition.R)%3)
         })
 
         data.forEach(element => {
