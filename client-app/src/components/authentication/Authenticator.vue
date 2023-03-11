@@ -56,10 +56,12 @@ function switchForms() {
         <h3 class="strong" v-if="authStore.showingRegisForm">Registrierung</h3>
         <p class="disclaimer" v-show="!authStore.mailNotifSent && !authStore.regisFailed">
             <span class="strong">Achtung:</span> <br/>
-            Diese App verwendet WebGL. <br/> <br/> 
-            Einige Browser deaktivieren diese Funktion automatisch.
-            <br/><br/>
-            Wir empfehlen <a href="https://www.opera.com/gx" target="_blank">Opera GX</a> für ein angenehmes Spielerlebnis im Browser.
+            <p>
+                Diese App verwendet WebGL. <br/> <br/> 
+                Einige Browser deaktivieren diese Funktion automatisch.
+                <br/><br/>
+                Wir empfehlen <a class="opera" href="https://www.opera.com/gx" target="_blank">Opera GX</a> für ein angenehmes Spielerlebnis im Browser.
+            </p>
             <!-- <br/><br/>
             WebGL unter LibreWolf aktivieren:
             <br/>
@@ -143,7 +145,8 @@ function switchForms() {
     text-shadow: 0rem 0rem 1rem black;
 }
 h3 {
-    padding-top: 2rem;
+    position: relative;
+    top: 10vh;
     grid-column: 2;
     grid-row: 1;
     font-family: 'fondamento';
@@ -153,36 +156,44 @@ h3 {
     grid-column: 1;
     grid-row: 1 / 4;
     padding: 7.5%;
+    padding-right: 10%;
     color: rgba(252, 205, 143, .5); 
     font-size: 1rem;
     text-align: right;
     transition: 1s;
-} .disclaimer > a {
+} .disclaimer > p {
+    margin-top: 0%;
+    text-align: right;
+}.opera {
     color: rgb(255, 0, 76);
 }
- .disclaimer > a:hover {
+ .opera:hover {
     color: white;
-} .disclaimer:hover + .form_container {
-    border-left-color: rgba(252, 205, 143, 1);
-    transition: 1s;
 } .disclaimer:hover {
-    color:  rgba(252, 205, 143, 1);
+    color: rgba(252, 205, 143, 1);
     transition: 1s;
+} .disclaimer > span {
+    justify-self: center;
 }
 .form_container {
     display: flex;
     height: 35vh;
-    align-items: center;
+    align-items: end;
     position: relative;
     border-style: solid;
-    border-color: transparent;
-    border-width: .2rem;
+    border-width: .75rem;
+    border-bottom-width: 1rem;
+    border-top-width: 2rem;
     /* border-bottom-left-radius: 2.5rem;
     border-top-right-radius: 2.5rem; */
-    border-right-width: .2rem;
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+    /* border-right-width: .2rem; */
     /* border-left-color: rgba(252, 205, 143, .5); */
-    border-left-color: rgba(252, 205, 143, 1);
-    border-right-color: rgba(0, 0, 0, .8);
+    /* border-left-color: rgba(252, 205, 143, 1); */
+    border-color: rgba(0, 0, 0, 1);
+    border-bottom-color: transparent;
+    border-top-color: transparent;
     overflow: hidden;
     transition: border-color 1s;
 }
@@ -195,7 +206,7 @@ h3 {
     /* height: 100%; */
 
     position: absolute;
-    transition: ease .3s;
+    transition: ease-out .25s;
 
 } .regis {
     left: 100%;
@@ -218,14 +229,6 @@ h3 {
     padding-left: 6%;
 
     text-align: center;
-    
-    border-width: 1px;
-    border-right-style: none;
-    border-bottom-style: none;
-    border-left-style: none;
-    border-top-style: none;
-    border-top-color: rgb(133, 113, 86);
-
     color: rgba(252, 205, 143);
 
     user-select: none;
@@ -255,6 +258,7 @@ h3 {
     grid-row: 1 / 4;
     text-align: left;
     padding: 7.5%;
+    padding-left: 10%;
 }
 .validation_success {
     color:rgb(0, 255, 0);

@@ -40,6 +40,12 @@ import Overlay from './components/ingame/Overlay.vue'
 </script>
 
 <template>
+    <div id="screen_too_small">
+        Die mobile Version von IS:EF ist bereits in Planung.
+        <br/>
+        <br/>
+        Um mitzuspielen, wechseln Sie für den Moment bitte auf ein größeres Gerät
+    </div>
     <div id="background">
         <Header/>
         <div class="content">
@@ -86,6 +92,12 @@ import Overlay from './components/ingame/Overlay.vue'
                     </p>
                 </div>
 
+                <div class="socials">
+                    <a class="soc_item discord"></a>
+                    <a class="soc_item youtube"></a>
+                    <a class="soc_item twitch"></a>
+                </div>
+
                 <div class="grid_span_2 imprint" v-if="uiStore.getShowingImprint">
                     <Imprint/>
                 </div>
@@ -117,6 +129,27 @@ import Overlay from './components/ingame/Overlay.vue'
         background-position: center;
         background-size: cover;
 }
+#screen_too_small {
+    display: none;
+    justify-content: center;
+    position: fixed;
+    height: 100vh;
+    height: 100svh;
+    width: 100vw;
+    width: 100svw;
+    left: 0;
+    top: 0;
+
+    background-color: black;
+    z-index: 99999
+}
+@media (pointer: coarse) {
+    #screen_too_small {
+        display: flex;
+        align-items: center;
+    }
+}
+
 
     .content {
         display: flex;
@@ -164,6 +197,7 @@ import Overlay from './components/ingame/Overlay.vue'
         font-size: 1rem;
         text-shadow: 0rem 0rem 1rem black;
         background-color: rgba(0, 0, 0, 0.852);
+        /* background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.852) 25%, rgba(0, 0, 0, 0.852) 75%, transparent 100%); */
         /* transition: .5s; */
         cursor: default;
     }
@@ -178,6 +212,12 @@ import Overlay from './components/ingame/Overlay.vue'
     } .vid {
         /* border-style: none; */
         padding: 0;
+        background-color: transparent;
+        border-style: double;
+        border-color: transparent;
+        border-width: unset;
+        border-top-color: rgba(252, 205, 143, 1);
+        border-bottom-color: rgba(252, 205, 143, .5);
     } .roadmap {
         /* font-size: .8rem; */
         text-align: center;
@@ -207,6 +247,51 @@ import Overlay from './components/ingame/Overlay.vue'
     } .admin {
         grid-row: 1;
     }
+    .socials {
+        display: flex;
+        justify-self: right;
+        height: 2rem;
+
+        flex-direction: row;
+        justify-content: right;
+
+        position: absolute;
+        bottom: 10vh;
+    }
+    .soc_item {
+        display: flex;
+        align-self: center;
+        justify-self: center;
+
+        position: absolute;
+
+        width: 1.7rem;
+        height: 1.7rem;
+
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+    }
+    .discord {
+        right: 6rem;
+        background-image: url("discord_blurple.svg");
+    } .discord:hover{
+        background-image: url("discord.svg");
+    }
+    .twitch {
+        right: 0rem;
+        background-image: url("TwitchGlitchPurple.svg");
+    } .twitch:hover {
+        background-image: url("TwitchGlitchWhite.svg");
+    }
+    .youtube {
+        right: 3rem;
+        background-image: url("YouTube_color.svg");
+    } .youtube:hover {
+        background-image: url("YouTube_light.svg");
+    }
+
+
     @media (max-width: 800px) {
         #background {
             overflow: scroll;

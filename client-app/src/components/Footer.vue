@@ -73,7 +73,7 @@ function clickImprint() {
         transition: .1s;
         /* text-decoration: underline; */
     } .implemented:hover {
-        border-bottom-color: white;
+        /* border-bottom-color: white; */
         transition: .2s;
     }
     .version {
@@ -81,10 +81,5 @@ function clickImprint() {
         color: rgb(133, 113, 86);
     } .number {
         font-family: monospace;
-    }
-
-    .items:hover > .implemented {
-        color: white;
-        /* letter-spacing: 1px; */
     }
 </style>

@@ -192,8 +192,10 @@ export function initCameraPawn(canvas, scene, worldStore) {
                     Math.abs(partyStore.party.location.Q + partyStore.party.location.R 
                     - worldStore.hoveredItem.userData.Q - worldStore.hoveredItem.userData.R)) 
 
-                if (worldStore.preview && !partyStore.traveling
-                    && vec.distanceTo(point) < .82) 
+                if (worldStore.preview 
+                    && !partyStore.traveling
+                    // && vec.distanceTo(point) < .82
+                    ) 
                 {
                     worldStore.objectSnapped = true
                     if (!uiStore.editorMode) 
@@ -203,7 +205,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
                             worldStore.cursor.position.set(vec.x, vec.y +1.5, vec.z)
                             worldStore.preview.visible = false
                         } 
-                        else if (!isInteractive && isBlocked) {
+                        else if (!isInteractive && isBlocked || distance != 1) {
                             worldStore.cursor.visible = false
                             worldStore.preview.visible = false
                         }

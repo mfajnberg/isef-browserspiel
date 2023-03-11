@@ -90,6 +90,15 @@ function toggleMusic() {
         ambience.music.mute(true)
     }
 }
+
+function toggleSmoothCam() {
+    if (worldStore.orbit.enableDamping)
+        worldStore.orbit.enableDamping = false
+    else {
+        worldStore.orbit.enableDamping = true
+    }
+}
+
 function postLayout() {
     if (uiStore.editorMode)
         requestWorldSave(authStore)
@@ -312,6 +321,7 @@ function moveDynInfoBox(event) {
             @mouseleave="uiStore.hoveringOverlay = false">
             ***
             <button class="debug" @click="toggleMusic">♪ Toggle Music ♪</button>
+            <button class="debug" @click="toggleSmoothCam">Toggle Smooth Cam</button>
             <button class="debug" v-if="uiStore.editorMode" @click="debug1">debug tileDTOs</button>
             <button class="debug" v-if="uiStore.editorMode" @click="debug2">debug sites3d</button>
             <button class="debug" v-if="uiStore.editorMode" @click="fixCamera">debug camera</button>

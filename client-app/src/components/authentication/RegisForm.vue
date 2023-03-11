@@ -103,6 +103,7 @@ onBeforeUnmount(() => {
         z-index: 20;
     } 
     label {
+        text-align: right;
         user-select: none;
     }
     .item{
@@ -117,7 +118,7 @@ onBeforeUnmount(() => {
         width: 10rem;
     } .form_input {
         display: flex;
-        width: 9.6rem;
+        width: 9.8rem;
     }.validation {
         width: 100%;
         position: absolute;
