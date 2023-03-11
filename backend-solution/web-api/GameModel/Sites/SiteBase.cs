@@ -17,6 +17,10 @@ namespace web_api.GameModel.Sites
         /// gets or sets the <c>SiteType</c>  of the site
         /// </summary>
         public SiteType Type { get; set; }
+
+
+        public abstract void Visit(Party party);
+
         
     }
 

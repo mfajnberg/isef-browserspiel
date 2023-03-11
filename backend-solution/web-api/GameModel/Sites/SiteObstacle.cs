@@ -10,6 +10,11 @@
         /// </summary>
         public SiteType SiteType { get { return SiteType.Obstacle; } }
 
+        public override void Visit(Party party)
+        {
+
+        }
+
 
         // ToDo: remove the unneeded testProperty
         public int testProperty { get; set; } = 12;

@@ -9,5 +9,10 @@
         /// get the <c>SiteType</c> as SiteType.Interactive
         /// </summary>
         public SiteType SiteType { get { return SiteType.Interactive; } }
+
+        public override void Visit(Party party)
+        {
+
+        }
     }
 }

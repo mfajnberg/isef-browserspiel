@@ -1,4 +1,5 @@
-﻿using web_api.GameModel.Worldmap;
+﻿using Microsoft.EntityFrameworkCore;
+using web_api.GameModel.Worldmap;
 
 namespace web_api.GameModel.OGIs
 {
@@ -25,10 +26,19 @@ namespace web_api.GameModel.OGIs
         public override async Task ExecuteSelf(DataContext context)
         {
             Party party = context.Parties.Where (x => x.Id == PartyId).FirstOrDefault();
-            HexTile hexTile = context.HexTiles.Where(h => h.AxialR == AxialR && h.AxialQ == AxialQ).FirstOrDefault();
+            HexTile hexTile = context.HexTiles.Where(h => h.AxialR == AxialR && h.AxialQ == AxialQ).Include(h => h.Site).FirstOrDefault();
 
             party.UpdateLocation(hexTile);
             context.TravelOGIs.Remove(this);
+
+            if (hexTile.Site.Type == Sites.SiteType.Chest
+                || hexTile.Site.Type == Sites.SiteType.Crystal)
+            {
+                var chest = context.SitesChest.Where(c => c.Id == hexTile.Site.Id).FirstOrDefault();
+                context.SitesChest.Remove(chest);
+
+                hexTile.Site = null;
+            }
             
             await context.SaveChangesAsync();
         }

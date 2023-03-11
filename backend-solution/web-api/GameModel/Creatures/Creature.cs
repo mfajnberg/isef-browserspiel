@@ -8,7 +8,7 @@ namespace web_api.GameModel.Creatures
     /// <summary>
     /// Creature could be an user avatar or an opponent 
     /// </summary>
-    [DebuggerDisplay("Name: {Name}, Party: {PartyId}, Ammount of Items: {Backpack.Count}")]
+    [DebuggerDisplay("Name: {Name}, Party: {PartyId}, Amount of Items: {Backpack.Count}")]
     public class Creature
     {
         /// <summary>

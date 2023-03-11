@@ -75,5 +75,14 @@ namespace web_api.GameModel.Worldmap
             return !IsBlocked;
             // ToDo: implement other traveling restrictions
         }
+
+        internal void Touch(Party party)
+        {
+            if (Site != null)
+                Site.Visit(party);
+            else
+                ConsoleLogger.LogWarning(" > Site is empty");
+
+        }
     }
 }

@@ -58,6 +58,11 @@ namespace web_api.GameModel
         public HexTile? Destination { get; set; }  // possibly hidden
 
         /// <summary>
+        /// gets or sets the amount of electrum (coin)
+        /// </summary>
+        public int Electrum { get; set; }
+
+        /// <summary>
         /// gets or sets the current OGI
         /// </summary>
         [ForeignKey("OGI")]
@@ -101,6 +106,8 @@ namespace web_api.GameModel
         public void UpdateLocation(HexTile location)
         {
             Location = location;
+
+            Location.Touch(this);
 
             if (location == Destination)
                 Destination = null;

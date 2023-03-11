@@ -56,6 +56,11 @@ namespace web_api
         public DbSet<SiteObstacle> SitesObstacle { get; set; }
 
         /// <summary>
+        /// chest sites table
+        /// </summary>
+        public DbSet<Chest> SitesChest { get; set; }
+
+        /// <summary>
         /// Contstructor of DataContext
         /// </summary>
         /// <param name="options">options</param>

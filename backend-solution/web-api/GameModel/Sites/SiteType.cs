@@ -28,6 +28,10 @@
         Banner = 201,
         Camp = 202,
         House = 203,
+
+        /// <summary>
+        /// represents a chest, Type 204
+        /// </summary>
         Chest = 204,
         Crystal = 205,
         AncientTree = 206,
