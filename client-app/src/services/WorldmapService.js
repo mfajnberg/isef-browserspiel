@@ -82,7 +82,7 @@ export async function requestPartyVision(q, r) {
         const loader = new GLTFLoader()
 
         for (let deletionVector of deletionVectors) {
-            worldStore.disposeSingleTileAt(deletionVector)
+            worldStore.disposeTileAt(deletionVector)
         }
         for (let spawningVector of spawningVectors) {
             spawnHex(loader, texLoader, worldStore, useGameAssetStore(), spawningVector, (69*spawningVector.Q + 420*spawningVector.R)%3, spawningVector.siteType)

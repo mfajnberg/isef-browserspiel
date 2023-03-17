@@ -39,6 +39,11 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
             volume: .04
         }),
 
+        coinCollectSound: new Howl({
+            src: 'isef_collect_coins.mp3',
+            volume: .25
+        }),
+
         assets3d: [], // name: {string}, data: {arrayBuffer}
         assetsLoaded: false
             

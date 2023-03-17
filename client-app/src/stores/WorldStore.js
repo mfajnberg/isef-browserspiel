@@ -5,6 +5,8 @@ import { TileDTOs, Sites3d, Hexes3d } from './000Singletons'
 import { useGameAssetStore } from './GameAssetStore'
 import { usePartyStore } from './PartyStore'
 import { Vector3 } from 'three'
+import { useUIStore } from './UIStore'
+import { HexVector } from '../classes/HexVector'
 
 export const useWorldStore = defineStore('WorldStore', {
     id: 'WorldStore',
@@ -33,7 +35,7 @@ export const useWorldStore = defineStore('WorldStore', {
     getters: {
     },
     actions: {
-        disposeSingleTileAt(hexVec) {
+        disposeTileAt(hexVec) {
             const hexes3d = new Hexes3d().buffer
             const sites3d = new Sites3d().buffer
             const tileDTOs = new TileDTOs().buffer
@@ -64,6 +66,27 @@ export const useWorldStore = defineStore('WorldStore', {
                 t => t.AxialCoordinates.Q === hexVec.Q
                 && t.AxialCoordinates.R === hexVec.R ), 1)
         },
+        disposeSiteAtTile(hexVec) {
+            const sites3d = new Sites3d().buffer
+
+            let site3dIndex = 0
+            for (let site3d of sites3d) {
+                if (hexVec.Q === site3d.userData.hexVector.Q && hexVec.R === site3d.userData.hexVector.R) {
+                    dispose(site3d)
+                    sites3d.splice(site3dIndex, 1)
+                    break
+                } else {
+                    site3dIndex++
+                }
+            }
+
+            for (let hex3d of hexes3d) {
+                if (hexVec.Q === hex3d.userData.Q && hexVec.R === hex3d.userData.R) {
+                    hex3d.siteType = null
+                    break
+                }
+            }
+        },
         disposeAllTiles() {
             const hexes3d = new Hexes3d().buffer
             const sites3d = new Sites3d().buffer
@@ -81,15 +104,45 @@ export const useWorldStore = defineStore('WorldStore', {
 
         async movePawn() {
             const partyStore = usePartyStore()
-            partyStore.traveling = false
             const gameAssetStore = useGameAssetStore()
-            await requestPartyVision(
+            partyStore.traveling = false
+            playAnim(this, "Idle.fbx")
+
+            const hexVec = new HexVector(                
                 useWorldStore().clickedItem.userData.Q, 
                 useWorldStore().clickedItem.userData.R
             )
-            playAnim(this, "Idle.fbx")
-            gameAssetStore.pointerUpSound.play()
+
+            await requestPartyVision(hexVec.Q, hexVec.R)
+            
             partyStore.start = partyStore.goal
+            if (partyStore.start.userData.siteType != 204) {
+                gameAssetStore.pointerUpSound.play()
+            }
+
+            else {
+                gameAssetStore.coinCollectSound.play()
+                
+                const sites3d = new Sites3d().buffer
+                let site3dIndex = 0
+                for (let site3d of sites3d) {
+                    if (hexVec.Q === site3d.userData.hexVector.Q && hexVec.R === site3d.userData.hexVector.R) {
+                        dispose(site3d)
+                        sites3d.splice(site3dIndex, 1)
+                        break
+                    } else {
+                        site3dIndex++
+                    }
+                }
+    
+                for (let hex3d of hexes3d) {
+                    if (hexVec.Q === hex3d.userData.Q && hexVec.R === hex3d.userData.R) {
+                        hex3d.siteType = null
+                        break
+                    }
+                }
+            }
+
         },
 
         moveCamera(x, z) {

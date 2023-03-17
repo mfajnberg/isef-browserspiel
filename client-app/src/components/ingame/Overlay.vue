@@ -306,7 +306,7 @@ function moveDynInfoBox(event) {
         <p class="resource_panel" v-if="!uiStore.editorMode">
             <span class="resource electrum"></span>
             <label>Elektrum: </label>
-            <span class="strong number">{{ 100 }}</span>
+            <span class="strong number">{{ partyStore.getElectrum }}</span>
         </p>
         
         <p class="slot_panel_info" v-if="uiStore.editorMode">

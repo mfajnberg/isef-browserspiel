@@ -9,6 +9,8 @@ export const usePartyStore = defineStore('PartyStore', {
         pawn3d: null,
         avatar: null,
 
+        electrum: 100, // get from API
+
         travelOK: false,
         traveling: false,
         start: null,
@@ -18,6 +20,7 @@ export const usePartyStore = defineStore('PartyStore', {
     }),
     getters: {
         getPortraitUri:(state) => state.portraitUri,
+        getElectrum:(state) => state.electrum,
     },
     actions: {
         updatePawn3dPosition() {

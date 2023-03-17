@@ -60,6 +60,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
         gameAssetStore.placeObjectSound.play()
     })
 
+    // left click
     window.addEventListener('pointerdown', async (e) => {
         if (e.button === 0 && uiStore.showingWorldmap 
             && worldStore.hoveredItem && worldStore.objectSnapped
@@ -67,7 +68,6 @@ export function initCameraPawn(canvas, scene, worldStore) {
         {
             worldStore.clickedItem = worldStore.hoveredItem
             if (!worldStore.clickedItem.userData.isBlocked) {
-
                 if (uiStore.editorMode 
                     && !uiStore.hoveringOverlay
                     && worldStore.previewModelURI != "3dCursorCross.glb") 
@@ -85,6 +85,8 @@ export function initCameraPawn(canvas, scene, worldStore) {
                     partyStore.travelOK = false
     
                     let closeBoi = false
+
+                    // to-do: factor out calculation of exact rotation value
                     if (qRelative == 1 && rRelative == 0) {
                         closeBoi = true
                         partyStore.pawn3d.rotation.y = 0.523599 + (1.0472 * 7 )
@@ -118,10 +120,10 @@ export function initCameraPawn(canvas, scene, worldStore) {
                             worldStore.preview.visible = false
                             // worldStore.cursor.visible = false
                             playAnim(worldStore, "Walking.fbx")
-                            setTimeout(worldStore.movePawn, 4000) // cb
                             uiStore.nextUpdateTime = DateTime.local().plus({
                                 seconds: 4
                             })
+                            setTimeout(worldStore.movePawn, 4000) // cb
                         }
                     }
                 }
@@ -130,6 +132,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
     })
 
     window.addEventListener('pointerdown', async (e) => { 
+        // right click
         if (e.button === 2 && uiStore.showingWorldmap && !uiStore.editorMode && worldStore.hoveredItem) 
         {
             worldStore.clickedItem = worldStore.hoveredItem
@@ -148,16 +151,16 @@ export function initCameraPawn(canvas, scene, worldStore) {
                 uiStore.rightClick = true
                 document.documentElement.style.cursor = "none"
             }
-        }  
-        if (e.button === 1 && uiStore.showingWorldmap) 
-        {
-            document.documentElement.style.cursor = "col-resize"
-            
         } 
+        // middle click
+        if (e.button === 1 && uiStore.showingWorldmap) 
+            document.documentElement.style.cursor = "col-resize"
     })
     window.addEventListener('pointerup', async (e) => { 
-        uiStore.rightClick = false
-        document.documentElement.style.cursor = "initial"
+        if (e.button === 1 || e.button === 2) {
+            uiStore.rightClick = false
+            document.documentElement.style.cursor = "initial"
+        }
     })
 
 
