@@ -61,6 +61,11 @@ namespace web_api
         public DbSet<Chest> SitesChest { get; set; }
 
         /// <summary>
+        /// User Tokens for Password resetting
+        /// </summary>
+        public DbSet<UserResetToken> UserResetTokens { get; set; }
+
+        /// <summary>
         /// Contstructor of DataContext
         /// </summary>
         /// <param name="options">options</param>

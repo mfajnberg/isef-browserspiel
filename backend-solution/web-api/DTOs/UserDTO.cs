@@ -18,5 +18,10 @@ namespace web_api.DTOs
         /// gets or sets the password of the user
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// gets or set the Token of the user
+        /// </summary>
+        public string Token { get; set; }   
     }
 }

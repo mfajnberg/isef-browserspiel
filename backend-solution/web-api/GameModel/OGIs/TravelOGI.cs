@@ -31,8 +31,8 @@ namespace web_api.GameModel.OGIs
             party.UpdateLocation(hexTile);
             context.TravelOGIs.Remove(this);
 
-            if (hexTile.Site.Type == Sites.SiteType.Chest
-                || hexTile.Site.Type == Sites.SiteType.Crystal)
+            if (hexTile.Site?.Type == Sites.SiteType.Chest
+                || hexTile.Site?.Type == Sites.SiteType.Crystal)
             {
                 var chest = context.SitesChest.Where(c => c.Id == hexTile.Site.Id).FirstOrDefault();
                 context.SitesChest.Remove(chest);

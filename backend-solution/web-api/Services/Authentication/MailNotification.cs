@@ -50,6 +50,7 @@ namespace web_api.Services.Authentication
                 client.Credentials = new System.Net.NetworkCredential(mailSender, mailSenderPassword);
 
                 MailMessage mailMessage = new MailMessage();
+                //mailMessage.IsBodyHtml = true;
                 mailMessage.From = new MailAddress(mailSender, "ISEF Browserspiel");
 
                 mailMessage.Subject = subject;
