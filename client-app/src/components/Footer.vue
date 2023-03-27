@@ -10,6 +10,13 @@ function clickImprint() {
         uiStore.showHome()
     }
 }
+function clickAbout() {
+    if (!uiStore.showingAbout) {
+        uiStore.showAbout()
+    } else {
+        uiStore.showHome()
+    }
+}
 
 </script>
 
@@ -18,7 +25,7 @@ function clickImprint() {
         <div class="items">
         <!-- <div > -->
             <span class="item version"><span class="number">v0.1</span> pre-alpha</span> <span class="separator">|</span>
-            <a class="item">About</a> <span class="separator">|</span>
+            <a class="item implemented" @click="clickAbout"><strong>About</strong></a> <span class="separator">|</span>
             <a class="item">FAQs</a> <span class="separator">|</span>
             <a class="item">AGBs</a> <span class="separator">|</span>
             <a class="item implemented" @click="clickImprint"><strong>Impressum</strong></a>

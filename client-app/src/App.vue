@@ -13,6 +13,7 @@ import Authenticator from './components/authentication/Authenticator.vue'
 import AdminPrompt from './components/authentication/AdminPrompt.vue'
 import AvatarCreator from './components/ingame/AvatarCreator.vue'
 import Overlay from './components/ingame/Overlay.vue'
+import About from './components/About.vue'
 
     const authStore = useAuthStore()
     const uiStore = useUIStore()
@@ -98,6 +99,9 @@ import Overlay from './components/ingame/Overlay.vue'
                     <a class="soc_item twitch"></a>
                 </div>
 
+                <div class="grid_span_2 imprint" v-if="uiStore.getShowingAbout">
+                    <About/>
+                </div>
                 <div class="grid_span_2 imprint" v-if="uiStore.getShowingImprint">
                     <Imprint/>
                 </div>

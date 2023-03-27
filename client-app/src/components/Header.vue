@@ -142,7 +142,7 @@ import { requestGetChoices } from '../services/AvatarCreatorService'
         <button id="button_play" 
             @click="clickPlay" 
             ref="button_play"
-            v-show="uiStore.showingHome || uiStore.showingImprint">
+            v-show="uiStore.showingHome || uiStore.showingImprint || uiStore.showingAbout">
             Jetzt spielen
         </button>
     
