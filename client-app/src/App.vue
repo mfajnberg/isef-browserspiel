@@ -45,7 +45,7 @@ import About from './components/About.vue'
         Die mobile Version von IS:EF ist bereits in Planung.
         <br/>
         <br/>
-        Um mitzuspielen, wechseln Sie für den Moment bitte auf ein größeres Gerät
+        Um mitzuspielen, wechseln Sie bitte auf ein anderes Gerät.
     </div>
     <div id="background">
         <Header/>

@@ -116,7 +116,8 @@ export const useWorldStore = defineStore('WorldStore', {
             await requestPartyVision(hexVec.Q, hexVec.R)
             
             partyStore.start = partyStore.goal
-            if (partyStore.start.userData.siteType != 204) {
+            if (partyStore.start.userData.siteType != 204 
+                && partyStore.start.userData.siteType != 205) {
                 gameAssetStore.pointerUpSound.play()
             }
 
@@ -129,15 +130,17 @@ export const useWorldStore = defineStore('WorldStore', {
                     if (hexVec.Q === site3d.userData.hexVector.Q && hexVec.R === site3d.userData.hexVector.R) {
                         dispose(site3d)
                         sites3d.splice(site3dIndex, 1)
+                        usePartyStore().electrum += 100
                         break
                     } else {
                         site3dIndex++
                     }
                 }
-    
-                for (let hex3d of hexes3d) {
-                    if (hexVec.Q === hex3d.userData.Q && hexVec.R === hex3d.userData.R) {
-                        hex3d.siteType = null
+
+                const hexes3d = new Hexes3d().buffer
+                for (let hex of hexes3d) {
+                    if (hexVec.Q === hex.userData.Q && hexVec.R === hex.userData.R) {
+                        hex.siteType = null
                         break
                     }
                 }

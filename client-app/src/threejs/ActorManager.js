@@ -190,7 +190,7 @@ export async function spawnSite(worldStore, gameAssetStore, hexVector, siteType)
         for (let hex of new Hexes3d().buffer) {
             if (hex.userData.Q === hexVector.Q && hex.userData.R === hexVector.R) {
                 hex.userData.siteType = siteType
-                if (siteType != 204)
+                if (siteType != 204 && siteType != 205)
                     hex.userData.isBlocked = true
             }
         }

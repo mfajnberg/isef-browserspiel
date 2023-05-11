@@ -137,9 +137,9 @@ export function siteTypeToURI(code) {
         case 203:
             return "tent_field_camp.glb"
         case 204:
-            return "crystals.glb"
-        case 205:
             return "chest_lp.glb"
+        case 205:
+            return "crystals.glb"
         case 206:
             return "tree_ancient.glb"
 
@@ -157,9 +157,9 @@ export function siteTypeToInfoText(code) {
         case 203:
             return "Feldlager"
         case 204:
-            return "Kristalle"
-        case 205:
             return "Schatztruhe"
+        case 205:
+            return "Kristalle"
         case 206:
             return "Baum-Ent"
 
@@ -176,9 +176,9 @@ export function URIToSiteType(URI) {
         case "tent_field_camp.glb":
             return 203
         case "crystals.glb":
-            return 204
-        case "chest_lp.glb":
             return 205
+        case "chest_lp.glb":
+            return 204
         case "tree_ancient.glb":
             return 206
 

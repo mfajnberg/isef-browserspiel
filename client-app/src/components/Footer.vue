@@ -6,15 +6,11 @@ const uiStore = useUIStore()
 function clickImprint() {
     if (!uiStore.showingImprint) {
         uiStore.showImprint()
-    } else {
-        uiStore.showHome()
     }
 }
 function clickAbout() {
     if (!uiStore.showingAbout) {
         uiStore.showAbout()
-    } else {
-        uiStore.showHome()
     }
 }
 
@@ -24,7 +20,8 @@ function clickAbout() {
     <div class="footer" v-show="!uiStore.getShowingAvatarCreator">
         <div class="items">
         <!-- <div > -->
-            <span class="item version"><span class="number">v0.1</span> pre-alpha</span> <span class="separator">|</span>
+            <span class="item version"><span class="number">v0.0.1</span>-pre-alpha</span> <span class="separator">|</span>
+            <a class="item">Patchnotes</a> <span class="separator">|</span>
             <a class="item implemented" @click="clickAbout"><strong>About</strong></a> <span class="separator">|</span>
             <a class="item">FAQs</a> <span class="separator">|</span>
             <a class="item">AGBs</a> <span class="separator">|</span>

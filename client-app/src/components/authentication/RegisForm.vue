@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
         <div class="item">
             <label>E-Mail Adresse</label>
             <div class="input_container">
-                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Email" type="text"/> 
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Email" type="text" autocomplete="email"/> 
                 <span v-if="authStore.emailValid" class="validation valid_input"> 
                     ✓
                 </span>
@@ -65,7 +65,7 @@ onBeforeUnmount(() => {
         <div class="item">
             <label> Passwort </label>
             <div class="input_container">     
-                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Password" type="password"/>
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.Password" type="password" autocomplete="new-password"/>
                 <span v-if="authStore.pwdValid" class="validation valid_input">
                     ✓
                 </span>
@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
         <div class="item">
             <label> Passwort wiederholen </label>
             <div class="input_container">
-                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password"/>
+                <input class="form_input" @input="authStore.updateValidation()" v-model="authStore.repeatedPassword" id="password_repeat" type="password" autocomplete="new-password"/>
                 <span v-if="authStore.repeatValid" class="validation valid_input">
                     ✓
                 </span>

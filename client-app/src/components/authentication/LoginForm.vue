@@ -54,11 +54,11 @@ onBeforeUnmount( () => {
     <div id="login_form" v-if="!uiStore.loadingAssets">
         <div class="item">
             <label class="item_label">E-Mail Adresse</label>
-            <input class="form_input" v-model="authStore.Email" @keyup.enter.native="LogInEnter"/>
+            <input class="form_input" v-model="authStore.Email" type="text" autofill="email" @keyup.enter.native="LogInEnter"/>
         </div>
         <div class="item">
             <label class="item_label">Passwort</label>
-            <input class="form_input" v-model="authStore.Password" type="password" @keyup.enter.native="LogInEnter"/>
+            <input class="form_input" v-model="authStore.Password" type="password" autofill="password" @keyup.enter.native="LogInEnter"/>
         </div>
         <div class="stay_logged_in">
             <label class="item_label">Angemeldet bleiben?</label>

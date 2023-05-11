@@ -228,6 +228,10 @@ function moveDynInfoBox(event) {
     }
 }
 
+function debugElectrum() {
+    console.log(partyStore.electrum)
+}
+
 </script>
 
 
@@ -306,7 +310,7 @@ function moveDynInfoBox(event) {
         <p class="resource_panel" v-if="!uiStore.editorMode">
             <span class="resource electrum"></span>
             <label>Elektrum: </label>
-            <span class="strong number">{{ partyStore.getElectrum }}</span>
+            <span class="strong number">{{ partyStore.electrum }}</span>
         </p>
         
         <p class="slot_panel_info" v-if="uiStore.editorMode">
@@ -322,6 +326,7 @@ function moveDynInfoBox(event) {
             ***
             <button class="debug" @click="toggleMusic">♪ Toggle Music ♪</button>
             <button class="debug" @click="toggleSmoothCam">Toggle Smooth Cam</button>
+            <button class="debug" @click="debugElectrum">debug electrum</button>
             <button class="debug" v-if="uiStore.editorMode" @click="debug1">debug tileDTOs</button>
             <button class="debug" v-if="uiStore.editorMode" @click="debug2">debug sites3d</button>
             <button class="debug" v-if="uiStore.editorMode" @click="fixCamera">debug camera</button>
