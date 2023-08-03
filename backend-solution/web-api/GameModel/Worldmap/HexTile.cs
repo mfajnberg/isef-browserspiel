@@ -13,7 +13,7 @@ namespace web_api.GameModel.Worldmap
         /// <summary>
         /// gets the current coordinates as <c>HexVector</c>
         /// </summary>
-        /// <returns>a <c>HexVector</c> of the Coordinates <c>AxialQ</c> and <c>AxialR</c></returns>
+        /// <returns>a <c>HexVector</c> of the Coordinates <c>TargetAxialQ</c> and <c>TargetAxialR</c></returns>
         public HexVector GetAxialCoordinates() { return new HexVector(AxialQ, AxialR); }
 
         /// <summary>

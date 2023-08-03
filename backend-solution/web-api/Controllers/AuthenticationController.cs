@@ -10,7 +10,7 @@ using web_api.Services.Authentication;
 namespace web_api.Controllers
 {
     /// <summary>
-    /// Authentication Endpoint
+    ///     Controller for users to register, manage and authenticate themselves with their accounts.
     /// </summary>
     [ApiController]
     [Route("api/user")]
@@ -19,9 +19,7 @@ namespace web_api.Controllers
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
         private readonly INotification _notification;
-        /// <summary>
-        /// Constructor for AuthenticationController
-        /// </summary>
+
         /// <param name="context"></param>
         /// <param name="configuration"></param>
         /// <param name="notification"></param>
@@ -33,19 +31,30 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// Registers a new user 
+        ///     Registers a new user account. 
         /// </summary>
-        /// <response code="200">when the new user has been successfully stored in the database</response>
-        /// <response code="409">if the Emailaddress is already stored in the database</response>
-        /// <param name="request"><c>UserDTO</c>, with Email and Password</param>
-        /// <returns></returns>
+        /// 
+        /// <response code="409">
+        ///     An account with the input email address already exists in the database.
+        /// </response>
+        /// 
+        /// <param name="request">
+        ///     <c>UserDTO</c>, with an email and a password.
+        /// </param>
+        /// 
+        /// <returns>
+        ///     A message for the client.
+        /// </returns>
+        /// 
         /// <remarks>
-        /// Sample request:
-        ///  POST
-        ///  {
-        ///    "email": "name@example.com",
-        ///    "password" : "$uper$ecret"
-        ///  }
+        ///     Sample request:
+        /// 
+        ///     POST
+        ///  
+        ///     {
+        ///         "email": "name@example.com",
+        ///         "password" : "$uper$ecret"
+        ///     }
         /// </remarks>
         [HttpPost("register")]
         public async Task<ActionResult<string>> Register([FromBody] UserDTO request)
@@ -55,7 +64,7 @@ namespace web_api.Controllers
             var user = _context.Users.Where(u => u.Email.ToLower() == request.Email.ToLower()).FirstOrDefault();
             if (user != null)
             {
-                return Conflict("Ein Konto mit dieser E-Mail-Adresse existiert bereits");
+                return Conflict("Ein Konto mit dieser E-Mail-Adresse existiert bereits.");
             }
 
             AuthenticationService.CreatePasswordHash(request.Password, out byte[] pwdHash, out byte[] pwdSalt);
@@ -79,24 +88,40 @@ namespace web_api.Controllers
 
             await _notification.SendToAsync(messageText, "Account bestätigen", newUser.Email);
 
-            return Ok("Erfolgreich registriert als " + request.Email);
+            return Ok("Erfolgreich registriert als " + request.Email + ".");
         }
 
+        // todo: Ensure additionally that clients only send hashed values to begin with.
         /// <summary>
-        /// LogIn for a existing user
+        ///     LogIn for a existing user
         /// </summary>
-        /// <response code="200">when the user exist, the password is equal and the refresh token is updated </response>
-        /// <response code="400">when the user <b>not</b> exists in the database or the given password is unequal to the stored password</response>
-        /// <param name="request">UserDTO, with Email and Password</param>
-        /// <returns></returns>
+        /// 
+        /// <param name="request">
+        ///     <c>UserDTO</c>, with an email and a password.
+        /// </param>
+        /// 
+        /// <response code="400">
+        ///     The input user data does not match any accounts in the database.
+        /// </response>
+        /// 
+        /// <response code="422">
+        ///     The account is currently not set to active.
+        /// </response>
+        /// 
+        /// <returns>
+        ///     A message for the client.
+        /// </returns>
+        /// 
         /// <remarks>
-        /// Sample request:
-        ///  POST
-        ///  {
-        ///    "email": "name@example.com",
-        ///    "password" : "$uper$ecret",
-        ///    "token" : ""
-        ///  }
+        ///     Sample request:
+        /// 
+        ///     POST
+        ///     
+        ///     {
+        ///         "email": "name@example.com",
+        ///         "password" : "$uper$ecret",
+        ///         "token" : ""
+        ///     }
         /// </remarks>
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn([FromBody] UserDTO request)
@@ -105,10 +130,10 @@ namespace web_api.Controllers
                 .Include(u => u.Avatar) //.ThenInclude(a => a.Party) // etc.
                     .FirstOrDefault();
             if (user == null || !AuthenticationService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-                return BadRequest("Wrong username or password");
+                return BadRequest("Wrong username or password.");
 
             if (!user.IsActive)
-                return UnprocessableEntity("User isn't confirmed yet");
+                return UnprocessableEntity("User isn't confirmed yet.");
 
             string accessToken = AuthenticationService.CreateAccessToken(user, _configuration);
             var newRefreshToken = AuthenticationService.GenerateRefreshToken();
@@ -121,11 +146,16 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// creates a new reftresh token item 
+        ///     Enables automated login for authenticated clients.
         /// </summary>
-        /// <response code="200"></response>
-        /// <response code="401">when the user is unknown, or the refreshToken is expired</response>
-        /// <returns></returns>
+        /// 
+        /// <response code="401">
+        ///     The input refresh token is unknown or expired.
+        /// </response>
+        /// 
+        /// <returns>
+        ///     A new refresh token.
+        /// </returns>
         [HttpPost("token-refresh")]
         public async Task<ActionResult<string>> RefreshToken()
         {
@@ -135,7 +165,7 @@ namespace web_api.Controllers
                     .FirstOrDefault();
 
             if (user == null || user.TokenExpires < DateTime.Now)
-                return Unauthorized("Invalid Refresh Token.");
+                return Unauthorized("Invalid refresh token.");
 
             string accessToken = AuthenticationService.CreateAccessToken(user, _configuration);
             var newRefreshToken = AuthenticationService.GenerateRefreshToken();
@@ -148,11 +178,16 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// Updates the users refresh token data 
+        ///     Updates a user's refresh token entry in the database.
         /// </summary>
-        /// <param name="newRefreshToken">the new refresh token for the user</param>
-        /// <param name="user">user hows logged in</param>
-        /// <returns></returns>
+        /// 
+        /// <param name="newRefreshToken">
+        ///     New refresh token data.
+        /// </param>
+        /// 
+        /// <param name="user">
+        ///     The user who is logging in.
+        /// </param>
         private async Task UpdateRefreshTokenInDbAsync(RefreshToken newRefreshToken, User user)
         {
             user.RefreshToken = newRefreshToken.Token;
@@ -163,9 +198,8 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// sets the refresh token in the cookie data 
+        ///     Attatches a given refresh token to the cookies of the current request data.
         /// </summary>
-        /// <param name="newRefreshToken"></param>
         private void SetRefreshTokenToCookieData(RefreshToken newRefreshToken)
         {
             var cookieOptions = new CookieOptions
@@ -178,7 +212,7 @@ namespace web_api.Controllers
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
         }
 
-
+        // todo: Reroute the client to a special form based on the reset link!
         /// <summary>
         /// Function for users who have forgotten their passwords
         /// sends an email to the user. email includes a reset link
@@ -207,29 +241,35 @@ namespace web_api.Controllers
             // Create and send reset mail
             ResetPasswordService resetPasswordService = new ResetPasswordService($"{Request.Scheme}://{Request.Host.Value}");
 
+            // Not awaited due to a possible delay because of external factors
             _notification.SendToAsync(resetPasswordService.CreateForgotPasswortMessage(userResetToken), 
                 resetPasswordService.GetForgotPasswordSubject(), emailAddress);
 
             return Ok();
-
         }
 
         /// <summary>
-        /// Changes the password from the given user
+        ///     Changes the password from the given user
         /// </summary>
-        /// <param name="request"></param>
-        /// <response code="200">everything is fine, password was chaged</response>
-        /// <response code="404">if user or userResetToken isn't located in the DB</response>
+        /// 
+        /// <param name="request">
+        /// </param>
+        /// 
+        /// <response code="404">
+        ///     if user or userResetToken isn't located in the DB
+        /// </response>
+        /// 
         /// <remarks>
-        /// Sample request:
-        ///  POST
-        ///  {
-        ///    "email": "name@example.com",
-        ///    "password" : "$uper$ecret",
-        ///    "token" : "365546E7-1921-4349-BA05-375385759769"
-        ///  }
-        ///  </remarks>
-        /// <returns></returns>
+        ///     Sample request:
+        /// 
+        ///     POST
+        ///  
+        ///     {
+        ///         "email": "name@example.com",
+        ///         "password" : "$uper$ecret",
+        ///         "token" : "365546E7-1921-4349-BA05-375385759769"
+        ///     }
+        /// </remarks>
         [HttpPost("reset")]
         public async Task<ActionResult> ResetPassword([FromBody] UserDTO request)
         {

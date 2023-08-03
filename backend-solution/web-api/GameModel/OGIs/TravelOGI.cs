@@ -4,29 +4,31 @@ using web_api.GameModel.Worldmap;
 namespace web_api.GameModel.OGIs
 {
     /// <summary>
-    /// represents a specific Traveling OngoingGamplayInteraction
+    ///     Represents a specific ongoing traveling interaction
     /// </summary>
     public class TravelOGI : OngoingGameplayInteraction
     {
         /// <summary>
-        /// gets the <c>InteractionType</c> as InteractionType.Travel
+        ///     Gets the <c>InteractionType</c> as InteractionType.Travel
         /// </summary>
         public new InteractionType Type { get { return InteractionType.Travel; } }
 
 
-        public int AxialQ { get; set; }
-
-        public int AxialR { get; set; }
+        public int TargetAxialQ { get; set; }
+        public int TargetAxialR { get; set; }
 
         /// <summary>
-        /// Executes this Travel OGI immediately and removes it from the Database
+        ///     Executes this Travel OGI immediately and removes it from the Database.
+        ///     Mutates the position of the traveling party, updating their current location and triggering the appropriate events based on the target hex.
         /// </summary>
-        /// <param name="context"><c>DataContext</c> for Database interactions</param>
-        /// <returns></returns>
+        /// 
+        /// <param name="context">
+        ///     <c>DataContext</c> for Database interactions
+        /// </param>
         public override async Task ExecuteSelf(DataContext context)
         {
             Party party = context.Parties.Where (x => x.Id == PartyId).FirstOrDefault();
-            HexTile hexTile = context.HexTiles.Where(h => h.AxialR == AxialR && h.AxialQ == AxialQ).Include(h => h.Site).FirstOrDefault();
+            HexTile hexTile = context.HexTiles.Where(h => h.AxialR == TargetAxialR && h.AxialQ == TargetAxialQ).Include(h => h.Site).FirstOrDefault();
 
             party.UpdateLocation(hexTile);
             context.TravelOGIs.Remove(this);

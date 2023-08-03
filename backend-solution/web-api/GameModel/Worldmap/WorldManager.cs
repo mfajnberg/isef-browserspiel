@@ -119,7 +119,7 @@ namespace web_api.GameModel.Worldmap
                     // It's also broken due to race conditions. Instantiate a seperate context for the write operations.
                 if (hex == null)
                 {
-                    hex = new HexTile() { AxialQ = vec.Q, AxialR = vec.R };
+                    hex = new HexTile() { TargetAxialQ = vec.Q, TargetAxialR = vec.R };
                     context.HexTiles.Add(hex);
                     createdHex = true;
                 }

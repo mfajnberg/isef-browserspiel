@@ -6,46 +6,58 @@ using web_api.Services.Authentication;
 namespace web_api.Controllers
 {
     /// <summary>
-    /// Confirmation Endpoint
+    ///     Controller for email or text notification based activation of currently deactivated accounts
     /// </summary>
     [ApiController]
    public class ConfirmationController : Controller
     {
         private readonly DataContext _context;
 
-        /// <summary>
-        /// Constructor for <c>ConfirmationController</c>
-        /// </summary>
-        /// <param name="context"><c>DataContext</c> for Database interactions</param>
         public ConfirmationController(DataContext context)
         {
             _context = context;
         }
 
         /// <summary>
-        /// Confirms a new user
+        ///     Checks the confirmation Id from the request against the database and activates the user.
         /// </summary>
-        /// <response code="200">when the new user has been successfully confirmed</response>
-        /// <response code="400">when the user, who needs confirmtion was not found, or is already confirmed</response>
-        /// <response code="409">when the confirmation-id is not found in the database</response>
-        /// <param name="confirmationId">the confirmation id</param>
-        /// <returns>message to the user</returns>
+        /// 
+        /// <param name="confirmationId">
+        ///     The Id of the confirmation to be checked for.
+        /// </param>
+        /// 
+        /// <response code="400">
+        ///     The user account was already activated.
+        /// </response>        
+        /// 
+        /// <response code="409">
+        ///     The confirmation Id from the request was not found in the database.
+        /// </response>
+        /// 
+        /// <response code="422">
+        ///     The confirmation Id was found but the associated user Id is invalid.
+        ///     This could happen if the account has been terminated after the activation was requested.
+        /// </response>
+        /// 
+        /// <returns>
+        ///     Message for the client.
+        /// </returns>
         [HttpGet("api/confirmation/confirm/{confirmationId}")]
         public async Task<ActionResult<string>> Confirm([FromRoute] string confirmationId)
         {
-            // check if the requested confimationId is known
+            // check if the requested confimation Id is known
             var confirm = _context.Confirmations.Where(c => c.ConfirmationId == confirmationId).FirstOrDefault();
             if (confirm == null)
-                return NotFound();
+                return NotFound("Invalid confirmation ID.");
 
-            // check if the user of the requested confirmationId is known
+            // check if the user of the requested confirmation Id is known
             var user = _context.Users.Where(u => u.Id == confirm.UserId).FirstOrDefault();
             if (user == null)
-                return BadRequest("User to confirm not Found");
+                return UnprocessableEntity("Invalid user.");
 
             // check if the confirmation has already been processed
             if (user.IsActive)
-                return BadRequest("User already confirmed");
+                return BadRequest("User already active.");
 
 
             // set the active flag and proceed

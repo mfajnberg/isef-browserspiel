@@ -9,7 +9,7 @@ using web_api.GameModel.Worldmap;
 namespace web_api.Controllers
 {
     /// <summary>
-    /// Admin Endpoint
+    ///     Controller for secure issuing of administrative tasks concerning the world, player accounts etc.
     /// </summary>
     [Authorize]
     [ApiController]
@@ -19,77 +19,94 @@ namespace web_api.Controllers
         DataContext _context;
         WorldManager _worldManager;
 
-        /// <summary>
-        /// Constructor for Admin-Controller
-        /// </summary>
-        /// <param name="context">type of <c>DataContext</c> for Database interactions</param>
         public AdminController(DataContext context)
         {
             _context = context;
             _worldManager = new WorldManager();
         }
 
-        /// <summary>
-        /// saves the given list of hextiles in the database
-        /// </summary>
-        /// <returns><b>yes</b>, when succuessfull, <b>no</b>, if not</returns>
-        ///  <remarks>
-        /// Sample request:
-        /// 
-        ///  POST
-        ///  [
-        ///    {
-        ///      "axialCoordinates": {
-        ///        "q": -1,
-        ///        "r": 2
-        ///      },
-        ///      "siteType": 100
-        ///   }
-        ///  ]
-        /// </remarks>
-        /// <response code="200">when the hextiles has been successfully stored in the database</response>
-        /// <response code="400">if the Emailaddress is already stored in the database</response>
-        /// <response code="401">if the user is not authorized</response>
-        /// <response code="403">if the user has no admin permissions</response>
-        /// <param name="worldGenData">List of <c>HexTileDTO</c> which should be stored in the Database</param>
 
+        // todo: Inform the client whether or not new hex tiles would be generated at previously empty coordinates prior to communication with this endpoint.
+        /// <summary>
+        ///     Saves the given input list of hex tiles to the world's database, replacing current adventure-site data if needed.
+        ///     Generates new hex tiles for whatever pairs of previously void coordinates are given.
+        ///     Makes them appear as part of the explorable game world.
+        /// </summary>
+        /// 
+        /// <param name="worldGenData">
+        ///     List of <c>HexTileDTO</c> to be saved in the database as new hex tiles.
+        /// </param>
+        /// 
+        /// <response code="403">
+        ///     The user lacks admin permissions
+        /// </response>
+        /// 
+        /// <response code="422">
+        ///     Updating the world slice with the given input layout failed due to some internal logic issue.
+        /// </response>
+        /// 
+        /// <remarks>
+        ///  
+        ///     Sample request:
+        /// 
+        ///     POST
+        ///     
+        ///     [
+        ///         {
+        ///             "axialCoordinates": {
+        ///                 "q": -1,
+        ///                 "r": 2
+        ///             },
+        ///             "siteType": 100
+        ///         }, 
+        ///         ...
+        ///     ]
+        ///  
+        /// </remarks>
         [HttpPost]
         [Route("world/save")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [Produces("text/plain")]
         public async Task<ActionResult> SaveSliceLayout(List<HexTileDTO> worldGenData)
         {
-            if (!isAdminFromClaim())
+            if (!IsAdminFromClaim())
                 return Forbid();
             
             bool success = await _worldManager.updateSliceLayout(_context, worldGenData);
             if (!success)
             {
-                return BadRequest("Layout update failed!");
+                return UnprocessableEntity("Layout update failed!");
             }
+
             return Ok("World Layout was successfully updated...");
         }
 
 
         /// <summary>
-        /// get's a list of hextiles from the database, based on a relative zero point
+        ///     Returns a list of the hextiles around the given input coordinates.
+        ///     Only used by admins to edit the game world. 
         /// </summary>
-        /// <response code="200">when the user has admin rights</response>
-        /// <response code="401">if the user has no admin permissions</response>
-        /// <param name="RelativeZero">the relative zero point of the worlsmap slice</param>
-        /// <returns>a List of <c>HexTile</c> </returns>
+        /// 
+        /// <param name="RelativeZero">
+        ///     the relative zero point on the world map around which to load any existing hex tiles
+        /// </param>
+        /// 
+        /// <response code="403">
+        ///     The requesting client lacks admin permissions
+        /// </response>
+        /// 
+        /// <returns>
+        ///     a List of <c>HexTile</c> 
+        /// </returns>
         [HttpPost]
         [Route("world/get")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Produces("application/json")]
         public async Task<ActionResult> GetSliceToEdit(HexTileDTO RelativeZero)
         {
-            if (!isAdminFromClaim())
-                return Unauthorized();
+            if (!IsAdminFromClaim())
+                return Forbid();
 
             List<HexTile> result = await WorldManager.GetSliceAsync(_context, RelativeZero, 4);
             return Ok(result);
@@ -97,26 +114,44 @@ namespace web_api.Controllers
 
 
         /// <summary>
-        /// deletes an user from the database
+        ///     Deletes a given input user from the database
         /// </summary>
-        /// <response code="200">when the current user has admin rights and the user is deleted</response>
-        /// <response code="401">if the user has no admin permissions</response>
+        /// 
+        /// <response code="400">
+        ///     The given input user is invalid
+        /// </response>
+        /// 
+        /// <response code="403">
+        ///     The requesting client lacks admin permissions
+        /// </response>
+        /// 
+        /// <param name="userData">
+        ///     The data of user to be deleted 
+        /// </param>
         [HttpDelete]
         [Route("user/delete")]
-        public async Task<ActionResult> DeleteUser()
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Produces("text/plain")]
+        public async Task<ActionResult> DeleteUser(UserDTO userData)
         {
-            if (!isAdminFromClaim())
-                return Unauthorized();
+            if (!IsAdminFromClaim())
+                return Forbid();
 
-            throw new NotImplementedException("Delete user feature isn't implemented, jet");
+            var user = _context.Users.Where(u => u.Email.ToLower() == userData.Email.ToLower()).FirstOrDefault();
+
+            if (user == null)
+                return BadRequest();
+
+            _context.Users.Remove(user);
+            return Ok();
         }
 
 
         /// <summary>
-        /// checks weather the current user has admin permissions or not
+        ///     Checks the requesting client's admin permissions
         /// </summary>
-        /// <returns></returns>
-        private bool isAdminFromClaim()
+        private bool IsAdminFromClaim()
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();
             var user = _context.Users.Where(u => u.Email.ToLower() == mailFromClaim).FirstOrDefault();

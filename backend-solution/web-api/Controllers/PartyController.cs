@@ -15,29 +15,30 @@ using web_api.GameModel.Worldmap;
 namespace web_api.Controllers
 {
     /// <summary>
-    /// Party Endpoint
+    ///     Controller for issuing Party-related gameplay interactions
     /// </summary>
     [Authorize]
-    [Route("api/party")]
     [ApiController]
+    [Route("api/party")]
     public class PartyController : ControllerBase
     {
         DataContext _context;
-        /// <summary>
-        /// Constructor for PartyController
-        /// </summary>
-        /// <param name="context">type of <c>DataContext</c> for Database interactions</param>
         public PartyController(DataContext context)
         {
             _context= context;
         }
 
         /// <summary>
-        /// Gets the party from the current user
+        ///     Retrieves the requesting client's avatar's associated party
         /// </summary>
-        /// <response code="200">when the party was found</response>
-        /// <response code="422">if any error occured while getting the users party</response>
-        /// <returns> the <c>Party</c>-object from the current user</returns>
+        /// 
+        /// <response code="422">
+        ///     Some entity within the chain of references on a processed entity is invalid
+        /// </response>
+        /// 
+        /// <returns> 
+        ///     The user's <c>Party</c>-object requested by the client
+        /// </returns>
         [HttpGet("get")]
         public async Task<ActionResult> GetParty()
         {
@@ -55,11 +56,16 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// Gets the vision of the party from the current user
+        ///     Returns visible hex tile data from the vision radius of the requesting user's associated party
         /// </summary>
-        /// <response code="200">when the vision of party was found</response>
-        /// <response code="422">if any error occured while getting the current vision ot the users party</response>
-        /// <returns> List of <c>HexTiles</c> which should be displayed to the user</returns>
+        /// 
+        /// <response code="422">
+        ///     Some entity within the chain of references on a processed entity is invalid
+        /// </response>
+        /// 
+        /// <returns> 
+        ///     List of <c>HexTiles</c> to be displayed to the player
+        /// </returns>
         [HttpPost("vision")]
         public async Task<ActionResult> GetVisibleHexTiles([FromBody] HexTileDTO lookingFrom) // take "lookingFrom" hex tile dto argument
         {
@@ -84,13 +90,19 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// Sets an new destination the user wants to travel to
+        ///     Mutates the current destination that the user's party is traveling to.
+        ///     
         /// </summary>
-        /// <response code="200">when the <c>TravelOGI</c> has been successfully scheduled</response>
-        /// <response code="422">if any error occured while getting <c>Avatar</c>, <c>HexTile</c></response>
-        /// <param name="path">the destionation of the current user travel</param>
+        /// 
+        /// <param name="travelPath">
+        ///     the destionation of the current user travel
+        /// </param>
+        ///
+        /// <response code="422">
+        ///     Some entity within the chain of references on a processed entity is invalid
+        /// </response>
         [HttpPost("travel")]
-        public async Task<ActionResult> TravelTo([FromBody] List<HexTileDTO> path )
+        public async Task<ActionResult> TravelTo([FromBody] List<HexTileDTO> travelPath)
         {
             var user = GetUserFromClaim();
             var response = user == null ? UnprocessableEntity("User")
@@ -102,7 +114,7 @@ namespace web_api.Controllers
             List<HexTile> hexTilesPath = null;
             try
             {
-                hexTilesPath = WorldManager.ValidatePath(_context, path);
+                hexTilesPath = WorldManager.ValidatePath(_context, travelPath);
             }
             catch (Exception ex)
             {
@@ -124,8 +136,8 @@ namespace web_api.Controllers
                     TravelOGI travel = new TravelOGI();
                     travel.Id = 0;
                     travel.PartyId = party.Id;
-                    travel.AxialQ = hexTilesPath[i].AxialQ;
-                    travel.AxialR = hexTilesPath[i].AxialR;
+                    travel.TargetAxialQ = hexTilesPath[i].AxialQ;
+                    travel.TargetAxialR = hexTilesPath[i].AxialR;
                     travel.ScheduledAt = scheduleTimeAt;
 
                     //scheduleTimeFor = scheduleTimeFor.AddSeconds(hexTilesPath[i].TravelTime);
@@ -143,7 +155,13 @@ namespace web_api.Controllers
             return Ok();
         }
 
-        // also write a "GetPartyFromUser" or maybe "GetPartyFromClaim" method?
+        /// <summary>
+        ///     Retrieves a user with their avatar from the database based on the email claim of the authenticated user
+        /// </summary>
+        /// 
+        /// <returns> 
+        ///     The user object or null if not found 
+        /// </returns>
         private User? GetUserFromClaim()
         {
             var mailFromClaim = User.Claims.Where(c => c.Type == ClaimTypes.Email).FirstOrDefault().Value.ToLower();

@@ -10,47 +10,54 @@ using web_api.Services;
 namespace web_api.Controllers
 {
     /// <summary>
-    /// Avatar Endpoint
+    ///     Controller for issuing Avatar-related gameplay interactions
     /// </summary>
     [Authorize]
-    [Route("api/avatar")]
     [ApiController]
+    [Route("api/avatar")]
     public class AvatarController : ControllerBase
     {
         private readonly DataContext _context;
-        /// <summary>
-        /// Constructor for AvatarController
-        /// </summary>
-        /// <param name="context"></param>
+
         public AvatarController(DataContext context)
         {
             _context = context;
         }
 
+        // todo: Replace premade avatar selection with a properly designed character creation process!
         /// <summary>
-        /// Gets a list of premade characters
+        ///     Presents the player with a selection of three premade avatar choices.
         /// </summary>
-        /// <returns></returns>
-        /// <response code="200">returns a list of premade avatars</response>
-         [HttpGet("choices")]
+        /// 
+        /// <returns>
+        ///     A list of premade characters
+        /// </returns>
+        [HttpGet("choices")]
         public async Task<ActionResult> GetPremadeChoices()
         {
             return Ok(PremadeAvatars.GetAvatarList());
         }
 
         /// <summary>
-        /// sets the given premade character to the current user
+        ///     sets the given premade character to the current user
         /// </summary>
-        /// <param name="name">name of the premade character</param>
-        /// <returns></returns>
-        ///  <response code="200">when the avatar was set successfully to the user</response>
-        /// <response code="400">if the selected avatar was not found</response>
+        /// 
+        /// <param name="name">
+        ///     name of the premade character
+        /// </param>
+        /// 
+        /// <response code="400">
+        ///     if the selected avatar was not found
+        /// </response>
+        /// 
         /// <remarks>
-        /// Sample request:
-        ///  POST
-        ///  {
-        ///    "Leito Froste"
-        ///  }
+        ///     Sample request:
+        /// 
+        ///     POST
+        ///     
+        ///     {
+        ///         "Leito Froste"
+        ///     }
         /// </remarks>
         [HttpPost("select")]
         public async Task<ActionResult> SelectAvatar([FromBody] string name)
@@ -92,10 +99,16 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// every avatar needs a party, 
+        ///     Every avatar needs a party, 
         /// </summary>
-        /// <param name="avatar">the newly created avatar</param>
-        /// <returns>the new <c>Party</c>-object</returns>
+        /// 
+        /// <param name="avatar">
+        ///     The newly created avatar
+        /// </param>
+        /// 
+        /// <returns>
+        ///     The new <c>Party</c>-object
+        /// </returns>
         private async Task<Party> createNewPartyAsync(Avatar? avatar)
         {
             Party party = new Party();

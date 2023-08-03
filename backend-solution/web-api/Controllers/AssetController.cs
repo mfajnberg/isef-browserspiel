@@ -4,8 +4,10 @@ using System.Xml.Linq;
 
 namespace web_api.Controllers
 {
+    // todo: cache assets in the client to drastically reduce server load
+
     /// <summary>
-    /// Asset Endpoint
+    ///     Controller for downloading various in-game assets
     /// </summary>
     [ApiController]
     [Authorize]
@@ -15,11 +17,9 @@ namespace web_api.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly string _assetPath;
 
-        /// <summary>
-        /// constructor of AssetController
-        /// </summary>
-        /// <param name="webHostEnvironment"></param>
-        /// <param name="configuration"></param>
+        /// <param name="webHostEnvironment">
+        ///     Used for easy retreival of the full path of the local asset directory
+        /// </param>
         public AssetController(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
@@ -27,11 +27,16 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// gets a List of placeable 3D objects
+        ///     Returns a List containting the file names of all currently placeable 3D objects.
         /// </summary>
-        /// <response code="200">when the asset directory exists</response>
-        /// <response code="400">when the asset directory not exists</response>
-        /// <returns>a List of filenames, stored in the asset directory </returns>
+        /// 
+        /// <response code="400">
+        ///     when the asset directory does not exists
+        /// </response>
+        /// 
+        /// <returns>
+        ///     a List of filenames, stored in the asset directory
+        /// </returns>
         // authorize?
         [HttpGet("names")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -52,11 +57,16 @@ namespace web_api.Controllers
         }
 
         /// <summary>
-        /// gets a binary data from a requested placeable object
+        ///     Retreives vertex data of a placeable 3d object from the file system, based on a given input file name
         /// </summary>
-        /// <response code="200">when the asset exists</response>
-        /// <response code="404">when the asset could not be readed</response>
-        /// <returns>binary data from asset file</returns>
+        /// 
+        /// <response code="404">
+        ///     The asset with the given name could not be read
+        /// </response>
+        /// 
+        /// <returns>
+        ///     The binary data from asset file encoded as a byte array
+        /// </returns>
         // authorize?
         [HttpGet("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -1,10 +1,10 @@
 ﻿namespace web_api.GameModel.Sites
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Chest : SiteBase
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public SiteType SiteType { get { return SiteType.Chest; } }
 
         public int ElectrumAmount { get; set; } = 100;
