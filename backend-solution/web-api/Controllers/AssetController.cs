@@ -37,7 +37,6 @@ namespace web_api.Controllers
         /// <returns>
         ///     a List of filenames, stored in the asset directory
         /// </returns>
-        // authorize?
         [HttpGet("names")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -67,7 +66,6 @@ namespace web_api.Controllers
         /// <returns>
         ///     The binary data from asset file encoded as a byte array
         /// </returns>
-        // authorize?
         [HttpGet("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

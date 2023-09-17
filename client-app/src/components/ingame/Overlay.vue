@@ -246,6 +246,12 @@ function debugElectrum() {
             </span>
         </div>
 
+        <p class="resource_panel" v-if="!uiStore.editorMode">
+            <span class="resource electrum"></span>
+            <label>Elektrum: </label>
+            <span class="strong number">{{ partyStore.electrum }}</span>
+        </p>
+
         <div id="slot_panel" 
             @mouseover="uiStore.hoveringOverlay = true" 
             @mouseleave="uiStore.hoveringOverlay = false">
@@ -307,11 +313,6 @@ function debugElectrum() {
                 </span>
             </div>
         </div>
-        <p class="resource_panel" v-if="!uiStore.editorMode">
-            <span class="resource electrum"></span>
-            <label>Elektrum: </label>
-            <span class="strong number">{{ partyStore.electrum }}</span>
-        </p>
         
         <p class="slot_panel_info" v-if="uiStore.editorMode">
             <span v-if="worldStore.previewModelURI === 'HexPreview2.glb'">
@@ -321,6 +322,11 @@ function debugElectrum() {
                 (Escape/Backspace/Delete zum abbrechen)
             </span>
         </p>
+
+        <div class="dyn_info_box money_collected" v-if="false">
+            {{100}}
+        </div>
+
         <div ref="debugPanelRef" class="debug_panel" @mouseover="uiStore.hoveringOverlay = true"
             @mouseleave="uiStore.hoveringOverlay = false">
             ***
@@ -332,10 +338,12 @@ function debugElectrum() {
             <button class="debug" v-if="uiStore.editorMode" @click="fixCamera">debug camera</button>
             <button class="debug" v-if="uiStore.editorMode" @click="postLayout">Post Layout</button>
         </div>
+
         <div ref="dynInfoBoxRef" class="dyn_info_box"
             v-show="uiStore.rightClick && worldStore.clickedItem">
             {{uiStore.hoveredName}}
         </div>
+
         <div id="info_hex">
             <div class="axial" v-if="worldStore.hoveredItem">
                 <label class="label_axial">
@@ -395,8 +403,24 @@ p {
 
 .resource_panel{
     display: flex;
+    
+    padding-top: .2rem;
+    padding-bottom: .2rem;
+    
     position: fixed;
-    bottom: 15.5%
+    
+    height: 1.3rem;
+    width: calc(((6vh + 1rem)*8.1));
+    
+    bottom: 16.5%;
+    
+    text-shadow: 0rem 0rem .2rem black, 0rem 0rem .2rem black;
+    background: linear-gradient(90deg, transparent 0%, black 50%, transparent 100%);
+    border-style: double;
+    border-color: transparent;
+    /* border-top-color: rgba(252, 205, 143, 1); */
+    border-bottom-color: rgba(252, 205, 143, .5);
+    transition: linear 0s;
 } .resource_panel > * {
     display: flex;
     align-self: center;
@@ -405,8 +429,7 @@ p {
     font-family: monospace;
 }.resource {
     height: 2.5rem;
-    width: 3rem;
-    padding-left: 0%;
+    width: 2.5rem;
     background-image: url("elektrum.png");
     background-repeat: no-repeat;
     background-position: center center;
@@ -568,8 +591,14 @@ p {
     background: linear-gradient(90deg, transparent 0%, black 50%, transparent 100%);
     border-style: double;
     border-color: transparent;
-    border-top-color: rgba(252, 205, 143, 1);
-    border-bottom-color: rgba(252, 205, 143, .5);
+    /* border-top-color: rgba(252, 205, 143, 1);
+    border-bottom-color: rgba(252, 205, 143, .5); */
     transition: linear 0s;
+}
+.money_collected {
+    margin-top: 5vh;
+    margin-right: 10vh;
+    align-self: center;
+    justify-self: center;
 }
 </style>

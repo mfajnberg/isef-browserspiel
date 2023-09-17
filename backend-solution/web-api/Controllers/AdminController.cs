@@ -46,7 +46,6 @@ namespace web_api.Controllers
         /// </response>
         /// 
         /// <remarks>
-        ///  
         ///     Sample request:
         /// 
         ///     POST
@@ -61,7 +60,6 @@ namespace web_api.Controllers
         ///         }, 
         ///         ...
         ///     ]
-        ///  
         /// </remarks>
         [HttpPost]
         [Route("world/save")]
@@ -89,11 +87,11 @@ namespace web_api.Controllers
         /// </summary>
         /// 
         /// <param name="RelativeZero">
-        ///     the relative zero point on the world map around which to load any existing hex tiles
+        ///     Local point on the map, around which existing hex tiles and site data are to be loaded.
         /// </param>
         /// 
         /// <response code="403">
-        ///     The requesting client lacks admin permissions
+        ///     The requesting client lacks admin permissions.
         /// </response>
         /// 
         /// <returns>
@@ -114,19 +112,19 @@ namespace web_api.Controllers
 
 
         /// <summary>
-        ///     Deletes a given input user from the database
+        ///     Deletes the input user's account from the database.
         /// </summary>
         /// 
         /// <response code="400">
-        ///     The given input user is invalid
+        ///     The input user data doesn't match any accounts in the database.
         /// </response>
         /// 
         /// <response code="403">
-        ///     The requesting client lacks admin permissions
+        ///     The client lacks admin permissions.
         /// </response>
         /// 
         /// <param name="userData">
-        ///     The data of user to be deleted 
+        ///     The user to be deleted.
         /// </param>
         [HttpDelete]
         [Route("user/delete")]
@@ -149,7 +147,7 @@ namespace web_api.Controllers
 
 
         /// <summary>
-        ///     Checks the requesting client's admin permissions
+        ///     Checks the requesting client's admin permissions.
         /// </summary>
         private bool IsAdminFromClaim()
         {

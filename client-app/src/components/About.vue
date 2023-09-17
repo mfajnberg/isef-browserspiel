@@ -7,7 +7,17 @@
         <div class='about_content'>
             <h3 class="strong">Projekt</h3>
             <p>
-                Diese Anwendung wurde im Rahmen des Kurses "Projekt Softwareengineering" an der IU Internationale Hochschule entwickelt.
+                3D Browserspiel – Full Stack Webanwendung
+                <br>
+                <br>
+                Im Rahmen einer Kursprüfung hatte ich das Vergnügen, mein erstes Software-Projekt mit einem kleinen Team von zwei anderen sehr talentierten Studenten von Anfang bis Ende umzusetzen.
+                <br>
+                <br>
+                Neben der Leitung des Projekts gehörten zu meinen Verantwortlichkeiten der Entwurf einer Softwarearchitektur und die Entwicklung von Teilen des Backends sowie der gesamten Frontend-Codebasis.
+                <br>
+                <br>
+                Wir haben die erforderlichen Systeme implementiert, um ein modernes Live-Service-Online-Spiel zu unterstützen. Das Projekt umfasst derzeit eine vollständig interaktive, dauerhafte 3D-Welt, die bequem über den Browser zugänglich ist.
+                <br>
             </p>
             <h3 class="strong">Team</h3>
             <div class="credits">
@@ -121,6 +131,8 @@
         flex-direction: column;
         font-size: .8rem;
         text-align: center;
+        padding: 5rem;
+        padding-top: 1rem;
     }
     
     .credits{

@@ -19,7 +19,7 @@ import About from './components/About.vue'
     const uiStore = useUIStore()
     const partyStore = usePartyStore()
 
-    const videoId = ref('PmdVSxLBZjU');
+    const videoId = ref('EEqhHsvarus');
     const youtube = ref();
 
     const { onReady } = usePlayer(videoId, youtube, {
@@ -61,9 +61,9 @@ import About from './components/About.vue'
                         <p>
                             <span class="check_mark">✓</span> Erkunde legendäre Stätten
                             <br/><br/>
-                            <span class="check_mark">✓</span> Sammle Einfluss und Berühmtheit
+                            <span class="check_mark">✓</span> Sammle Einfluss und Reichtümer
                             <br/><br/>
-                            <span class="check_mark">✓</span> Kämpfe, wofür es sich zu kämpfen lohnt
+                            <span class="check_mark">✓</span> Entscheide, wofür es sich zu kämpfen lohnt
                         </p>
                     </div>
                     <div class="welcome_item vid" v-show="uiStore.getShowingHome && !uiStore.loadingAssets">
@@ -85,11 +85,9 @@ import About from './components/About.vue'
                 </div>
 
                 <div class="roadmap welcome_item grid_span_2" v-show="uiStore.getShowingHome || uiStore.showingAdminPrompt || uiStore.loadingAssets">
-                    <h3 class="welcome_item_heading">Roadmap</h3>
+                    <!-- <h3 class="welcome_item_heading">Roadmap</h3> -->
                     <p>
-                        Bald wird diese App Teil einer integrierten Spielwelt.
-                        Bist du bereit frischen Wind in ein wachsendes Team zu bringen? <br/>
-                        Für die Arbeit am Schwesterprojekt gibt es noch diverse offene <a class="anchor_inline">Stellen</a> 
+                        Diese App wurde im Rahmen einer Prüfungsleistung an der IU International University of Applied Sciences entwickelt.
                     </p>
                 </div>
 
