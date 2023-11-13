@@ -1,18 +1,4 @@
 @font-face {
-  font-family: 'Charm';
-  font-weight: 400;
-  src: url('assets/fonts/charm-regular-webfont.woff2'),
-       url('assets/fonts/charm-regular-webfont.woff');
-}
-
-@font-face {
-  font-family: 'Charm';
-  font-weight: 700;
-  src: url('assets/fonts/charm-bold-webfont.woff2'),
-       url('assets/fonts/charm-bold-webfont.woff');
-}
-
-@font-face {
   font-family: 'Fondamento';
   font-weight: 400;
   font-style: normal;
@@ -29,20 +15,11 @@
 }
 
 @font-face {
-  font-family: 'Medievalsharp';
-  font-weight: 400;
-  src: url('assets/fonts/medievalsharp-regular-webfont.woff2'),
-       url('assets/fonts/medievalsharp-regular-webfont.woff');
-}
-
-@font-face {
   font-family: 'Marcellus';
   font-weight: 400;
   src: url('assets/fonts/marcellus-regular-webfont.woff2'),
        url('assets/fonts/marcellus-regular-webfont.woff');
 }
-
-
 
 :root {
   /* font-family: Helvetica, Arial,  sans-serif; */

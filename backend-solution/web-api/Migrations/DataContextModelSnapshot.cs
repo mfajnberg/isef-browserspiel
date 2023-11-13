@@ -299,10 +299,10 @@ namespace web_api.Migrations
                 {
                     b.HasBaseType("web_api.GameModel.OGIs.OngoingGameplayInteraction");
 
-                    b.Property<int>("AxialQ")
+                    b.Property<int>("TargetAxialQ")
                         .HasColumnType("int");
 
-                    b.Property<int>("AxialR")
+                    b.Property<int>("TargetAxialR")
                         .HasColumnType("int");
 
                     b.ToTable("OGIs");

@@ -12,17 +12,20 @@ export const useGameAssetStore = defineStore('GameAssetStore', {
         
         modelURIs:
             [
-                'forest_1.glb', 'flag.glb', 'house.glb', 'tent_field_camp.glb', 
-                    'crystals.glb', 'chest_lp.glb', 'tree_ancient.glb', 
-                , '3dCursorCross.glb', '3dCursorArrow.glb', 'HexBase.glb',
-                'Arissa.fbx', 'Idle.fbx', 'Walking.fbx'
+                'forest_1.glb', 'flag.glb', 
+                'house.glb', 'tent_field_camp.glb', 
+                'crystals.glb', 'chest_lp.glb', 
+                'tree_ancient.glb', '3dCursorCross.glb', 
+                '3dCursorArrow.glb', 'HexBase.glb',
+                'Arissa.fbx', 'Idle.fbx', 
+                'Walking.fbx'
             ],        
         
         hexTextureURIs: [
-            "/assets/grass_texture_1.jpg", 
-            "/assets/grass_texture_2.jpg", 
-            "/assets/grass_texture_3.jpg", 
-    ],
+            "grass_texture_1.jpg", 
+            "grass_texture_2.jpg", 
+            "grass_texture_3.jpg", 
+        ],
             
         pointerDownSound: new Howl({
             src: 'isef_pointer_down.mp3',

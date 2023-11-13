@@ -332,7 +332,7 @@ function debugElectrum() {
             ***
             <button class="debug" @click="toggleMusic">♪ Toggle Music ♪</button>
             <button class="debug" @click="toggleSmoothCam">Toggle Smooth Cam</button>
-            <button class="debug" @click="debugElectrum">debug electrum</button>
+            <button class="debug" @click="debugElectrum">debug</button>
             <button class="debug" v-if="uiStore.editorMode" @click="debug1">debug tileDTOs</button>
             <button class="debug" v-if="uiStore.editorMode" @click="debug2">debug sites3d</button>
             <button class="debug" v-if="uiStore.editorMode" @click="fixCamera">debug camera</button>
@@ -430,7 +430,7 @@ p {
 }.resource {
     height: 2.5rem;
     width: 2.5rem;
-    background-image: url("elektrum.png");
+    background-image: url("/elektrum.png");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
@@ -444,7 +444,7 @@ p {
 
     /* left: 2vw; */
     right: auto;
-    background-image: url("leather_texture.jpg");
+    background-image: url("/leather_texture.jpg");
     border-style: outset;
     border-width: 1px;
     /* border-top-right-radius: 5px; */

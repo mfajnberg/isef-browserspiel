@@ -18,7 +18,7 @@ export function spawnHex(loader, texLoader, worldStore, gameAssetStore, hexData,
         spawnedHex.traverse(child => {
             if (child.isMesh) {
                 child.material = new THREE.MeshStandardMaterial({
-                    map: texLoader.load(gameAssetStore.hexTextureURIs[Math.abs(randomRotation)])
+                    map: texLoader.load("grass_texture_1.jpg")
                 })
                 child.material.map.wrapS = THREE.RepeatWrapping
                 child.material.map.wrapT = THREE.ClampToEdgeWrapping
@@ -38,12 +38,16 @@ export function spawnHex(loader, texLoader, worldStore, gameAssetStore, hexData,
         spawnedHex.userData.GCost = 0
         spawnedHex.userData.HCost = 0
         spawnedHex.userData.CameFrom = null
-        const partyStore = usePartyStore()
-        if (hexData.Q === partyStore.party.location.Q
-            && hexData.R === partyStore.party.location.R) 
-        {
-            partyStore.start = spawnedHex
-        }      
+
+        
+        if (!useUIStore().editorMode) {
+            if (hexData.Q === usePartyStore().party.location.Q
+                && hexData.R === usePartyStore().party.location.R) 
+            {
+                usePartyStore().start = spawnedHex
+            }      
+        }
+
         worldStore.scene.add(spawnedHex)
         new Hexes3d().buffer.push(spawnedHex)
         new TileDTOs().buffer.push({
@@ -79,8 +83,9 @@ export async function loadPawn3d() {
             child.receiveShadow = true
             }
         })
-        let partyPos = new HexVector(usePartyStore().party.location.Q, 
-                                     usePartyStore().party.location.R)
+        let partyPos = new HexVector(
+            usePartyStore().party.location.Q, 
+            usePartyStore().party.location.R)
         loadedObject.translateX(partyPos.getWorldXFromAxialQ())
         loadedObject.translateZ(partyPos.getWorldZFromAxialR())
         loadedObject.rotateY(.5236)

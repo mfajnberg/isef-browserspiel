@@ -125,7 +125,7 @@ import About from './components/About.vue'
     left: 0;
     top: 0;
 
-    background-image: url("twilight_aegis.jpg");
+    background-image: url("/twilight_aegis.jpg");
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-position: center;
@@ -276,21 +276,22 @@ import About from './components/About.vue'
     }
     .discord {
         right: 6rem;
-        background-image: url("discord_blurple.svg");
+        background-image: url("/discord_blurple.svg");
+        background-image: url("/discord_blurple.svg");
     } .discord:hover{
-        background-image: url("discord.svg");
+        background-image: url("/discord.svg");
     }
     .twitch {
         right: 0rem;
-        background-image: url("TwitchGlitchPurple.svg");
+        background-image: url("/TwitchGlitchPurple.svg");
     } .twitch:hover {
-        background-image: url("TwitchGlitchWhite.svg");
+        background-image: url("/TwitchGlitchWhite.svg");
     }
     .youtube {
         right: 3rem;
-        background-image: url("YouTube_color.svg");
+        background-image: url("/YouTube_color.svg");
     } .youtube:hover {
-        background-image: url("YouTube_light.svg");
+        background-image: url("/YouTube_light.svg");
     }
 
 

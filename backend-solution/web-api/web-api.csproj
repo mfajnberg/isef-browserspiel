@@ -9,14 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20230215220323_party_ogi_relationship.cs" />
-    <Compile Remove="Migrations\20230215220323_party_ogi_relationship.Designer.cs" />
-    <Compile Remove="Migrations\20230215220921_party_ogi_relationship.cs" />
-    <Compile Remove="Migrations\20230215220921_party_ogi_relationship.Designer.cs" />
+    <_ContentIncludedByDefault Remove="appsettings.Development.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="appsettings.Development.json" />
+    <None Include="wwwroot\assets\helm_2.glb" />
+    <None Include="wwwroot\assets\Hex_meter.glb" />
+    <None Include="wwwroot\assets\index.3205b5ab.js" />
+    <None Include="wwwroot\assets\index.79c40bef.css" />
+    <None Include="wwwroot\assets\twilight_aegis.jpg" />
+    <None Include="wwwroot\index.html" />
   </ItemGroup>
 
   <ItemGroup>

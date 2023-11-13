@@ -189,11 +189,12 @@ export function initCameraPawn(canvas, scene, worldStore) {
                        hex.userData.siteType === 201
                     || hex.userData.siteType === 204
                     || hex.userData.siteType === 205)
+                const pivotQ = uiStore.editorMode ? worldStore.editingAt.Q : partyStore.party.location.Q
+                const pivotR = uiStore.editorMode ? worldStore.editingAt.R : partyStore.party.location.R
                 const distance = Math.max(
-                    Math.abs(partyStore.party.location.Q - worldStore.hoveredItem.userData.Q), 
-                    Math.abs(partyStore.party.location.R - worldStore.hoveredItem.userData.R), 
-                    Math.abs(partyStore.party.location.Q + partyStore.party.location.R 
-                    - worldStore.hoveredItem.userData.Q - worldStore.hoveredItem.userData.R)) 
+                    Math.abs(pivotQ - worldStore.hoveredItem.userData.Q), 
+                    Math.abs(pivotR - worldStore.hoveredItem.userData.R), 
+                    Math.abs(pivotQ + pivotR - worldStore.hoveredItem.userData.Q - worldStore.hoveredItem.userData.R)) 
 
                 if (worldStore.preview 
                     && !partyStore.traveling
