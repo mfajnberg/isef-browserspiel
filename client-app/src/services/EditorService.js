@@ -47,7 +47,7 @@ export async function requestGetWorldSliceAdmin(q, r) {
         let vectors = Worldmap.makeHexGridVectors(4)
         const texLoader = new TextureLoader()
         vectors.forEach(vec => {
-            console.log(vec.Q + "|" + vec.R)
+            console.log(vec.Q + "||" + vec.R)
             const hexPosition = new HexVector(vec.Q + data[0].Q, vec.R + data[0].R)
             spawnHex(loader, texLoader, worldStore, useGameAssetStore(), hexPosition, (69*hexPosition.Q + 420*hexPosition.R)%3)
         })

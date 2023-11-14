@@ -69,15 +69,18 @@ namespace web_api.Controllers
         [HttpGet("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Produces("application/octet-stream")]
-        public async Task<IActionResult> Get3dAssetByName(string name)
+        public async Task<IActionResult> GetAssetByName(string name)
         {
             try
             {
-                var asset = System.IO.File.ReadAllBytes(Path.Combine(_assetPath, name));
-                return new FileContentResult(asset, "application/octet-stream");
+                var filePath = Path.Combine(_assetPath, name);
+                if (!System.IO.File.Exists(filePath))
+                    return NotFound();
+
+                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                return new FileStreamResult(stream, "application/octet-stream");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return NotFound(ex.Message);
             }

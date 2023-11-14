@@ -41,7 +41,7 @@ namespace web_api.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                ConsoleLogger.LogInfo("Read Database... " + DateTime.Now.ToString());
+                //ConsoleLogger.LogInfo("Read Database... " + DateTime.Now.ToString());
                 OngoingGameplayInteraction? interaction = await ExecuteNextOGI();
 
                 // Todo: determine optimal delay time
