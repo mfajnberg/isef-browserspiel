@@ -47,10 +47,7 @@ builder.Services.AddScoped<INotification, MailNotification>();
 
 builder.Services.AddHttpLogging(logging =>
 {
-    logging.LoggingFields = HttpLoggingFields.All;
-    logging.RequestHeaders.Add("sec-ch-ua");
-    logging.ResponseHeaders.Add("MyResponseHeader");
-    logging.MediaTypeOptions.AddText("application/javascript");
+    logging.LoggingFields = HttpLoggingFields.RequestPath | HttpLoggingFields.ResponseStatusCode;
     logging.RequestBodyLogLimit = 4096;
 });
 

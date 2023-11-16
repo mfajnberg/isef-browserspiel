@@ -110,11 +110,15 @@ function switchForms() {
         </div>
 
         <div class="after_regis" v-if="authStore.mailNotifSent">
-            Aktiviere dein Konto über den Validierungs-Link in deinem E-Mail Postfach,
+            <!-- Aktiviere dein Konto über den Validierungs-Link in deinem E-Mail Postfach,
             <br/>
             um die Registrierung abzuschließen
             <br/><br/>
-            (Es kann teilweise ein paar Minuten dauern, bis die E-Mail ankommt.)
+            (Es kann teilweise ein paar Minuten dauern, bis die E-Mail ankommt.) -->
+            Erfolgreich registriert. 
+            <br/>
+            <br/>
+            Sie können sich jetzt einloggen.
         </div>
 
         <div class="after_regis" v-if="authStore.regisFailed">

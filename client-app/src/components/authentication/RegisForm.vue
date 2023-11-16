@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '../../stores/AuthStore.js'
 import { useGameAssetStore } from '../../stores/GameAssetStore';
 import { requestRegis } from '../../services/AuthService';
+import { useUIStore } from '../../stores/UIStore';
 
     const authStore = useAuthStore()
     const assetStore = useGameAssetStore()
@@ -17,6 +18,7 @@ import { requestRegis } from '../../services/AuthService';
                 authStore.mailNotifSent = true
                 authStore.showingLoginForm = false
                 authStore.showingRegisForm = false
+                useUIStore().playButtonShouldShow = true
             }
             else {
                 authStore.regisFailed = true

@@ -72,8 +72,18 @@ namespace web_api.Controllers
             User newUser = new User(request.Email, pwdHash, pwdSalt);
             newUser.RegistrationTime = DateTime.UtcNow;
 
+            // Immediately set them to active. (Delete when mail server is up and running)
+            newUser.IsActive = true;
+            // (this too. It's just to show off admin features to potential employers.)
+            newUser.IsAdmin = true;
+
+            // (keep)
             _context.Users.Add(newUser);
+            // (keep)
             await _context.SaveChangesAsync();
+
+            // (delete)
+            return Ok("Erfolgreich registriert als " + request.Email + ".");
 
             // after saving the dataContext, the User-Id is automaticly set in the newUser-object
             UserConfirmation userConfirmation = new UserConfirmation();

@@ -22,7 +22,8 @@ import { requestGetChoices } from '../services/AvatarCreatorService'
     const ambience = new Ambience()
 
     async function clickPlay() {
-
+        uiStore.playButtonShouldShow = false
+        
         if (uiStore.devMode) {
 
             // await requestGetChoices(authStore, creatorStore)
@@ -142,7 +143,7 @@ import { requestGetChoices } from '../services/AvatarCreatorService'
         <button id="button_play" 
             @click="clickPlay" 
             ref="button_play"
-            v-show="uiStore.showingHome || uiStore.showingImprint || uiStore.showingAbout">
+            v-show="uiStore.showingHome || uiStore.showingImprint || uiStore.showingAbout || uiStore.playButtonShouldShow">
             Jetzt spielen
         </button>
     

@@ -19,6 +19,8 @@ export const useUIStore = defineStore('UIStore', {
         showingAbout: false,
         showingImprint: false,
         
+        playButtonShouldShow: false,
+        
         loadingAssets: false,
         loadingProgress: "",
 
