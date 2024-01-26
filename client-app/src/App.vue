@@ -9,6 +9,7 @@ import { requestTokenRefresh } from './services/AuthService.js'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import Imprint from './components/Imprint.vue'
+import Account from './components/Account.vue'
 import Authenticator from './components/authentication/Authenticator.vue'
 import AdminPrompt from './components/authentication/AdminPrompt.vue'
 import AvatarCreator from './components/ingame/AvatarCreator.vue'
@@ -92,13 +93,16 @@ import About from './components/About.vue'
                 </div>
 
                 <div class="socials">
-                    <a class="soc_item discord"></a>
-                    <a class="soc_item youtube"></a>
-                    <a class="soc_item twitch"></a>
+                    <a class="soc_item discord" href="https://discord.gg/uzFgCCCKE6" target="_blank"></a>
+                    <a class="soc_item youtube" href="https://www.youtube.com/@autogenes" target="_blank"></a>
+                    <a class="soc_item twitch" href="https://www.twitch.tv/mjboazy" target="_blank"></a>
                 </div>
 
                 <div class="grid_span_2 imprint" v-if="uiStore.getShowingAbout">
                     <About/>
+                </div>
+                <div class="grid_span_2 imprint" v-if="uiStore.getShowingAccount">
+                    <Account/>
                 </div>
                 <div class="grid_span_2 imprint" v-if="uiStore.getShowingImprint">
                     <Imprint/>
@@ -207,6 +211,7 @@ import About from './components/About.vue'
         justify-content: space-evenly;
     }.check_mark {
         display: inline-flex;
+        color: rgb(0, 255, 0);
         font-size: 1.4rem;
         padding-right: .1rem;
     }.weak {

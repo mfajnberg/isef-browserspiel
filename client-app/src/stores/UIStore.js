@@ -12,6 +12,7 @@ export const useUIStore = defineStore('UIStore', {
         devMode: false,
 
         showingHome: true,
+        showingAccount: false,
         showingAuthentication: false,
         showingAdminPrompt: false,
         showingAvatarCreator: false,
@@ -37,6 +38,7 @@ export const useUIStore = defineStore('UIStore', {
         rightClick: false,
     }),
     getters: {
+        getShowingAccount: (state) => state.showingAccount,
         getShowingAuthentication: (state) => state.showingAuthentication,
         getShowingAdminPrompt:(state) => state.showingAdminPrompt,
         getShowingAvatarCreator:(state) => state.showingAvatarCreator,
@@ -66,6 +68,7 @@ export const useUIStore = defineStore('UIStore', {
         },
         showHome() {
             this.showingHome = true
+            this.showingAccount = false
             this.showingAuthentication = false
             this.showingAdminPrompt = false
             this.showingAvatarCreator = false
@@ -75,8 +78,21 @@ export const useUIStore = defineStore('UIStore', {
             var header = document.getElementById("header")
             header.style.background = "rgba(0,0,0,0)"
         },
+        showAccount() {
+            this.showingHome = false
+            this.showingAccount = true
+            this.showingAuthentication = false
+            this.showingAdminPrompt = false
+            this.showingAvatarCreator = false
+            this.showingWorldmap = false
+            this.showingAbout = false
+            this.showingImprint = false
+
+            this.playButtonShouldShow = true
+        },
         showAuthentication() {
             this.showingHome = false
+            this.showingAccount = false
             this.showingAuthentication = true
             this.showingAdminPrompt = false
             this.showingAvatarCreator = false
@@ -86,6 +102,7 @@ export const useUIStore = defineStore('UIStore', {
         },
         showAdminPrompt() {
             this.showingHome = false
+            this.showingAccount = false
             this.showingAuthentication = false
             this.showingAdminPrompt = true
             this.showingAvatarCreator = false
@@ -95,6 +112,7 @@ export const useUIStore = defineStore('UIStore', {
         },
         showAvatarCreator() {
             this.showingHome = false
+            this.showingAccount = false
             this.showingAuthentication = false
             this.showingAdminPrompt = false
             this.showingAvatarCreator = true
@@ -104,6 +122,7 @@ export const useUIStore = defineStore('UIStore', {
         },
         showWorldmap() {
             this.showingHome = false
+            this.showingAccount = false
             this.showingAuthentication = false
             this.showingAdminPrompt = false
             this.showingAvatarCreator = false
@@ -118,24 +137,28 @@ export const useUIStore = defineStore('UIStore', {
         },
         showAbout() {
             this.showingHome = false
+            this.showingAccount = false
             this.showingAuthentication = false
             this.showingAdminPrompt = false
             this.showingAvatarCreator = false
             this.showingWorldmap = false
             this.showingAbout = true
             this.showingImprint = false
+            
             var header = document.getElementById("header")
             header.style.background = "rgba(0,0,0,0)"
         },
 
         showImprint() {
             this.showingHome = false
+            this.showingAccount = false
             this.showingAuthentication = false
             this.showingAdminPrompt = false
             this.showingAvatarCreator = false
             this.showingWorldmap = false
             this.showingAbout = false
             this.showingImprint = true
+            
             var header = document.getElementById("header")
             header.style.background = "rgba(0,0,0,0)"
         },

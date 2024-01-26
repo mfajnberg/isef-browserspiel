@@ -355,7 +355,7 @@ function debugElectrum() {
                 </label>
                 <span class="span_axial">{{ worldStore.hoveredItem.userData.R }}</span>
             </div>
-            <p>Halten und ziehen Sie die <span class="strong">mittlere Maustaste</span> zum bewegen der Kamera</p>
+            <p>Halten und ziehen Sie die <span class="strong">rechte Maustaste</span> zum bewegen der Kamera</p>
         </div>
     </div>
 </template>

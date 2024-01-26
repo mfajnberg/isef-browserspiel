@@ -65,6 +65,10 @@ import { requestGetChoices } from '../services/AvatarCreatorService'
         ambience.music.stop()
     }
     
+    function clickAccount() {
+        uiStore.showAccount()
+    }
+    
     function clickHome() {
         uiStore.showHome()
         authStore.hideRegisForm()
@@ -149,6 +153,10 @@ import { requestGetChoices } from '../services/AvatarCreatorService'
     
         <button id="button_logout" ref="button_logout" v-show="authStore.loggedIn" @click="clickLogout()">
             Ausloggen
+        </button>
+
+        <button id="button_account" ref="button_account" v-show="authStore.loggedIn" @click="clickAccount()">
+            Account
         </button>
     </div>
     </div>
@@ -245,6 +253,13 @@ import { requestGetChoices } from '../services/AvatarCreatorService'
         justify-self: right;
 
         color: red;
+        pointer-events: all;
+    }        
+    #button_account {
+        position: absolute;
+        justify-self: right;
+        top: 12vh;
+
         pointer-events: all;
     }    
     @media (max-width: 1124px) {

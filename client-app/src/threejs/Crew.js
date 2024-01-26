@@ -31,7 +31,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
     
     const _orbit = new OrbitControls(_camera, _renderer.domElement)
     worldStore.orbit = _orbit
-    _orbit.mouseButtons = { MIDDLE: THREE.MOUSE.ROTATE, LEFT: THREE.MOUSE.PAN }
+    _orbit.mouseButtons = { RIGHT: THREE.MOUSE.ROTATE, LEFT: THREE.MOUSE.PAN }
     _orbit.enablePan = false
     _orbit.enableZoom = true
     _orbit.enableDamping = true
@@ -133,7 +133,7 @@ export function initCameraPawn(canvas, scene, worldStore) {
 
     window.addEventListener('pointerdown', async (e) => { 
         // right click
-        if (e.button === 2 && uiStore.showingWorldmap && !uiStore.editorMode && worldStore.hoveredItem) 
+        if (e.button === 1 && uiStore.showingWorldmap && !uiStore.editorMode && worldStore.hoveredItem) 
         {
             worldStore.clickedItem = worldStore.hoveredItem
             if (worldStore.clickedItem.userData.Q === partyStore.party.location.Q
@@ -153,8 +153,8 @@ export function initCameraPawn(canvas, scene, worldStore) {
             }
         } 
         // middle click
-        if (e.button === 1 && uiStore.showingWorldmap) 
-            document.documentElement.style.cursor = "col-resize"
+        // if (e.button === 2 && uiStore.showingWorldmap) 
+        //     document.documentElement.style.cursor = "col-resize"
     })
     window.addEventListener('pointerup', async (e) => { 
         if (e.button === 1 || e.button === 2) {
